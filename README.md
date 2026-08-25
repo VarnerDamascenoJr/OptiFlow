@@ -175,3 +175,4 @@ Cada camada precisa gerar uma evidencia antes da proxima: primeiro uma rota vali
 - O codigo usara Prettier quando as aplicacoes forem inicializadas.
 - Segredos e arquivos locais nao devem ser versionados; use `.env.example` quando houver variaveis de ambiente.
 - Decisoes confirmadas ficam registradas em [docs/decisions.md](docs/decisions.md).
+- Tecnologias em avaliacao ficam registradas em [docs/technology-notes.md](docs/technology-notes.md).
