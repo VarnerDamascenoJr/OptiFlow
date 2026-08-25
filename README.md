@@ -8,11 +8,50 @@ Motor de otimizacao operacional para comparar cenarios de distribuicao e alocaca
 
 Construir uma aplicacao full-stack que permita modelar um cenario operacional, gerar uma solucao heuristica e compara-la com uma solucao otimizada usando OR-Tools.
 
+## Direcao Recomendada do MVP
+
+O primeiro dominio recomendado e distribuicao de entregas. O problema comeca com otimizacao deterministica de rotas e evolui de forma natural para um projeto de Estatistica: tempos de viagem, demanda e cancelamentos deixam de ser numeros fixos e passam a ser variaveis aleatorias.
+
+O produto responde a duas perguntas complementares:
+
+1. Qual plano de entregas minimiza custo, distancia e atrasos sob restricoes conhecidas?
+2. Quao confiavel e esse plano quando demanda e tempo de viagem variam?
+
+Essa direcao ainda sera confirmada antes do desenvolvimento do MVP.
+
+## Caminho de Aprendizado
+
+| Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
+| --- | --- | --- | --- |
+| Fundamentos | grafos, matrizes de distancia, funcao objetivo e restricoes | representar locais, veiculos, pedidos e custos | cenario pequeno calculado e validado manualmente |
+| Otimizacao deterministica | VRP, TSP, programacao inteira, busca local e heuristicas | construir a primeira rota e compara-la com OR-Tools | solucao valida com metricas de custo e distancia |
+| Medicao | estatistica descritiva, media, mediana, variancia e percentis | resumir atrasos, ocupacao e custo das execucoes | painel com comparacao entre heuristica e solver |
+| Incerteza | variaveis aleatorias, distribuicoes, estimacao e intervalo de confianca | modelar demanda e tempos de viagem nao deterministas | cenarios simulados com parametros documentados |
+| Simulacao | metodo de Monte Carlo, amostragem e analise de sensibilidade | executar um plano sob muitos cenarios possiveis | distribuicao de custo e atrasos para cada estrategia |
+| Decisao robusta | risco, quantis, CVaR e otimizacao robusta ou estocastica | favorecer planos que resistem a atrasos e picos de demanda | recomendacao baseada em custo esperado e nivel de risco |
+| Predicao | regressao, series temporais e validacao de modelos | prever demanda por regiao e faixa de horario | previsao avaliada com MAE e RMSE antes de entrar no solver |
+
+## Progressao do Produto
+
+### Versao 1: planejamento deterministico
+
+Todos os dados sao conhecidos antes da execucao: pedidos, capacidade dos veiculos, custo por distancia e tempo de viagem. Esta versao permite concentrar o estudo no modelo de otimizacao e cria uma linha de base confiavel.
+
+### Versao 2: simulacao de incerteza
+
+O plano da Versao 1 e avaliado em centenas ou milhares de cenarios amostrados. Por exemplo, o tempo de uma rota pode variar conforme uma distribuicao estimada e a demanda pode sofrer picos por regiao.
+
+O resultado deixa de ser apenas "a melhor rota" e passa a incluir custo esperado, probabilidade de atraso e percentis de pior caso.
+
+### Versao 3: planejamento orientado a risco
+
+Em vez de otimizar somente o cenario medio, o motor considera o risco operacional. Uma rota um pouco mais cara pode ser preferivel se reduzir muito a chance de atrasos graves ou de pedidos nao atendidos.
+
 ## Checklist Geral
 
 ### 1. Definicao do problema
 
-- [ ] Escolher o primeiro dominio do MVP: entregas, equipes ou estoque.
+- [ ] Confirmar distribuicao de entregas como primeiro dominio do MVP.
 - [ ] Definir entidades, dados de entrada e resultado esperado.
 - [ ] Definir a funcao objetivo inicial: custo, tempo, distancia ou combinacao ponderada.
 - [ ] Definir as restricoes obrigatorias e as desejaveis.
@@ -26,6 +65,17 @@ Construir uma aplicacao full-stack que permita modelar um cenario operacional, g
 - [ ] Implementar as restricoes configuraveis.
 - [ ] Medir custo, tempo de execucao e qualidade das solucoes.
 - [ ] Comparar heuristica e solucao otimizada.
+
+### 2.1 Evolucao estatistica
+
+- [ ] Definir quais variaveis sao incertas: demanda, tempo de viagem, cancelamento ou capacidade.
+- [ ] Criar dados sinteticos e explicitar suas distribuicoes e parametros.
+- [ ] Calcular metricas descritivas para cada execucao.
+- [ ] Implementar simulacao de Monte Carlo para avaliar os planos.
+- [ ] Exibir custo esperado, percentis e probabilidade de atraso.
+- [ ] Realizar analise de sensibilidade dos parametros do modelo.
+- [ ] Avaliar otimizacao orientada a risco com uma metrica como CVaR.
+- [ ] Adicionar previsao de demanda somente apos validar a base deterministica.
 
 ### 3. Backend e processamento
 
@@ -62,6 +112,19 @@ Construir uma aplicacao full-stack que permita modelar um cenario operacional, g
 - Criterios de comparacao entre as estrategias.
 
 Cada decisao sera fechada junto com a respectiva etapa, para manter o projeto focado e evolutivo.
+
+## Metricas do Projeto
+
+| Categoria | Metricas iniciais | Evolucao estatistica |
+| --- | --- | --- |
+| Operacao | distancia total, custo total, pedidos atendidos e utilizacao dos veiculos | custo esperado e distribuicao de utilizacao |
+| Nivel de servico | quantidade e tempo de atraso | probabilidade de atraso e percentis P90/P95 |
+| Qualidade da solucao | ganho sobre a heuristica e tempo de execucao do solver | ganho ajustado por risco e estabilidade entre simulacoes |
+| Predicao | nao se aplica na primeira versao | MAE, RMSE e cobertura do intervalo de previsao |
+
+## Principio de Evolucao
+
+Cada camada precisa gerar uma evidencia antes da proxima: primeiro uma rota valida, depois uma rota melhor, depois uma comparacao mensuravel e, por fim, uma decisao que considera incerteza. Assim, a estatistica se torna parte do motor de decisao e nao apenas uma visualizacao adicional.
 
 ## Convencoes Iniciais
 
