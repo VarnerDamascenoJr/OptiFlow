@@ -8,6 +8,18 @@ Motor de otimizacao operacional para comparar cenarios de distribuicao e alocaca
 
 Construir uma aplicacao full-stack que permita modelar um cenario operacional, gerar uma solucao heuristica e compara-la com uma solucao otimizada usando OR-Tools.
 
+## Papel no Portfolio
+
+O OptiFlow e o projeto de decisao operacional de um conjunto de tres projetos complementares. Cada repositorio deve permanecer utilizavel de forma independente; futuras integracoes servem para demonstrar um fluxo de dados real, nao para criar dependencia prematura entre eles.
+
+| Projeto | Papel principal | Relacao futura com o OptiFlow |
+| --- | --- | --- |
+| [sales-event-project](https://github.com/VarnerDamascenoJr/sales-event-project) | processamento confiavel de eventos de negocio | pode fornecer pedidos, eventos e dados historicos para cenarios de planejamento |
+| [operational-observability-platform](https://github.com/VarnerDamascenoJr/operational-observability-platform) | visibilidade tecnica e operacional de sistemas distribuidos | pode correlacionar execucoes de otimizacao, eventos de negocio e suas metricas |
+| OptiFlow | recomendacao de planos sob restricoes e incerteza | pode consumir dados dos demais e devolver recomendacoes ou metricas de decisao |
+
+Essa composicao demonstra tres competencias diferentes: processar operacoes com resiliencia, opera-las com observabilidade e tomar decisoes melhores a partir de seus dados.
+
 ## Direcao Recomendada do MVP
 
 O primeiro dominio recomendado e distribuicao de entregas. O problema comeca com otimizacao deterministica de rotas e evolui de forma natural para um projeto de Estatistica: tempos de viagem, demanda e cancelamentos deixam de ser numeros fixos e passam a ser variaveis aleatorias.
@@ -30,6 +42,37 @@ Essa direcao ainda sera confirmada antes do desenvolvimento do MVP.
 | Simulacao | metodo de Monte Carlo, amostragem e analise de sensibilidade | executar um plano sob muitos cenarios possiveis | distribuicao de custo e atrasos para cada estrategia |
 | Decisao robusta | risco, quantis, CVaR e otimizacao robusta ou estocastica | favorecer planos que resistem a atrasos e picos de demanda | recomendacao baseada em custo esperado e nivel de risco |
 | Predicao | regressao, series temporais e validacao de modelos | prever demanda por regiao e faixa de horario | previsao avaliada com MAE e RMSE antes de entrar no solver |
+
+## Trilha Matematica Detalhada
+
+O objetivo nao e apenas usar uma biblioteca de solver. E entender o modelo que ela resolve, reconhecer suas limitacoes e justificar uma recomendacao com dados. A ordem abaixo prioriza o que sera aplicado no projeto.
+
+| Ordem | Tema | O que entender na pratica | Aplicacao direta |
+| --- | --- | --- | --- |
+| 1 | Matematica discreta e teoria dos grafos | conjuntos, logica, combinatoria, grafos ponderados, caminhos e ciclos | representar entregas, veiculos, rotas e matriz de distancia |
+| 2 | Algebra linear e funcoes | vetores, matrizes, somatorios, produto escalar e funcoes lineares ou por partes | calcular custos, distancias, capacidades e penalidades |
+| 3 | Otimizacao linear | variaveis de decisao, funcao objetivo, restricoes, regiao viavel e relaxacao linear | formular a primeira versao matematica do problema |
+| 4 | Otimizacao inteira e por restricoes | variaveis binarias e inteiras, factibilidade, branch-and-bound e constraint programming | impedir violacao de capacidade, janelas de tempo e atendimento duplicado |
+| 5 | Algoritmos de otimizacao combinatoria | TSP, VRP, NP-dificuldade, greedy, busca local e metaheuristicas | construir uma heuristica justa e interpretar o resultado do OR-Tools |
+| 6 | Probabilidade | variavel aleatoria, distribuicoes, independencia, esperanca, variancia, covariancia e lei dos grandes numeros | tratar demanda e tempo de viagem como grandezas incertas |
+| 7 | Estatistica inferencial | amostragem, estimacao, intervalo de confianca, testes de hipotese e tamanho de efeito | avaliar se um ganho sobre a heuristica e consistente ou fruto do acaso |
+| 8 | Simulacao e risco | Monte Carlo, bootstrap, quantis, VaR, CVaR e analise de sensibilidade | medir custo esperado, pior caso plausivel e probabilidade de atraso |
+| 9 | Regressao e series temporais | regressao, sazonalidade, validacao temporal, MAE, RMSE e calibracao | prever demanda antes de gerar um plano de entrega |
+| 10 | Teoria de filas, opcional | taxa de chegada e atendimento, utilizacao, tempo de espera e gargalos | evoluir para capacidade de hubs, equipes ou docas |
+
+### Ordem de estudo sugerida
+
+1. Concluir os temas 1 a 5 antes de implementar o motor deterministico.
+2. Estudar os temas 6 e 7 enquanto o projeto passa a registrar resultados e comparar estrategias.
+3. Aplicar o tema 8 para transformar resultados pontuais em analise de risco.
+4. Introduzir o tema 9 apenas quando houver dados ou um gerador sintetico com premissas bem definidas.
+5. Estudar teoria de filas se o dominio evoluir para filas de atendimento, capacidade de centros de distribuicao ou alocacao de equipes.
+
+### Criterio para conclusoes confiaveis
+
+Uma conclusao do projeto deve sempre informar o cenario testado, a funcao objetivo, as restricoes, a heuristica de referencia e as metricas usadas. Quando houver incerteza, deve informar tambem as distribuicoes assumidas, o numero de simulacoes e a variabilidade do resultado.
+
+Nao basta concluir que uma estrategia e "melhor" porque teve o menor custo medio. A analise deve mostrar o ganho em relacao a uma base, o impacto em atrasos, a sensibilidade dos resultados aos parametros e o risco de resultados ruins. Uma solucao otima para o modelo ainda pode ser inadequada para a operacao se suas premissas nao representarem a realidade.
 
 ## Progressao do Produto
 
