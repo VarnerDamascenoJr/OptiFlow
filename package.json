@@ -1,0 +1,16 @@
+{
+  "name": "optiflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Motor de otimizacao operacional para cenarios de distribuicao e alocacao.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test",
+    "scenario:small": "node scripts/run-scenario.js data/scenarios/small-delivery.json"
+  },
+  "engines": {
+    "node": ">=24.20.0"
+  },
+  "license": "UNLICENSED"
+}
