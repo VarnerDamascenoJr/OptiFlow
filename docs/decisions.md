@@ -5,7 +5,8 @@ Este documento registra somente decisoes confirmadas. Alternativas tecnicas aind
 | Decisao | Status | Justificativa |
 | --- | --- | --- |
 | Nome do projeto: OptiFlow | Confirmada | Comunica fluxo e otimizacao sem limitar o produto a um unico dominio. |
-| Primeiro dominio do MVP: distribuicao de entregas | Confirmada | O dominio permite evoluir de rotas deterministicas para incerteza, simulacao e decisao orientada a risco sem trocar o problema principal. |
-| Primeira entrega tecnica: nucleo deterministico sem dependencias externas | Confirmada | O repositorio ainda nao tinha runtime configurado; iniciar com um motor pequeno e testavel reduz atrito e cria uma linha de base antes de NestJS, persistencia, fila ou OR-Tools. |
-| Estrutura de aplicacoes e servicos | Em aberto | Sera definida apos validar o nucleo deterministico e a integracao com solver. |
+| Primeiro dominio do MVP: decisao operacional em vendas | Confirmada | O dominio conecta diretamente o OptiFlow ao `sales-event-project`, preserva independencia entre repositorios e cria um recorte adequado para pesquisa com demanda, capacidade, incerteza e risco. |
+| `sales-event-project` como estudo de caso inicial | Confirmada | O projeto de vendas fornece fatos de negocio sobre eventos, tickets, estoque, pagamentos e atendimento; o OptiFlow deve consumir snapshots ou contratos derivados, nao depender diretamente do codigo ou banco desse repositorio. |
+| Primeira implementacao tecnica: nucleo deterministico sem dependencias externas | Confirmada | O repositorio ainda nao tinha runtime configurado; iniciar com um motor pequeno e testavel reduziu atrito, mas esse nucleo sera reposicionado para o dominio de vendas antes da evolucao do MVP. |
+| Estrutura de aplicacoes e servicos | Em aberto | Sera definida apos validar o contrato de cenarios de venda e o modelo matematico inicial. |
 | Persistencia, fila e infraestrutura | Em aberto | Sera definida ao iniciar backend e processamento assincrono. |

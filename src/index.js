@@ -22,3 +22,8 @@ export {
   evaluatePlan,
   validateScenario
 };
+
+export {
+  evaluateSalesDecisionScenario,
+  validateSalesDecisionScenario
+} from "./sales/index.js";

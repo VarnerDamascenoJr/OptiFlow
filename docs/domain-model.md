@@ -1,65 +1,120 @@
 # Modelo de Dominio do MVP
 
-Este documento fecha a primeira fronteira funcional do OptiFlow: planejamento deterministico de entregas com frota limitada, matriz de distancia conhecida e uma heuristica de referencia.
+Este documento define a primeira fronteira funcional do OptiFlow: decisao operacional em vendas sob restricoes de estoque, capacidade, demanda e risco.
 
 ## Escopo Confirmado
 
-O MVP inicial usa distribuicao de entregas como dominio. A primeira versao nao tenta prever demanda, simular incerteza ou provar otimalidade. Ela cria uma base confiavel para comparar uma heuristica simples com um solver em uma etapa seguinte.
+O MVP inicial usa venda como dominio amplo. O caso de venda de ingressos do `sales-event-project` sera usado como estudo de caso inicial, mas o OptiFlow nao deve ficar limitado a ingressos nem acoplado ao banco ou ao codigo daquele repositorio.
+
+O papel do OptiFlow e receber um snapshot operacional, transformar esse snapshot em um cenario de decisao, comparar estrategias e devolver recomendacoes com metricas auditaveis.
 
 ## Entidades
 
 | Entidade | Papel |
 | --- | --- |
-| `Location` | Ponto operacional identificado por `id`, incluindo deposito e clientes. |
-| `Vehicle` | Recurso de entrega com capacidade e local inicial. |
-| `Order` | Demanda a ser entregue em uma localidade, com tempo de servico e janela de atendimento. |
-| `DistanceMatrix` | Distancia ou tempo entre cada par de localidades. |
-| `Scenario` | Conjunto completo de entradas, custos e parametros operacionais. |
-| `RoutePlan` | Resultado gerado por uma estrategia de planejamento. |
+| `SalesScenario` | Conjunto versionado de entradas, premissas e objetivos para uma decisao. |
+| `SalesContext` | Contexto comercial da venda: campanha, evento, lancamento, janela ou operacao. |
+| `SalesItem` | Item vendavel com preco, estoque, capacidade e regras de atendimento. |
+| `DemandAssumption` | Premissa deterministica ou probabilistica sobre demanda por item e janela temporal. |
+| `CapacityConstraint` | Limite operacional de estoque, processamento ou atendimento. |
+| `DecisionStrategy` | Regra ou plano que sera avaliado: conservador, agressivo, balanceado ou otimizado. |
+| `DecisionResult` | Saida comparavel com receita, perda, utilizacao, risco e alertas. |
 
-## Entradas Obrigatorias
+## Contrato Inicial de Cenario
 
-- `operation.startTimeMinutes`: minuto inicial do planejamento.
-- `costs.distanceUnitCost`: custo por unidade de distancia.
-- `costs.lateMinutePenalty`: penalidade por minuto de atraso.
-- `costs.unassignedOrderPenalty`: penalidade por pedido nao atendido.
-- `locations`: localidades conhecidas pelo cenario.
-- `vehicles`: frota disponivel, com capacidade e local inicial.
-- `orders`: pedidos com demanda, localidade, tempo de servico e janela de atendimento.
-- `distanceMatrix`: matriz completa entre todas as localidades.
+```json
+{
+  "id": "sales-event-capacity-v1",
+  "source": {
+    "system": "sales-event-project",
+    "snapshotAt": "2026-09-08T21:00:00Z"
+  },
+  "salesContext": {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "name": "Backend Moderno Conference",
+    "startsAt": "2026-10-08T19:00:00Z"
+  },
+  "items": [
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "name": "General Admission",
+      "unitPrice": 10000,
+      "availableQuantity": 100
+    }
+  ],
+  "demandAssumptions": [
+    {
+      "itemId": "22222222-2222-2222-2222-222222222222",
+      "expectedDemand": 120
+    }
+  ],
+  "constraints": {
+    "oversellAllowed": false
+  },
+  "objective": {
+    "maximize": "expectedRevenue",
+    "penalties": {
+      "stockoutPenalty": 5000,
+      "unusedCapacityPenalty": 100
+    }
+  }
+}
+```
 
-## Saidas do Primeiro Motor
+## Saidas Esperadas
 
-- Rotas por veiculo.
-- Sequencia de paradas com chegada, inicio de servico, saida, carga acumulada e atraso.
-- Pedidos nao alocados.
-- Metricas: pedidos atendidos, distancia total, atraso total, custo total e utilizacao por veiculo.
+- Estrategia recomendada.
+- Receita potencial, receita esperada e receita perdida.
+- Demanda atendida e demanda perdida.
+- Estoque ou capacidade ociosa.
+- Probabilidade de ruptura quando houver simulacao.
+- Percentis de resultado e metricas de risco em versoes posteriores.
+- Alertas sobre premissas, restricoes violadas ou sensibilidade do resultado.
 
 ## Funcao Objetivo Inicial
 
-O custo total do primeiro motor e uma soma ponderada:
+A primeira funcao objetivo deve ser simples e auditavel:
 
 ```text
-custo_total =
-  distancia_total * distanceUnitCost +
-  atraso_total_em_minutos * lateMinutePenalty +
-  pedidos_nao_alocados * unassignedOrderPenalty
+valor_da_estrategia =
+  receita_atendida
+  - perda_por_ruptura
+  - penalidade_por_capacidade_ociosa
+  - penalidades_operacionais
 ```
 
-Cada peso pode ser zero para desativar uma dimensao da funcao objetivo durante experimentos. A heuristica atual ainda decide pela menor distancia viavel; a funcao objetivo e usada para medir e comparar planos.
+Na versao deterministica, os valores de demanda sao conhecidos ou assumidos. Na versao estatistica, a mesma funcao sera avaliada sobre muitas amostras de demanda e capacidade.
 
-## Heuristica de Referencia
+## Relacao com o `sales-event-project`
 
-A estrategia inicial e `nearest-neighbor-capacity`.
+O `sales-event-project` e fonte futura de fatos transacionais: evento de venda, tickets, estoque disponivel, vendas confirmadas, pagamentos, emissao e check-in. O OptiFlow deve consumir esses dados por snapshot, exportacao, API ou eventos, mantendo o contrato proprio.
 
-Para cada veiculo, o algoritmo parte do local inicial e escolhe repetidamente o pedido viavel mais proximo, respeitando apenas capacidade restante. Janelas de atendimento entram na avaliacao por atraso e espera, nao como filtro de factibilidade. Quando nenhum pedido restante cabe no veiculo, a rota retorna ao ponto inicial e o proximo veiculo continua.
+Isso evita dependencia prematura e permite que o mesmo modelo seja aplicado a outros tipos de venda.
 
-Essa heuristica e propositalmente simples. Ela serve como linha de base auditavel para comparar contra OR-Tools, nao como recomendacao final de produto.
+## Primeira Implementacao
+
+O primeiro avaliador implementado e `deterministic-capacity-baseline`.
+
+Ele recebe demanda esperada por item, limita o atendimento pela capacidade disponivel e calcula:
+
+- receita esperada;
+- receita potencial;
+- receita perdida;
+- demanda aceita;
+- demanda perdida;
+- capacidade ociosa;
+- penalidade por ruptura;
+- penalidade por capacidade ociosa;
+- valor da estrategia;
+- taxa de atendimento;
+- taxa de utilizacao;
+- taxa de ruptura.
 
 ## Fora do Escopo Desta Versao
 
-- Otimizacao global com solver.
-- Restricoes de jornada maxima, habilidades de veiculo ou zonas.
-- Pedidos fracionados entre veiculos.
-- Incerteza, Monte Carlo, CVaR ou previsao.
-- Persistencia, API, fila e interface.
+- Ler diretamente o banco do `sales-event-project`.
+- Importar codigo Go ou tipos internos de outro repositorio.
+- Criar backend/API.
+- Criar interface.
+- Integrar solver antes de formalizar o modelo matematico.
+- Usar dados reais sem explicitar origem, tratamento e limites.
