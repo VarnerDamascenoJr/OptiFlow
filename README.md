@@ -2,7 +2,7 @@
 
 Motor de otimizacao operacional para comparar cenarios de distribuicao e alocacao, equilibrando custo, tempo e distancia sob restricoes configuraveis.
 
-> Status: fundacao do projeto. O dominio do primeiro MVP e as escolhas de implementacao ainda serao definidos em conjunto.
+> Status: MVP deterministico iniciado. O primeiro dominio confirmado e distribuicao de entregas, com uma heuristica de referencia implementada para comparar contra solver em uma etapa posterior.
 
 ## Objetivo
 
@@ -29,7 +29,19 @@ O produto responde a duas perguntas complementares:
 1. Qual plano de entregas minimiza custo, distancia e atrasos sob restricoes conhecidas?
 2. Quao confiavel e esse plano quando demanda e tempo de viagem variam?
 
-Essa direcao ainda sera confirmada antes do desenvolvimento do MVP.
+Essa direcao foi confirmada como a primeira fronteira do MVP. A modelagem inicial esta documentada em [docs/domain-model.md](docs/domain-model.md).
+
+## Como Executar a Primeira Fatia
+
+O nucleo atual usa Node.js 24 LTS e nao depende de pacotes externos. Use `nvm` para ativar a versao do projeto:
+
+```bash
+nvm use
+npm test
+npm run scenario:small
+```
+
+O resultado atual usa a estrategia `nearest-neighbor-capacity`: uma heuristica gulosa que escolhe o pedido viavel mais proximo para cada veiculo, respeitando capacidade e registrando atraso como metrica.
 
 ## Caminho de Aprendizado
 
@@ -94,19 +106,19 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 ### 1. Definicao do problema
 
-- [ ] Confirmar distribuicao de entregas como primeiro dominio do MVP.
-- [ ] Definir entidades, dados de entrada e resultado esperado.
-- [ ] Definir a funcao objetivo inicial: custo, tempo, distancia ou combinacao ponderada.
-- [ ] Definir as restricoes obrigatorias e as desejaveis.
-- [ ] Criar cenarios de exemplo reproduziveis.
+- [x] Confirmar distribuicao de entregas como primeiro dominio do MVP.
+- [x] Definir entidades, dados de entrada e resultado esperado.
+- [x] Definir a funcao objetivo inicial: custo, tempo, distancia ou combinacao ponderada.
+- [x] Definir as restricoes obrigatorias e as desejaveis.
+- [x] Criar cenarios de exemplo reproduziveis.
 
 ### 2. Modelagem e motor de otimizacao
 
 - [ ] Modelar o problema matematicamente.
-- [ ] Implementar uma solucao heuristica de referencia.
+- [x] Implementar uma solucao heuristica de referencia.
 - [ ] Integrar o solver OR-Tools.
 - [ ] Implementar as restricoes configuraveis.
-- [ ] Medir custo, tempo de execucao e qualidade das solucoes.
+- [x] Medir custo, tempo de execucao e qualidade das solucoes.
 - [ ] Comparar heuristica e solucao otimizada.
 
 ### 2.1 Evolucao estatistica
@@ -140,7 +152,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 ### 5. Qualidade e entrega
 
-- [ ] Cobrir regras de dominio e motor com testes.
+- [x] Cobrir regras de dominio e motor com testes.
 - [ ] Adicionar testes de API e fluxos principais da interface.
 - [ ] Documentar modelo, decisoes e limitacoes do solver.
 - [ ] Preparar ambiente local com Docker.

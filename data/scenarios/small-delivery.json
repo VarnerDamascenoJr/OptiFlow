@@ -1,0 +1,125 @@
+{
+  "id": "small-delivery-v1",
+  "name": "Cenario pequeno de entregas",
+  "operation": {
+    "startTimeMinutes": 480
+  },
+  "costs": {
+    "distanceUnitCost": 4,
+    "lateMinutePenalty": 2,
+    "unassignedOrderPenalty": 500
+  },
+  "locations": [
+    {
+      "id": "depot",
+      "name": "Centro de distribuicao"
+    },
+    {
+      "id": "north",
+      "name": "Cliente Norte"
+    },
+    {
+      "id": "east",
+      "name": "Cliente Leste"
+    },
+    {
+      "id": "south",
+      "name": "Cliente Sul"
+    },
+    {
+      "id": "west",
+      "name": "Cliente Oeste"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "truck-1",
+      "capacity": 10,
+      "startLocationId": "depot"
+    },
+    {
+      "id": "van-1",
+      "capacity": 6,
+      "startLocationId": "depot"
+    }
+  ],
+  "orders": [
+    {
+      "id": "order-north",
+      "locationId": "north",
+      "demand": 4,
+      "serviceTimeMinutes": 15,
+      "timeWindow": {
+        "startMinutes": 510,
+        "endMinutes": 600
+      }
+    },
+    {
+      "id": "order-east",
+      "locationId": "east",
+      "demand": 5,
+      "serviceTimeMinutes": 20,
+      "timeWindow": {
+        "startMinutes": 540,
+        "endMinutes": 660
+      }
+    },
+    {
+      "id": "order-south",
+      "locationId": "south",
+      "demand": 6,
+      "serviceTimeMinutes": 20,
+      "timeWindow": {
+        "startMinutes": 570,
+        "endMinutes": 720
+      }
+    },
+    {
+      "id": "order-west",
+      "locationId": "west",
+      "demand": 3,
+      "serviceTimeMinutes": 10,
+      "timeWindow": {
+        "startMinutes": 500,
+        "endMinutes": 620
+      }
+    }
+  ],
+  "distanceMatrix": {
+    "depot": {
+      "depot": 0,
+      "north": 12,
+      "east": 18,
+      "south": 25,
+      "west": 10
+    },
+    "north": {
+      "depot": 12,
+      "north": 0,
+      "east": 11,
+      "south": 20,
+      "west": 15
+    },
+    "east": {
+      "depot": 18,
+      "north": 11,
+      "east": 0,
+      "south": 13,
+      "west": 22
+    },
+    "south": {
+      "depot": 25,
+      "north": 20,
+      "east": 13,
+      "south": 0,
+      "west": 16
+    },
+    "west": {
+      "depot": 10,
+      "north": 15,
+      "east": 22,
+      "south": 16,
+      "west": 0
+    }
+  }
+}
