@@ -21,7 +21,3 @@ venv/
 .vscode/
 *.log
 *.tsbuildinfo
-
-# Personal portfolio planning docs
-docs/portfolio-project-backlog.md
-docs/portfolio-project-map.md

@@ -104,6 +104,16 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 ## Checklist Geral
 
+### 0. Portfolio e rastreabilidade
+
+- [x] Definir contrato compartilhado de correlacao entre os tres projetos.
+- [x] Linkar as convencoes de correlacao nos READMEs dos tres projetos.
+- [x] Adicionar metadata de execucao ao resultado do OptiFlow.
+- [x] Permitir que `scenario:small` receba IDs por variaveis de ambiente.
+- [ ] Expor metricas de execucao do OptiFlow para observabilidade externa.
+- [ ] Validar uma demonstracao integrada com `sales-event-project` e
+  `operational-observability-platform`.
+
 ### 1. Definicao do problema
 
 - [x] Confirmar distribuicao de entregas como primeiro dominio do MVP.
