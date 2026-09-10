@@ -7,7 +7,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "node --test",
-    "scenario:small": "node scripts/run-scenario.js data/scenarios/small-delivery.json"
+    "scenario:small": "node scripts/run-scenario.js data/scenarios/small-delivery.json",
+    "scenario:small:metrics": "OPTIFLOW_OUTPUT_FORMAT=prometheus node scripts/run-scenario.js data/scenarios/small-delivery.json"
   },
   "engines": {
     "node": ">=24.20.0"

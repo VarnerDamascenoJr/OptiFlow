@@ -42,7 +42,7 @@ ja auditado entre sessoes.
 | Item | Estado | Evidencia atual | Proximo cuidado |
 | --- | --- | --- | --- |
 | P0.1 Convencoes compartilhadas de correlacao | Concluido | `docs/portfolio-correlation-conventions.md` define IDs, HTTP, RabbitMQ, logs, traces, metricas, eventos e jornadas. Os READMEs dos tres projetos apontam para esse contrato. | Manter o documento como fonte de verdade quando novos fluxos surgirem. |
-| P0.2 Roteiro principal da narrativa | Parcial | `docs/portfolio-project-map.md` define a narrativa `funcionar -> medir -> comparar -> explicar -> otimizar` e a ordem macro dos projetos. | Transformar a narrativa em roteiro executavel com comandos, telas, metricas e resultados esperados. |
+| P0.2 Roteiro principal da narrativa | Documentado, pendente ensaio | `docs/portfolio-demo-runbook.md` define a narrativa executavel, comandos, fluxos e evidencias esperadas dos tres projetos. | Executar o roteiro completo em ambiente local reiniciado e registrar ajustes. |
 | P1.2 Correlacao da jornada de venda | Em andamento avancado | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata no evento `SALE_CREATED` e registra campos em logs estruturados. | Validar propagacao completa por pagamento, outbox, ticket, email e check-in. |
 | P1.3 Contexto por RabbitMQ | Parcial | `sales-event-project` injeta headers AMQP de correlacao e contexto W3C de trace na publicacao RabbitMQ. | Garantir que consumidores restaurem tambem os metadados de negocio nos logs e eventos derivados. |
 | P1.4 OpenTelemetry no `sales-event-project` | Parcial | API e worker ja possuem configuracao OTLP opcional, nomes de servico distintos e spans de HTTP/RabbitMQ. | Cobrir spans de negocio, smoke com Collector e evidencia no Tempo/Grafana. |
@@ -80,11 +80,11 @@ Status:
 
 ### P0.2 Criar roteiro principal da narrativa
 
-- [ ] Documentar a historia demonstravel: funcionar, medir, comparar, explicar
+- [x] Documentar a historia demonstravel: funcionar, medir, comparar, explicar
   e otimizar.
-- [ ] Definir qual comando inicia cada projeto.
-- [ ] Definir qual fluxo sera apresentado em cada etapa da demonstracao.
-- [ ] Definir quais metricas, logs, traces e resultados serao mostrados.
+- [x] Definir qual comando inicia cada projeto.
+- [x] Definir qual fluxo sera apresentado em cada etapa da demonstracao.
+- [x] Definir quais metricas, logs, traces e resultados serao mostrados.
 
 Criterio de aceite:
 
@@ -98,9 +98,9 @@ Verificacao:
 
 Status:
 
-- Parcial. A narrativa e a ordem macro existem em
-  [portfolio-project-map.md](portfolio-project-map.md), mas ainda falta o
-  roteiro executavel de demonstracao.
+- Documentado, pendente ensaio. O roteiro executavel existe em
+  [portfolio-demo-runbook.md](portfolio-demo-runbook.md), mas ainda falta
+  executar a demonstracao completa em ambiente local reiniciado.
 
 ## Prioridade P1: consolidar o `sales-event-project`
 
