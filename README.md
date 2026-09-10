@@ -20,6 +20,9 @@ O OptiFlow e o projeto de decisao operacional de um conjunto de tres projetos co
 
 Essa composicao demonstra tres competencias diferentes: processar operacoes com resiliencia, opera-las com observabilidade e tomar decisoes melhores a partir de seus dados.
 
+O roteiro executavel da narrativa do portfolio esta em
+[docs/portfolio-demo-runbook.md](docs/portfolio-demo-runbook.md).
+
 ## Direcao Recomendada do MVP
 
 O primeiro dominio recomendado e distribuicao de entregas. O problema comeca com otimizacao deterministica de rotas e evolui de forma natural para um projeto de Estatistica: tempos de viagem, demanda e cancelamentos deixam de ser numeros fixos e passam a ser variaveis aleatorias.

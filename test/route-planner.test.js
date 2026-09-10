@@ -19,6 +19,12 @@ test("builds a deterministic nearest-neighbor baseline plan", function testBasel
   const result = optiflow.solveScenario(scenario);
 
   assert.strictEqual(result.scenarioId, "small-delivery-v1");
+  assert.match(result.metadata.requestId, /^req_/);
+  assert.match(result.metadata.correlationId, /^corr_/);
+  assert.match(result.metadata.optimizationRunId, /^run_/);
+  assert.strictEqual(result.metadata.transactionId, result.metadata.optimizationRunId);
+  assert.strictEqual(result.metadata.service, "optiflow-core");
+  assert.strictEqual(result.metadata.environment, "local");
   assert.strictEqual(result.strategy, "nearest-neighbor-capacity");
   assert.strictEqual(result.routes.length, 2);
   assert.deepStrictEqual(
@@ -30,6 +36,43 @@ test("builds a deterministic nearest-neighbor baseline plan", function testBasel
     ["order-east"]
   );
   assert.deepStrictEqual(result.unassignedOrderIds, ["order-south"]);
+});
+
+test("preserves execution metadata provided by callers", function testProvidedMetadata() {
+  const result = optiflow.solveScenario(scenario, {
+    metadata: {
+      requestId: "req-demo",
+      correlationId: "corr-demo",
+      transactionId: "delivery-wave-2026-09-09",
+      optimizationRunId: "run-demo",
+      service: "optiflow-api",
+      environment: "test"
+    }
+  });
+
+  assert.deepStrictEqual(result.metadata, {
+    requestId: "req-demo",
+    correlationId: "corr-demo",
+    transactionId: "delivery-wave-2026-09-09",
+    optimizationRunId: "run-demo",
+    service: "optiflow-api",
+    environment: "test"
+  });
+});
+
+test("renders optimization metrics in Prometheus format", function testPrometheusMetrics() {
+  const result = optiflow.solveScenario(scenario, {
+    metadata: {
+      service: "optiflow-core",
+      environment: "test"
+    }
+  });
+  const output = optiflow.renderOptimizationMetrics(result);
+
+  assert.match(output, /optimization_runs_total\{.*service="optiflow-core".*\} 1/);
+  assert.match(output, /optimization_plan_cost_total\{.*strategy="nearest-neighbor-capacity".*\} 792/);
+  assert.match(output, /optimization_plan_distance_total\{.*environment="test".*\} 73/);
+  assert.match(output, /optimization_plan_unassigned_orders_total\{.*status="succeeded".*\} 1/);
 });
 
 test("calculates core metrics for comparison with future solvers", function testMetrics() {

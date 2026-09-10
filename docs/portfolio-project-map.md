@@ -13,6 +13,9 @@ A narrativa compartilhada e:
 funcionar -> medir -> comparar -> explicar -> otimizar
 ```
 
+O roteiro executavel desta narrativa esta em
+[portfolio-demo-runbook.md](portfolio-demo-runbook.md).
+
 Cada repositorio cobre uma parte diferente dessa historia:
 
 | Projeto | Papel principal | Estado atual |
