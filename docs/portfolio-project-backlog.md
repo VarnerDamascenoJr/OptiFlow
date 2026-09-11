@@ -45,7 +45,7 @@ ja auditado entre sessoes.
 | P0.2 Roteiro principal da narrativa | Documentado, pendente ensaio | `docs/portfolio-demo-runbook.md` define a narrativa executavel, comandos, fluxos e evidencias esperadas dos tres projetos. | Executar o roteiro completo em ambiente local reiniciado e registrar ajustes. |
 | P1.2 Correlacao da jornada de venda | Em andamento avancado | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata no evento `SALE_CREATED` e registra campos em logs estruturados. | Validar propagacao completa por pagamento, outbox, ticket, email e check-in. |
 | P1.3 Contexto por RabbitMQ | Concluido | `sales-event-project` injeta headers AMQP de correlacao, contexto W3C de trace e preserva metadados de negocio no consumo e em eventos derivados. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`. | Usar este contrato como base para a instrumentacao OpenTelemetry da P1.4. |
-| P1.4 OpenTelemetry no `sales-event-project` | Parcial | API e worker ja possuem configuracao OTLP opcional, nomes de servico distintos e spans de HTTP/RabbitMQ. | Cobrir spans de negocio, smoke com Collector e evidencia no Tempo/Grafana. |
+| P1.4 OpenTelemetry no `sales-event-project` | Concluido | API e worker exportam traces OTLP opcionais, propagam contexto por HTTP/RabbitMQ/outbox e possuem spans de negocio para venda, pagamento, outbox, ticket, email e check-in. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`. | Usar os traces como base para P1.5/P1.7 e para a integracao P4.1 com dashboards da plataforma. |
 | P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
@@ -172,11 +172,11 @@ Verificacao:
 
 ### P1.4 Adicionar OpenTelemetry na API e no worker
 
-- [ ] Instrumentar HTTP server da API.
-- [ ] Instrumentar processamento de mensagens no worker.
-- [ ] Criar spans para venda, pagamento, outbox, emissao de ticket e email.
-- [ ] Configurar exportacao OTLP por variaveis de ambiente.
-- [ ] Manter o projeto executavel sem Collector quando OTLP estiver desativado.
+- [x] Instrumentar HTTP server da API.
+- [x] Instrumentar processamento de mensagens no worker.
+- [x] Criar spans para venda, pagamento, outbox, emissao de ticket e email.
+- [x] Configurar exportacao OTLP por variaveis de ambiente.
+- [x] Manter o projeto executavel sem Collector quando OTLP estiver desativado.
 
 Criterio de aceite:
 
@@ -187,11 +187,18 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para configuracao de tracing.
-- Smoke test com Collector recebendo traces.
-- Evidencia no Tempo/Grafana.
-- `make test`
-- `make test-integration`
+- [x] Testes unitarios para configuracao de tracing.
+- [x] Smoke test com Collector recebendo traces.
+- [x] Evidencia no Tempo/Grafana em
+  `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`.
+- [x] `make test`
+- [x] `make test-integration`
+
+Status:
+
+- Concluido. A execucao manual gerou venda aprovada, pagamento via webhook,
+  emissao de ticket, envio de email em modo log e check-in, com trace
+  distribuido salvo em `tempo-trace.json`.
 
 ### P1.5 Fortalecer confiabilidade da publicacao RabbitMQ
 
