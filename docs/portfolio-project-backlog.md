@@ -44,7 +44,7 @@ ja auditado entre sessoes.
 | P0.1 Convencoes compartilhadas de correlacao | Concluido | `docs/portfolio-correlation-conventions.md` define IDs, HTTP, RabbitMQ, logs, traces, metricas, eventos e jornadas. Os READMEs dos tres projetos apontam para esse contrato. | Manter o documento como fonte de verdade quando novos fluxos surgirem. |
 | P0.2 Roteiro principal da narrativa | Documentado, pendente ensaio | `docs/portfolio-demo-runbook.md` define a narrativa executavel, comandos, fluxos e evidencias esperadas dos tres projetos. | Executar o roteiro completo em ambiente local reiniciado e registrar ajustes. |
 | P1.2 Correlacao da jornada de venda | Em andamento avancado | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata no evento `SALE_CREATED` e registra campos em logs estruturados. | Validar propagacao completa por pagamento, outbox, ticket, email e check-in. |
-| P1.3 Contexto por RabbitMQ | Parcial | `sales-event-project` injeta headers AMQP de correlacao e contexto W3C de trace na publicacao RabbitMQ. | Garantir que consumidores restaurem tambem os metadados de negocio nos logs e eventos derivados. |
+| P1.3 Contexto por RabbitMQ | Concluido | `sales-event-project` injeta headers AMQP de correlacao, contexto W3C de trace e preserva metadados de negocio no consumo e em eventos derivados. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`. | Usar este contrato como base para a instrumentacao OpenTelemetry da P1.4. |
 | P1.4 OpenTelemetry no `sales-event-project` | Parcial | API e worker ja possuem configuracao OTLP opcional, nomes de servico distintos e spans de HTTP/RabbitMQ. | Cobrir spans de negocio, smoke com Collector e evidencia no Tempo/Grafana. |
 | P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
@@ -151,9 +151,9 @@ Verificacao:
 
 ### P1.3 Propagar contexto por eventos RabbitMQ
 
-- [ ] Adicionar metadados de correlacao nas mensagens RabbitMQ.
-- [ ] Garantir que API, outbox publisher e worker preservem os metadados.
-- [ ] Documentar o envelope ou headers usados nas mensagens.
+- [x] Adicionar metadados de correlacao nas mensagens RabbitMQ.
+- [x] Garantir que API, outbox publisher e worker preservem os metadados.
+- [x] Documentar o envelope ou headers usados nas mensagens.
 
 Criterio de aceite:
 
@@ -167,6 +167,8 @@ Verificacao:
 - Teste de integracao verificando contexto do fluxo assincrono.
 - `make test`
 - `make test-integration`
+- Smoke manual com logs correlacionados em
+  `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`.
 
 ### P1.4 Adicionar OpenTelemetry na API e no worker
 
