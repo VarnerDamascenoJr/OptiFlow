@@ -161,8 +161,8 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
 - Retencao local de telemetria em 24 horas.
 - Datasources do Grafana provisionados.
 - Scripts `validate:observability` e `smoke:observability`.
-- Primeira migration, runner de migrations e camada inicial de acesso ao
-  PostgreSQL.
+- Schema inicial do `control_plane`, runner de migrations, camada inicial de
+  acesso ao PostgreSQL e health check com estado real do banco.
 - Middleware HTTP de correlacao com `request_id`, `correlation_id` e
   `transaction_id`.
 - Logs estruturados com campos de correlacao e testes para propagacao de IDs.
@@ -170,7 +170,6 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Validar health/e2e com estado real do PostgreSQL antes de fechar P2.1.
 - Incluir `trace_id` nos logs quando a instrumentacao OpenTelemetry da API
   entrar.
 - API ou modulo de demonstracao que produza telemetria real.
