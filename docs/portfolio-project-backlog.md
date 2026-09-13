@@ -52,6 +52,7 @@ ja auditado entre sessoes.
 | P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem schema inicial do `control_plane`, runner de migrations, camada PostgreSQL, startup com migrations, health com estado do banco e e2e com PostgreSQL real. Verificacao: `npm run check` em 2026-09-12. | Usar a base PostgreSQL para logs/IDs ja implementados e para as proximas entidades de SLO/incidentes. |
 | P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, extrai `trace_id` de `traceparent`, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs quando aplicavel, e documenta consultas Loki. Verificacao: `npm run check` em 2026-09-13. | Usar estes campos como contrato para a instrumentacao OpenTelemetry da P2.3. |
 | P2.3 API demonstradora instrumentada | Concluido | `operational-observability-platform` tem `GET /demo/transactions` com etapa assincrona, dependencia lenta/indisponivel, metricas RED, logs correlacionados e export OTLP de traces/logs para Collector quando `OTEL_ENABLED=true`. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar a telemetria real como entrada dos dashboards P2.4. |
+| P2.4 Dashboards tecnicos e de negocio | Concluido | `operational-observability-platform` provisiona dashboards `Operational Observability - Service Technical` e `Operational Observability - Demo Business Transactions`, com filtros por servico/ambiente/periodo, links para Tempo/Loki e smoke validando carregamento no Grafana. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar estes sintomas e visoes como base para modelar SLO, SLI e error budget na P2.5. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -389,11 +390,11 @@ Status:
 
 ### P2.4 Criar dashboards tecnicos e de negocio
 
-- [ ] Criar dashboard tecnico por servico com throughput, erros e latencia.
-- [ ] Criar dashboard de negocio com transacoes, sucesso, falha e degradacao.
-- [ ] Adicionar filtros por servico, ambiente e periodo.
-- [ ] Criar links do Grafana para traces no Tempo.
-- [ ] Criar links de traces para logs no Loki.
+- [x] Criar dashboard tecnico por servico com throughput, erros e latencia.
+- [x] Criar dashboard de negocio com transacoes, sucesso, falha e degradacao.
+- [x] Adicionar filtros por servico, ambiente e periodo.
+- [x] Criar links do Grafana para traces no Tempo.
+- [x] Criar links de traces para logs no Loki.
 
 Criterio de aceite:
 
@@ -402,10 +403,22 @@ Criterio de aceite:
 
 Verificacao:
 
-- Dashboards provisionados.
-- `npm run validate:observability`
-- `npm run smoke:observability`
-- Roteiro manual de investigacao documentado.
+- [x] Dashboards provisionados.
+- [x] `npm run validate:observability`
+- [x] `npm run smoke:observability`
+- [x] Roteiro manual de investigacao documentado.
+
+Status:
+
+- Concluido. `operational-observability-platform` provisiona os dashboards
+  `Operational Observability - Service Technical` e
+  `Operational Observability - Demo Business Transactions`. A API demo tambem
+  expoe metricas de negocio `demo_transactions_total` e
+  `demo_transaction_duration_seconds`, permitindo visualizar sucesso, falha e
+  degradacao por dependencia lenta. O smoke local valida fontes, dashboards,
+  metricas, trace no Tempo e log correlacionado no Loki. Verificacao local em
+  2026-09-13: `npm run check`, `npm run validate:observability` e
+  `npm run smoke:observability`.
 
 ### P2.5 Modelar SLO, SLI e error budget
 
