@@ -167,15 +167,12 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
   `transaction_id` e `trace_id` derivado de `traceparent`.
 - Logs estruturados com campos de correlacao, consultas Loki documentadas e
   testes para propagacao de IDs.
+- API demonstradora `GET /demo/transactions` com etapa assincrona, dependencia
+  lenta/indisponivel, metricas RED, logs correlacionados e traces/logs OTLP.
 - Checklist operacional com fases claras para evolucao.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- API ou modulo de demonstracao que produza telemetria real.
-- Instrumentacao HTTP com OpenTelemetry.
-- Metricas RED: rate, errors e duration.
-- Traces enviados ao Collector.
-- Fluxo assincrono demonstravel.
 - Dashboards tecnicos e de negocio.
 - Modelo de SLO, SLI e error budget no PostgreSQL.
 - Alertas baseados em sintomas.
