@@ -175,11 +175,13 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
   de negocio da transacao demonstradora.
 - Links e roteiro de investigacao para sair de erro/latencia para trace no Tempo
   e logs correlacionados no Loki.
+- Modelo PostgreSQL para SLOs, SLIs e janelas de avaliacao.
+- API para cadastrar/listar SLOs, avaliar disponibilidade/latencia e consultar
+  consumo e saldo de error budget.
 - Checklist operacional com fases claras para evolucao.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Modelo de SLO, SLI e error budget no PostgreSQL.
 - Alertas baseados em sintomas.
 - Modelo de incidentes, evidencias, hipoteses e linha do tempo.
 - Integracao com `sales-event-project`.
