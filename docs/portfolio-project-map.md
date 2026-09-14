@@ -87,8 +87,9 @@ No `OptiFlow`:
   de observabilidade em uma demonstracao integrada validada.
 - O contexto de correlacao ja e publicado por RabbitMQ, mas ainda precisa ser
   validado ponta a ponta entre API, broker, worker, logs e eventos derivados.
-- A plataforma de observabilidade ainda nao possui dashboard especifico para a
-  jornada de venda.
+- O `sales-event-project` ja possui um dashboard local da jornada de venda; a
+  plataforma de observabilidade ainda nao possui a versao consolidada entre
+  projetos.
 - O `OptiFlow` ainda nao consome dados reais do `sales-event-project`.
 - O `OptiFlow` ainda nao envia metricas ou resultados para a plataforma de
   observabilidade.
@@ -139,8 +140,8 @@ No `OptiFlow`:
 - Criar cenarios controlados de falha para demonstracao: pagamento duplicado,
   consumidor atrasado, falha persistente de email e publicacao com retry.
 - Documentar um roteiro de demonstracao operacional.
-- Preparar dashboards com foco em jornada de negocio, nao apenas metricas
-  tecnicas.
+- Reutilizar o dashboard local da jornada de negocio como base para a visao
+  consolidada da plataforma operacional.
 
 ### Papel na aceleracao
 

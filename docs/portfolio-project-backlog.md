@@ -48,6 +48,7 @@ ja auditado entre sessoes.
 | P1.4 OpenTelemetry no `sales-event-project` | Concluido | API e worker exportam traces OTLP opcionais, propagam contexto por HTTP/RabbitMQ/outbox e possuem spans de negocio para venda, pagamento, outbox, ticket, email e check-in. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`. | Usar os traces como base para P1.5/P1.7 e para a integracao P4.1 com dashboards da plataforma. |
 | P1.5 Confiabilidade da publicacao RabbitMQ | Concluido | `sales-event-project` usa publisher confirms, `mandatory=true`, erro explicito para `nack`/mensagem nao roteavel e mantem retry/dead-letter da outbox. Verificacao: `make test` e `make test-integration` em 2026-09-12. | Usar a P1.6 como roteiro demonstravel dessas falhas. |
 | P1.6 Cenarios controlados de falha | Concluido | `sales-event-project` tem `scripts/run-failure-scenarios.sh` e `docs/failure-scenarios.md` cobrindo pagamento duplicado, consumidor atrasado, falha persistente de email e outbox retry/dead-letter. Verificacao: roteiro completo executado em 2026-09-12; `make test`; `make lint`. | Usar os cenarios como entrada para dashboard da jornada de negocio na P1.7. |
+| P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
 | P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
@@ -260,11 +261,11 @@ Status:
 
 ### P1.7 Preparar dashboard da jornada de negocio
 
-- [ ] Criar painel de vendas criadas, pendentes, concluidas e falhas.
-- [ ] Criar painel de pagamentos aprovados, recusados e duplicados.
-- [ ] Criar painel de outbox por estado e tentativas.
-- [ ] Criar painel de tickets emitidos, emails enviados e check-ins.
-- [ ] Criar filtros por evento, status e janela de tempo.
+- [x] Criar painel de vendas criadas, pendentes, concluidas e falhas.
+- [x] Criar painel de pagamentos aprovados, recusados e duplicados.
+- [x] Criar painel de outbox por estado e tentativas.
+- [x] Criar painel de tickets emitidos, emails enviados e check-ins.
+- [x] Criar filtros por evento, status e janela de tempo.
 
 Criterio de aceite:
 
@@ -273,9 +274,20 @@ Criterio de aceite:
 
 Verificacao:
 
-- Dashboard provisionado no Grafana.
-- Smoke manual apos gerar uma venda aprovada e uma falha.
-- Screenshot ou roteiro de demonstracao documentado.
+- [x] Dashboard provisionado no Grafana.
+- [x] Smoke manual apos gerar uma venda aprovada e uma falha.
+- [x] Screenshot ou roteiro de demonstracao documentado.
+
+Status:
+
+- Concluido. `sales-event-project` recebeu
+  `deployments/grafana/dashboards/sales-business-journey.json`,
+  `docs/business-journey-dashboard.md`, a metrica
+  `payment_webhook_replays_total` para duplicidade/idempotencia de pagamento e
+  `check_ins_created_total` para check-ins concluidos. Verificacao local em
+  2026-09-12: dashboard `sales-business-journey` encontrado pela API do
+  Grafana, smoke com `duplicate-payment`, `outbox-retry` e check-in manual,
+  `make test` e `make lint`.
 
 ## Prioridade P2: observar o sistema real
 
