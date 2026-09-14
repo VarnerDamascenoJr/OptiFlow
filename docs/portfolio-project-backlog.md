@@ -46,6 +46,7 @@ ja auditado entre sessoes.
 | P1.2 Correlacao da jornada de venda | Em andamento avancado | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata no evento `SALE_CREATED` e registra campos em logs estruturados. | Validar propagacao completa por pagamento, outbox, ticket, email e check-in. |
 | P1.3 Contexto por RabbitMQ | Concluido | `sales-event-project` injeta headers AMQP de correlacao, contexto W3C de trace e preserva metadados de negocio no consumo e em eventos derivados. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`. | Usar este contrato como base para a instrumentacao OpenTelemetry da P1.4. |
 | P1.4 OpenTelemetry no `sales-event-project` | Concluido | API e worker exportam traces OTLP opcionais, propagam contexto por HTTP/RabbitMQ/outbox e possuem spans de negocio para venda, pagamento, outbox, ticket, email e check-in. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`. | Usar os traces como base para P1.5/P1.7 e para a integracao P4.1 com dashboards da plataforma. |
+| P1.5 Confiabilidade da publicacao RabbitMQ | Concluido | `sales-event-project` usa publisher confirms, `mandatory=true`, erro explicito para `nack`/mensagem nao roteavel e mantem retry/dead-letter da outbox. Verificacao: `make test` e `make test-integration` em 2026-09-12. | Criar cenarios controlados da P1.6 para demonstrar as falhas em ambiente local. |
 | P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
@@ -202,12 +203,12 @@ Status:
 
 ### P1.5 Fortalecer confiabilidade da publicacao RabbitMQ
 
-- [ ] Avaliar uso de publisher confirms para publicacoes criticas.
-- [ ] Avaliar uso de `mandatory=true` ou estrategia equivalente para detectar
+- [x] Avaliar uso de publisher confirms para publicacoes criticas.
+- [x] Avaliar uso de `mandatory=true` ou estrategia equivalente para detectar
   mensagem sem rota.
-- [ ] Garantir que evento sem rota nao seja marcado como `PUBLISHED` na outbox.
-- [ ] Criar tratamento explicito para routing key desconhecida.
-- [ ] Documentar o comportamento esperado para falha de broker, fila ausente e
+- [x] Garantir que evento sem rota nao seja marcado como `PUBLISHED` na outbox.
+- [x] Criar tratamento explicito para routing key desconhecida.
+- [x] Documentar o comportamento esperado para falha de broker, fila ausente e
   publicacao sem binding.
 
 Criterio de aceite:
@@ -218,10 +219,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para erro de publicacao e routing key desconhecida.
-- Teste de integracao ou smoke test com binding ausente.
-- `make test`
-- `make test-integration`
+- [x] Testes unitarios para erro de publicacao e routing key desconhecida.
+- [x] Teste de integracao ou smoke test com binding ausente.
+- [x] `make test`
+- [x] `make test-integration`
+
+Status:
+
+- Concluido. `sales-event-project` publica com `mandatory=true`, aguarda
+  publisher confirms, trata `basic.return`/`nack` como erro e deixa a outbox em
+  fluxo de retry/dead-letter quando a publicacao nao e confirmada. Verificado em
+  2026-09-12 com `make test` e `make test-integration`.
 
 ### P1.6 Criar cenarios controlados de falha
 
