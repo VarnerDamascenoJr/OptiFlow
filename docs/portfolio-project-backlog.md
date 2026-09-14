@@ -46,7 +46,8 @@ ja auditado entre sessoes.
 | P1.2 Correlacao da jornada de venda | Em andamento avancado | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata no evento `SALE_CREATED` e registra campos em logs estruturados. | Validar propagacao completa por pagamento, outbox, ticket, email e check-in. |
 | P1.3 Contexto por RabbitMQ | Concluido | `sales-event-project` injeta headers AMQP de correlacao, contexto W3C de trace e preserva metadados de negocio no consumo e em eventos derivados. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`. | Usar este contrato como base para a instrumentacao OpenTelemetry da P1.4. |
 | P1.4 OpenTelemetry no `sales-event-project` | Concluido | API e worker exportam traces OTLP opcionais, propagam contexto por HTTP/RabbitMQ/outbox e possuem spans de negocio para venda, pagamento, outbox, ticket, email e check-in. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`. | Usar os traces como base para P1.5/P1.7 e para a integracao P4.1 com dashboards da plataforma. |
-| P1.5 Confiabilidade da publicacao RabbitMQ | Concluido | `sales-event-project` usa publisher confirms, `mandatory=true`, erro explicito para `nack`/mensagem nao roteavel e mantem retry/dead-letter da outbox. Verificacao: `make test` e `make test-integration` em 2026-09-12. | Criar cenarios controlados da P1.6 para demonstrar as falhas em ambiente local. |
+| P1.5 Confiabilidade da publicacao RabbitMQ | Concluido | `sales-event-project` usa publisher confirms, `mandatory=true`, erro explicito para `nack`/mensagem nao roteavel e mantem retry/dead-letter da outbox. Verificacao: `make test` e `make test-integration` em 2026-09-12. | Usar a P1.6 como roteiro demonstravel dessas falhas. |
+| P1.6 Cenarios controlados de falha | Concluido | `sales-event-project` tem `scripts/run-failure-scenarios.sh` e `docs/failure-scenarios.md` cobrindo pagamento duplicado, consumidor atrasado, falha persistente de email e outbox retry/dead-letter. Verificacao: roteiro completo executado em 2026-09-12; `make test`; `make lint`. | Usar os cenarios como entrada para dashboard da jornada de negocio na P1.7. |
 | P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
@@ -233,11 +234,11 @@ Status:
 
 ### P1.6 Criar cenarios controlados de falha
 
-- [ ] Criar script ou roteiro para pagamento duplicado.
-- [ ] Criar script ou roteiro para consumidor atrasado.
-- [ ] Criar script ou roteiro para falha persistente de email.
-- [ ] Criar script ou roteiro para publicacao da outbox com retry.
-- [ ] Registrar resultados esperados, metricas e logs de cada falha.
+- [x] Criar script ou roteiro para pagamento duplicado.
+- [x] Criar script ou roteiro para consumidor atrasado.
+- [x] Criar script ou roteiro para falha persistente de email.
+- [x] Criar script ou roteiro para publicacao da outbox com retry.
+- [x] Registrar resultados esperados, metricas e logs de cada falha.
 
 Criterio de aceite:
 
@@ -247,9 +248,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Scripts documentados executados localmente.
-- Evidencia em logs, metricas ou banco.
-- `make test-integration` para o fluxo principal continuar estavel.
+- [x] Scripts documentados executados localmente.
+- [x] Evidencia em logs, metricas ou banco.
+- [x] `make test-integration` para o fluxo principal continuar estavel.
+
+Status:
+
+- Concluido. `sales-event-project` recebeu `scripts/run-failure-scenarios.sh` e
+  `docs/failure-scenarios.md`; o roteiro completo foi executado localmente em
+  2026-09-12. A branch tambem manteve `make test` e `make lint` verdes.
 
 ### P1.7 Preparar dashboard da jornada de negocio
 
