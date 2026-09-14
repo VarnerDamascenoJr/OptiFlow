@@ -54,6 +54,7 @@ ja auditado entre sessoes.
 | P2.3 API demonstradora instrumentada | Concluido | `operational-observability-platform` tem `GET /demo/transactions` com etapa assincrona, dependencia lenta/indisponivel, metricas RED, logs correlacionados e export OTLP de traces/logs para Collector quando `OTEL_ENABLED=true`. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar a telemetria real como entrada dos dashboards P2.4. |
 | P2.4 Dashboards tecnicos e de negocio | Concluido | `operational-observability-platform` provisiona dashboards `Operational Observability - Service Technical` e `Operational Observability - Demo Business Transactions`, com filtros por servico/ambiente/periodo, links para Tempo/Loki e smoke validando carregamento no Grafana. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar estes sintomas e visoes como base para modelar SLO, SLI e error budget na P2.5. |
 | P2.5 SLO, SLI e error budget | Concluido | `operational-observability-platform` adiciona migration de SLO/SLI/janelas, API `/slos`, calculos de disponibilidade, latencia e error budget, endpoint de status e smoke validando configuracao/avaliacao. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar o estado de SLO como base para alertas sintomaticos na P2.6. |
+| P2.6 Alertas baseados em sintomas | Concluido | `operational-observability-platform` configura scrape da API no Prometheus, regras para erro HTTP alto, latencia alta e consumo de error budget, runbook de primeira resposta e smoke validando alertas firing. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar estes alertas como entrada para incidentes guiados na P2.7. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -457,11 +458,11 @@ Status:
 
 ### P2.6 Criar alertas baseados em sintomas
 
-- [ ] Configurar regras Prometheus para erro alto.
-- [ ] Configurar regras Prometheus para latencia alta.
-- [ ] Configurar regra para consumo acelerado de error budget.
-- [ ] Documentar severidade, causa provavel e primeira acao de resposta.
-- [ ] Evitar alertas duplicados para o mesmo sintoma.
+- [x] Configurar regras Prometheus para erro alto.
+- [x] Configurar regras Prometheus para latencia alta.
+- [x] Configurar regra para consumo acelerado de error budget.
+- [x] Documentar severidade, causa provavel e primeira acao de resposta.
+- [x] Evitar alertas duplicados para o mesmo sintoma.
 
 Criterio de aceite:
 
@@ -470,9 +471,23 @@ Criterio de aceite:
 
 Verificacao:
 
-- Regras validadas no Prometheus.
-- Smoke manual provocando erro ou latencia.
-- Roteiro de incidente documentado.
+- [x] Regras validadas no Prometheus.
+- [x] Smoke manual provocando erro ou latencia.
+- [x] Roteiro de incidente documentado.
+- [x] `npm run check`
+- [x] `npm run validate:observability`
+- [x] `npm run smoke:observability`
+
+Status:
+
+- Concluido. `operational-observability-platform` adiciona regras Prometheus em
+  `observability/prometheus/rules/operational-alerts.yml`, scrape da API pelo
+  job `observability-api`, metricas Prometheus para SLO/error budget e o runbook
+  `docs/symptom-alerts.md`. O smoke local cria erro, latencia e SLO violado e
+  valida os alertas `OOPHighHttpErrorRate`, `OOPHighHttpLatency` e
+  `OOPSloErrorBudgetBurn` em estado `firing`. Verificacao local em 2026-09-13:
+  `npm run check`, `npm run validate:observability` e
+  `npm run smoke:observability`.
 
 ### P2.7 Modelar incidentes e investigacao guiada
 

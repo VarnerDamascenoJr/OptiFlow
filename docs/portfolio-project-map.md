@@ -178,11 +178,12 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
 - Modelo PostgreSQL para SLOs, SLIs e janelas de avaliacao.
 - API para cadastrar/listar SLOs, avaliar disponibilidade/latencia e consultar
   consumo e saldo de error budget.
+- Regras Prometheus para erro HTTP alto, latencia HTTP alta e consumo de error
+  budget, com runbook de primeira resposta.
 - Checklist operacional com fases claras para evolucao.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Alertas baseados em sintomas.
 - Modelo de incidentes, evidencias, hipoteses e linha do tempo.
 - Integracao com `sales-event-project`.
 
