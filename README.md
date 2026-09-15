@@ -32,7 +32,10 @@ O produto responde a duas perguntas complementares:
 1. Qual plano de entregas minimiza custo, distancia e atrasos sob restricoes conhecidas?
 2. Quao confiavel e esse plano quando demanda e tempo de viagem variam?
 
-Essa direcao foi confirmada como a primeira fronteira do MVP. A modelagem inicial esta documentada em [docs/domain-model.md](docs/domain-model.md).
+Essa direcao foi confirmada como a primeira fronteira do MVP. A modelagem inicial
+esta documentada em [docs/domain-model.md](docs/domain-model.md) e a formulacao
+matematica deterministica esta em
+[docs/mathematical-formulation.md](docs/mathematical-formulation.md).
 
 ## Como Executar a Primeira Fatia
 
@@ -127,7 +130,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 ### 2. Modelagem e motor de otimizacao
 
-- [ ] Modelar o problema matematicamente.
+- [x] Modelar o problema matematicamente.
 - [x] Implementar uma solucao heuristica de referencia.
 - [ ] Integrar o solver OR-Tools.
 - [ ] Implementar as restricoes configuraveis.

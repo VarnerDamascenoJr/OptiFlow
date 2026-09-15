@@ -51,7 +51,7 @@ ja auditado entre sessoes.
 | P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
 | P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
-| P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
+| P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
 
 ## Prioridade P0: contrato comum do portfolio
 
@@ -442,11 +442,11 @@ estrategias.
 
 ### P3.1 Fechar formulacao matematica
 
-- [ ] Documentar conjuntos, parametros, variaveis de decisao, funcao objetivo e
+- [x] Documentar conjuntos, parametros, variaveis de decisao, funcao objetivo e
   restricoes.
-- [ ] Explicar diferenca entre restricoes duras e penalidades.
-- [ ] Mapear cada campo do JSON de cenario para a formulacao.
-- [ ] Registrar limitacoes conhecidas da primeira versao.
+- [x] Explicar diferenca entre restricoes duras e penalidades.
+- [x] Mapear cada campo do JSON de cenario para a formulacao.
+- [x] Registrar limitacoes conhecidas da primeira versao.
 
 Criterio de aceite:
 
@@ -455,10 +455,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- Revisao manual do documento.
-- Exemplo calculado usando `data/scenarios/small-delivery.json`.
-- `npm test`
-- `npm run scenario:small`
+- [x] Revisao manual do documento.
+- [x] Exemplo calculado usando `data/scenarios/small-delivery.json`.
+- [x] `npm test`
+- [x] `npm run scenario:small`
+
+Status:
+
+- Concluido. A formulacao deterministica inicial vive em
+  [mathematical-formulation.md](mathematical-formulation.md) e documenta o
+  modelo-alvo para solver, o mapeamento do JSON e o calculo manual do cenario
+  `small-delivery-v1`.
 
 ### P3.2 Criar cenarios deterministicos de benchmark
 
