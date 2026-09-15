@@ -53,6 +53,7 @@ ja auditado entre sessoes.
 | P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, extrai `trace_id` de `traceparent`, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs quando aplicavel, e documenta consultas Loki. Verificacao: `npm run check` em 2026-09-13. | Usar estes campos como contrato para a instrumentacao OpenTelemetry da P2.3. |
 | P2.3 API demonstradora instrumentada | Concluido | `operational-observability-platform` tem `GET /demo/transactions` com etapa assincrona, dependencia lenta/indisponivel, metricas RED, logs correlacionados e export OTLP de traces/logs para Collector quando `OTEL_ENABLED=true`. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar a telemetria real como entrada dos dashboards P2.4. |
 | P2.4 Dashboards tecnicos e de negocio | Concluido | `operational-observability-platform` provisiona dashboards `Operational Observability - Service Technical` e `Operational Observability - Demo Business Transactions`, com filtros por servico/ambiente/periodo, links para Tempo/Loki e smoke validando carregamento no Grafana. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar estes sintomas e visoes como base para modelar SLO, SLI e error budget na P2.5. |
+| P2.5 SLO, SLI e error budget | Concluido | `operational-observability-platform` adiciona migration de SLO/SLI/janelas, API `/slos`, calculos de disponibilidade, latencia e error budget, endpoint de status e smoke validando configuracao/avaliacao. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar o estado de SLO como base para alertas sintomaticos na P2.6. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -422,12 +423,12 @@ Status:
 
 ### P2.5 Modelar SLO, SLI e error budget
 
-- [ ] Criar tabelas de SLOs, SLIs e janelas de avaliacao.
-- [ ] Criar API para cadastrar e consultar SLOs.
-- [ ] Calcular disponibilidade simples.
-- [ ] Calcular SLI de latencia.
-- [ ] Calcular consumo e saldo de error budget.
-- [ ] Expor estado do SLO por endpoint ou dashboard.
+- [x] Criar tabelas de SLOs, SLIs e janelas de avaliacao.
+- [x] Criar API para cadastrar e consultar SLOs.
+- [x] Calcular disponibilidade simples.
+- [x] Calcular SLI de latencia.
+- [x] Calcular consumo e saldo de error budget.
+- [x] Expor estado do SLO por endpoint ou dashboard.
 
 Criterio de aceite:
 
@@ -436,9 +437,23 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para disponibilidade, latencia e error budget.
-- Teste e2e para cadastro e consulta de SLO.
-- `npm run check`
+- [x] Testes unitarios para disponibilidade, latencia e error budget.
+- [x] Teste e2e para cadastro e consulta de SLO.
+- [x] `npm run check`
+- [x] `npm run validate:observability`
+- [x] `npm run smoke:observability`
+
+Status:
+
+- Concluido. `operational-observability-platform` adiciona a migration
+  `0003_create_slo_tables.sql` com `slo_definitions`, `sli_definitions` e
+  `sli_evaluation_windows`, alem da API `/slos` para cadastro, listagem,
+  avaliacao de janelas e leitura do status atual. Os calculos cobrem
+  disponibilidade, latencia, consumo e saldo de error budget. O e2e valida o
+  fluxo com PostgreSQL real, e o smoke local cria um SLO demonstrativo, avalia a
+  janela e confirma status `breached`. Verificacao local em 2026-09-13:
+  `npm run check`, `npm run validate:observability` e
+  `npm run smoke:observability`.
 
 ### P2.6 Criar alertas baseados em sintomas
 
