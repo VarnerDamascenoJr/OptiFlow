@@ -169,11 +169,16 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
   testes para propagacao de IDs.
 - API demonstradora `GET /demo/transactions` com etapa assincrona, dependencia
   lenta/indisponivel, metricas RED, logs correlacionados e traces/logs OTLP.
+- Metricas de negocio para a API demonstradora: transacoes por sucesso, falha,
+  degradacao e duracao.
+- Dashboards Grafana provisionados para sintomas tecnicos por servico e impacto
+  de negocio da transacao demonstradora.
+- Links e roteiro de investigacao para sair de erro/latencia para trace no Tempo
+  e logs correlacionados no Loki.
 - Checklist operacional com fases claras para evolucao.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Dashboards tecnicos e de negocio.
 - Modelo de SLO, SLI e error budget no PostgreSQL.
 - Alertas baseados em sintomas.
 - Modelo de incidentes, evidencias, hipoteses e linha do tempo.
