@@ -50,7 +50,7 @@ ja auditado entre sessoes.
 | P1.6 Cenarios controlados de falha | Concluido | `sales-event-project` tem `scripts/run-failure-scenarios.sh` e `docs/failure-scenarios.md` cobrindo pagamento duplicado, consumidor atrasado, falha persistente de email e outbox retry/dead-letter. Verificacao: roteiro completo executado em 2026-09-12; `make test`; `make lint`. | Usar os cenarios como entrada para dashboard da jornada de negocio na P1.7. |
 | P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
 | P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem schema inicial do `control_plane`, runner de migrations, camada PostgreSQL, startup com migrations, health com estado do banco e e2e com PostgreSQL real. Verificacao: `npm run check` em 2026-09-12. | Usar a base PostgreSQL para logs/IDs ja implementados e para as proximas entidades de SLO/incidentes. |
-| P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
+| P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, extrai `trace_id` de `traceparent`, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs quando aplicavel, e documenta consultas Loki. Verificacao: `npm run check` em 2026-09-13. | Usar estes campos como contrato para a instrumentacao OpenTelemetry da P2.3. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -329,11 +329,11 @@ Status:
 
 ### P2.2 Implementar convencoes de logs e IDs
 
-- [ ] Criar middleware para `request_id`.
-- [ ] Aceitar `correlation_id` recebido por header.
-- [ ] Emitir logs JSON com `trace_id`, `request_id` e `transaction_id` quando
+- [x] Criar middleware para `request_id`.
+- [x] Aceitar `correlation_id` recebido por header.
+- [x] Emitir logs JSON com `trace_id`, `request_id` e `transaction_id` quando
   aplicavel.
-- [ ] Documentar headers e campos de log.
+- [x] Documentar headers e campos de log.
 
 Criterio de aceite:
 
@@ -342,10 +342,18 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para middleware.
-- Teste e2e validando headers de resposta.
-- Consulta Loki documentada.
-- `npm run check`
+- [x] Testes unitarios para middleware.
+- [x] Teste e2e validando headers de resposta.
+- [x] Consulta Loki documentada.
+- [x] `npm run check`
+
+Status:
+
+- Concluido. `operational-observability-platform` agora extrai `trace_id` de
+  `traceparent` W3C valido, ignora traces invalidos ou inseguros, adiciona
+  `trace_id` ao logger por request quando aplicavel e documenta consultas Loki
+  por `request_id`, `correlation_id`, `transaction_id` e `trace_id`.
+  Verificacao local em 2026-09-13: `npm run check`.
 
 ### P2.3 Criar API demonstradora instrumentada
 

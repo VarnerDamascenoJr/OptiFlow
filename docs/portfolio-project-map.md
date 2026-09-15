@@ -163,20 +163,18 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
 - Scripts `validate:observability` e `smoke:observability`.
 - Schema inicial do `control_plane`, runner de migrations, camada inicial de
   acesso ao PostgreSQL e health check com estado real do banco.
-- Middleware HTTP de correlacao com `request_id`, `correlation_id` e
-  `transaction_id`.
-- Logs estruturados com campos de correlacao e testes para propagacao de IDs.
+- Middleware HTTP de correlacao com `request_id`, `correlation_id`,
+  `transaction_id` e `trace_id` derivado de `traceparent`.
+- Logs estruturados com campos de correlacao, consultas Loki documentadas e
+  testes para propagacao de IDs.
 - Checklist operacional com fases claras para evolucao.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Incluir `trace_id` nos logs quando a instrumentacao OpenTelemetry da API
-  entrar.
 - API ou modulo de demonstracao que produza telemetria real.
 - Instrumentacao HTTP com OpenTelemetry.
 - Metricas RED: rate, errors e duration.
 - Traces enviados ao Collector.
-- Logs JSON com `trace_id`, `request_id` e identificador de transacao.
 - Fluxo assincrono demonstravel.
 - Dashboards tecnicos e de negocio.
 - Modelo de SLO, SLI e error budget no PostgreSQL.
