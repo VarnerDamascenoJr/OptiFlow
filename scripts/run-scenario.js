@@ -12,6 +12,7 @@ if (!scenarioPath) {
 const absoluteScenarioPath = path.resolve(process.cwd(), scenarioPath);
 const scenario = JSON.parse(fs.readFileSync(absoluteScenarioPath, "utf8"));
 const result = solveScenario(scenario, {
+  strategy: process.env.OPTIFLOW_STRATEGY,
   metadata: {
     requestId: process.env.OPTIFLOW_REQUEST_ID,
     correlationId: process.env.OPTIFLOW_CORRELATION_ID,
@@ -19,6 +20,10 @@ const result = solveScenario(scenario, {
     optimizationRunId: process.env.OPTIFLOW_OPTIMIZATION_RUN_ID,
     service: process.env.OPTIFLOW_SERVICE_NAME,
     environment: process.env.OPTIFLOW_ENVIRONMENT
+  },
+  solver: {
+    maxOrders: readOptionalInteger(process.env.OPTIFLOW_SOLVER_MAX_ORDERS),
+    timeoutMs: readOptionalInteger(process.env.OPTIFLOW_SOLVER_TIMEOUT_MS)
   }
 });
 
@@ -26,4 +31,12 @@ if (process.env.OPTIFLOW_OUTPUT_FORMAT === "prometheus") {
   process.stdout.write(renderOptimizationMetrics(result));
 } else {
   console.log(JSON.stringify(result, null, 2));
+}
+
+function readOptionalInteger(value) {
+  if (!value) {
+    return undefined;
+  }
+
+  return Number(value);
 }

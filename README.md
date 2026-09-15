@@ -54,6 +54,11 @@ Cenarios deterministicos de benchmark estao documentados em
 como instancia executavel, mas isolam propriedades gerais de otimizacao
 operacional: capacidade, deadline/latencia, custo e demanda nao atendida.
 
+A primeira estrategia alternativa de solver esta documentada em
+[docs/solver-strategies.md](docs/solver-strategies.md). Ela usa enumeracao
+exata limitada para cenarios pequenos e preserva o mesmo formato de saida do
+motor heuristico.
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |

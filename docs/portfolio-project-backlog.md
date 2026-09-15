@@ -496,10 +496,10 @@ Status:
 
 ### P3.3 Integrar solver para comparacao
 
-- [ ] Escolher integracao com OR-Tools ou solver alternativo justificado.
-- [ ] Implementar estrategia de solver com a mesma entrada da heuristica.
-- [ ] Garantir timeout e resultado parcial ou erro controlado.
-- [ ] Preservar saida comum de `RoutePlan`.
+- [x] Escolher integracao com OR-Tools ou solver alternativo justificado.
+- [x] Implementar estrategia de solver com a mesma entrada da heuristica.
+- [x] Garantir timeout e resultado parcial ou erro controlado.
+- [x] Preservar saida comum de `RoutePlan`.
 
 Criterio de aceite:
 
@@ -509,10 +509,18 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para adaptador do solver.
-- Testes de comparacao em cenario pequeno.
-- `npm test`
-- `npm run scenario:small`
+- [x] Testes unitarios para adaptador do solver.
+- [x] Testes de comparacao em cenario pequeno.
+- [x] `npm test`
+- [x] `npm run scenario:small`
+
+Status:
+
+- Concluido. A estrategia `exact-enumeration` foi adicionada como solver
+  alternativo limitado e documentado em [solver-strategies.md](solver-strategies.md).
+  Ela roda sobre o mesmo JSON da heuristica, preserva `RoutePlan`, melhora o
+  custo do cenario pequeno de 792 para 744 e retorna erro explicavel quando o
+  limite configurado e excedido.
 
 ### P3.4 Comparar heuristica versus solver
 

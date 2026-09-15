@@ -196,6 +196,44 @@ test("loads and solves all deterministic benchmark scenarios", function testBenc
   }
 });
 
+test("solves the sample scenario with exact enumeration", function testExactSolver() {
+  const result = optiflow.solveScenario(scenario, {
+    strategy: "exact-enumeration"
+  });
+
+  assert.strictEqual(result.strategy, "exact-enumeration");
+  assert.deepStrictEqual(
+    getRouteOrderIds(result.routes[0]),
+    ["order-north", "order-east"]
+  );
+  assert.deepStrictEqual(
+    getRouteOrderIds(result.routes[1]),
+    ["order-west"]
+  );
+  assert.deepStrictEqual(result.unassignedOrderIds, ["order-south"]);
+  assert.strictEqual(result.metrics.totalDistance, 61);
+  assert.strictEqual(result.metrics.totalCost, 744);
+});
+
+test("returns an explainable solver error when exact enumeration exceeds its limit", function testExactSolverLimit() {
+  assert.throws(function solveWithTooSmallLimit() {
+    optiflow.solveScenario(scenario, {
+      solver: {
+        maxOrders: 1
+      },
+      strategy: "exact-enumeration"
+    });
+  }, /exact-enumeration supports at most 1 orders; received 4/);
+});
+
+test("rejects unknown optimization strategies", function testUnknownStrategy() {
+  assert.throws(function solveWithUnknownStrategy() {
+    optiflow.solveScenario(scenario, {
+      strategy: "missing-strategy"
+    });
+  }, /Unknown optimization strategy: missing-strategy/);
+});
+
 function getRouteOrderIds(route) {
   return route.stops
     .filter(function filterOrderStops(stop) {
