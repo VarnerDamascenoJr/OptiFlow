@@ -46,6 +46,11 @@ npm run scenario:small
 
 O resultado atual usa a estrategia `nearest-neighbor-capacity`: uma heuristica gulosa que escolhe o pedido viavel mais proximo para cada veiculo, respeitando capacidade e registrando atraso como metrica.
 
+Cenarios deterministicos de benchmark estao documentados em
+[docs/benchmark-scenarios.md](docs/benchmark-scenarios.md). Eles usam entregas
+como instancia executavel, mas isolam propriedades gerais de otimizacao
+operacional: capacidade, deadline/latencia, custo e demanda nao atendida.
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |

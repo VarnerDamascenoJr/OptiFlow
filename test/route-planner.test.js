@@ -8,6 +8,52 @@ import * as optiflow from "../src/index.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scenarioPath = path.join(__dirname, "..", "data", "scenarios", "small-delivery.json");
 const scenario = JSON.parse(fs.readFileSync(scenarioPath, "utf8"));
+const benchmarkScenarios = [
+  {
+    file: "benchmark-minimal-obvious.json",
+    expected: {
+      routeOrderIds: [["demand-a"]],
+      servedOrders: 1,
+      totalCost: 16,
+      totalDistance: 8,
+      totalLateMinutes: 0,
+      unassignedOrderIds: []
+    }
+  },
+  {
+    file: "benchmark-capacity-insufficient.json",
+    expected: {
+      routeOrderIds: [["demand-a"]],
+      servedOrders: 1,
+      totalCost: 206,
+      totalDistance: 6,
+      totalLateMinutes: 0,
+      unassignedOrderIds: ["demand-b"]
+    }
+  },
+  {
+    file: "benchmark-deadline-latency.json",
+    expected: {
+      routeOrderIds: [["critical-demand"]],
+      servedOrders: 1,
+      totalCost: 160,
+      totalDistance: 10,
+      totalLateMinutes: 3,
+      unassignedOrderIds: []
+    }
+  },
+  {
+    file: "benchmark-multi-resource-tradeoff.json",
+    expected: {
+      routeOrderIds: [["near-demand"], ["far-demand"]],
+      servedOrders: 2,
+      totalCost: 52,
+      totalDistance: 26,
+      totalLateMinutes: 0,
+      unassignedOrderIds: []
+    }
+  }
+];
 
 test("validates the sample scenario", function testValidateScenario() {
   assert.doesNotThrow(function validate() {
@@ -120,6 +166,34 @@ test("allows objective weights to be disabled with zero cost", function testZero
 
   assert.strictEqual(result.metrics.distanceCost, 292);
   assert.strictEqual(result.metrics.totalCost, 292);
+});
+
+test("loads and solves all deterministic benchmark scenarios", function testBenchmarkScenarios() {
+  for (const benchmark of benchmarkScenarios) {
+    const benchmarkPath = path.join(__dirname, "..", "data", "scenarios", benchmark.file);
+    const benchmarkScenario = JSON.parse(fs.readFileSync(benchmarkPath, "utf8"));
+
+    assert.doesNotThrow(function validateBenchmarkScenario() {
+      optiflow.validateScenario(benchmarkScenario);
+    }, benchmark.file);
+
+    const result = optiflow.solveScenario(benchmarkScenario);
+
+    assert.deepStrictEqual(
+      result.routes.map(getRouteOrderIds),
+      benchmark.expected.routeOrderIds,
+      benchmark.file
+    );
+    assert.deepStrictEqual(
+      result.unassignedOrderIds,
+      benchmark.expected.unassignedOrderIds,
+      benchmark.file
+    );
+    assert.strictEqual(result.metrics.servedOrders, benchmark.expected.servedOrders, benchmark.file);
+    assert.strictEqual(result.metrics.totalDistance, benchmark.expected.totalDistance, benchmark.file);
+    assert.strictEqual(result.metrics.totalLateMinutes, benchmark.expected.totalLateMinutes, benchmark.file);
+    assert.strictEqual(result.metrics.totalCost, benchmark.expected.totalCost, benchmark.file);
+  }
 });
 
 function getRouteOrderIds(route) {

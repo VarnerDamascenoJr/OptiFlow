@@ -462,11 +462,11 @@ Verificacao:
 
 ### P3.2 Criar cenarios deterministicos de benchmark
 
-- [ ] Adicionar cenario minimo com solucao obvia.
-- [ ] Adicionar cenario com capacidade insuficiente.
-- [ ] Adicionar cenario com janelas de tempo que geram atraso.
-- [ ] Adicionar cenario com multiplos veiculos e trade-off de custo.
-- [ ] Documentar resultado esperado de cada cenario.
+- [x] Adicionar cenario minimo com solucao obvia.
+- [x] Adicionar cenario com capacidade insuficiente.
+- [x] Adicionar cenario com janelas de tempo que geram atraso.
+- [x] Adicionar cenario com multiplos veiculos e trade-off de custo.
+- [x] Documentar resultado esperado de cada cenario.
 
 Criterio de aceite:
 
@@ -475,9 +475,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes automatizados carregando todos os cenarios.
-- `npm test`
-- `npm run scenario:small`
+- [x] Testes automatizados carregando todos os cenarios.
+- [x] `npm test`
+- [x] `npm run scenario:small`
+
+Status:
+
+- Concluido. Os benchmarks deterministicos vivem em `data/scenarios` com
+  resultados esperados documentados em
+  [benchmark-scenarios.md](benchmark-scenarios.md). A suite automatizada carrega
+  todos os cenarios, valida entradas, executa a heuristica e confere metricas
+  estaveis.
 
 ### P3.3 Integrar solver para comparacao
 

@@ -1,0 +1,72 @@
+{
+  "id": "benchmark-capacity-insufficient-v1",
+  "name": "Benchmark com capacidade insuficiente",
+  "operation": {
+    "startTimeMinutes": 480
+  },
+  "costs": {
+    "distanceUnitCost": 1,
+    "lateMinutePenalty": 10,
+    "unassignedOrderPenalty": 200
+  },
+  "locations": [
+    {
+      "id": "resource-pool",
+      "name": "Pool de recursos"
+    },
+    {
+      "id": "workload-a",
+      "name": "Demanda A"
+    },
+    {
+      "id": "workload-b",
+      "name": "Demanda B"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "resource-a",
+      "capacity": 5,
+      "startLocationId": "resource-pool"
+    }
+  ],
+  "orders": [
+    {
+      "id": "demand-a",
+      "locationId": "workload-a",
+      "demand": 4,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 480,
+        "endMinutes": 600
+      }
+    },
+    {
+      "id": "demand-b",
+      "locationId": "workload-b",
+      "demand": 4,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 480,
+        "endMinutes": 600
+      }
+    }
+  ],
+  "distanceMatrix": {
+    "resource-pool": {
+      "resource-pool": 0,
+      "workload-a": 3,
+      "workload-b": 4
+    },
+    "workload-a": {
+      "resource-pool": 3,
+      "workload-a": 0,
+      "workload-b": 2
+    },
+    "workload-b": {
+      "resource-pool": 4,
+      "workload-a": 2,
+      "workload-b": 0
+    }
+  }
+}
