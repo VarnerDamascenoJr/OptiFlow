@@ -51,6 +51,7 @@ ja auditado entre sessoes.
 | P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
 | P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem schema inicial do `control_plane`, runner de migrations, camada PostgreSQL, startup com migrations, health com estado do banco e e2e com PostgreSQL real. Verificacao: `npm run check` em 2026-09-12. | Usar a base PostgreSQL para logs/IDs ja implementados e para as proximas entidades de SLO/incidentes. |
 | P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, extrai `trace_id` de `traceparent`, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs quando aplicavel, e documenta consultas Loki. Verificacao: `npm run check` em 2026-09-13. | Usar estes campos como contrato para a instrumentacao OpenTelemetry da P2.3. |
+| P2.3 API demonstradora instrumentada | Concluido | `operational-observability-platform` tem `GET /demo/transactions` com etapa assincrona, dependencia lenta/indisponivel, metricas RED, logs correlacionados e export OTLP de traces/logs para Collector quando `OTEL_ENABLED=true`. Verificacao: `npm run check`, `npm run validate:observability` e `npm run smoke:observability` em 2026-09-13. | Usar a telemetria real como entrada dos dashboards P2.4. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -357,11 +358,11 @@ Status:
 
 ### P2.3 Criar API demonstradora instrumentada
 
-- [ ] Criar fluxo HTTP que simule uma transacao operacional.
-- [ ] Adicionar uma etapa assincrona demonstravel.
-- [ ] Simular dependencia lenta ou indisponivel.
-- [ ] Emitir metricas RED: rate, errors e duration.
-- [ ] Exportar traces para o Collector.
+- [x] Criar fluxo HTTP que simule uma transacao operacional.
+- [x] Adicionar uma etapa assincrona demonstravel.
+- [x] Simular dependencia lenta ou indisponivel.
+- [x] Emitir metricas RED: rate, errors e duration.
+- [x] Exportar traces para o Collector.
 
 Criterio de aceite:
 
@@ -370,10 +371,21 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para handlers e simulacao.
-- Teste e2e para sucesso e erro.
-- `npm run check`
-- `npm run smoke:observability`
+- [x] Testes unitarios para handlers e simulacao.
+- [x] Teste e2e para sucesso e erro.
+- [x] `npm run check`
+- [x] `npm run smoke:observability`
+
+Status:
+
+- Concluido. `operational-observability-platform` usa
+  `GET /demo/transactions` como API demonstradora instrumentada: a requisicao
+  cria etapa assincrona, simula dependencia normal/lenta/indisponivel, emite
+  metricas RED pelo `/metrics`, registra logs com IDs de correlacao e exporta
+  traces/logs OTLP para o Collector quando `OTEL_ENABLED=true`. O smoke local
+  sobe a stack, inicia a API, chama o endpoint, valida metrica, trace no Tempo e
+  log no Loki. Verificacao local em 2026-09-13: `npm run check`,
+  `npm run validate:observability` e `npm run smoke:observability`.
 
 ### P2.4 Criar dashboards tecnicos e de negocio
 
