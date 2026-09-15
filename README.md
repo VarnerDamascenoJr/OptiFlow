@@ -59,6 +59,10 @@ A primeira estrategia alternativa de solver esta documentada em
 exata limitada para cenarios pequenos e preserva o mesmo formato de saida do
 motor heuristico.
 
+A comparacao entre estrategias esta documentada em
+[docs/strategy-comparison.md](docs/strategy-comparison.md) e pode ser executada
+com `npm run benchmark:compare`.
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
