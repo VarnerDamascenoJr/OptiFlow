@@ -524,10 +524,10 @@ Status:
 
 ### P3.4 Comparar heuristica versus solver
 
-- [ ] Criar funcao de comparacao entre planos.
-- [ ] Calcular ganho de custo, distancia, atraso, pedidos atendidos e utilizacao.
-- [ ] Criar script para rodar benchmark em cenarios versionados.
-- [ ] Exibir resultado em formato legivel para portfolio.
+- [x] Criar funcao de comparacao entre planos.
+- [x] Calcular ganho de custo, distancia, atraso, pedidos atendidos e utilizacao.
+- [x] Criar script para rodar benchmark em cenarios versionados.
+- [x] Exibir resultado em formato legivel para portfolio.
 
 Criterio de aceite:
 
@@ -536,9 +536,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para calculo de ganho e regressao de metricas.
-- Snapshot ou fixture textual do benchmark.
-- `npm test`
+- [x] Testes unitarios para calculo de ganho e regressao de metricas.
+- [x] Snapshot ou fixture textual do benchmark.
+- [x] `npm test`
+
+Status:
+
+- Concluido. `compareStrategies` calcula deltas entre heuristica e solver, e o
+  script `npm run benchmark:compare` gera uma saida legivel para portfolio sobre
+  todos os cenarios versionados.
 
 ### P3.5 Implementar restricoes configuraveis
 

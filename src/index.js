@@ -3,6 +3,7 @@ import createExactSolverPlan from "./exact-solver.js";
 import createNearestNeighborPlan from "./nearest-neighbor.js";
 import evaluatePlan from "./metrics.js";
 import renderOptimizationMetrics from "./observability-metrics.js";
+import { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
 import validateScenario from "./validate-scenario.js";
 
 export function solveScenario(scenario, options = {}) {
@@ -61,10 +62,12 @@ function readMetadataOptions(options) {
 }
 
 export {
+  compareStrategies,
   createExecutionMetadata,
   createExactSolverPlan,
   createNearestNeighborPlan,
   evaluatePlan,
   renderOptimizationMetrics,
+  renderComparisonReport,
   validateScenario
 };
