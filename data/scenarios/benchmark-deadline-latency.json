@@ -1,0 +1,51 @@
+{
+  "id": "benchmark-deadline-latency-v1",
+  "name": "Benchmark com deadline que gera atraso",
+  "operation": {
+    "startTimeMinutes": 480
+  },
+  "costs": {
+    "distanceUnitCost": 1,
+    "lateMinutePenalty": 50,
+    "unassignedOrderPenalty": 1000
+  },
+  "locations": [
+    {
+      "id": "gateway",
+      "name": "Gateway operacional"
+    },
+    {
+      "id": "critical-workload",
+      "name": "Carga critica"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "resource-a",
+      "capacity": 5,
+      "startLocationId": "gateway"
+    }
+  ],
+  "orders": [
+    {
+      "id": "critical-demand",
+      "locationId": "critical-workload",
+      "demand": 2,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 480,
+        "endMinutes": 482
+      }
+    }
+  ],
+  "distanceMatrix": {
+    "gateway": {
+      "gateway": 0,
+      "critical-workload": 5
+    },
+    "critical-workload": {
+      "gateway": 5,
+      "critical-workload": 0
+    }
+  }
+}

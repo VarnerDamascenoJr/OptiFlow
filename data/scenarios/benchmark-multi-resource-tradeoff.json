@@ -1,0 +1,77 @@
+{
+  "id": "benchmark-multi-resource-tradeoff-v1",
+  "name": "Benchmark com multiplos recursos e trade-off de custo",
+  "operation": {
+    "startTimeMinutes": 480
+  },
+  "costs": {
+    "distanceUnitCost": 2,
+    "lateMinutePenalty": 10,
+    "unassignedOrderPenalty": 500
+  },
+  "locations": [
+    {
+      "id": "resource-pool",
+      "name": "Pool de recursos"
+    },
+    {
+      "id": "near-workload",
+      "name": "Demanda proxima"
+    },
+    {
+      "id": "far-workload",
+      "name": "Demanda distante"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "resource-a",
+      "capacity": 5,
+      "startLocationId": "resource-pool"
+    },
+    {
+      "id": "resource-b",
+      "capacity": 5,
+      "startLocationId": "resource-pool"
+    }
+  ],
+  "orders": [
+    {
+      "id": "near-demand",
+      "locationId": "near-workload",
+      "demand": 4,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 480,
+        "endMinutes": 600
+      }
+    },
+    {
+      "id": "far-demand",
+      "locationId": "far-workload",
+      "demand": 4,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 480,
+        "endMinutes": 600
+      }
+    }
+  ],
+  "distanceMatrix": {
+    "resource-pool": {
+      "resource-pool": 0,
+      "near-workload": 4,
+      "far-workload": 9
+    },
+    "near-workload": {
+      "resource-pool": 4,
+      "near-workload": 0,
+      "far-workload": 12
+    },
+    "far-workload": {
+      "resource-pool": 9,
+      "near-workload": 12,
+      "far-workload": 0
+    }
+  }
+}

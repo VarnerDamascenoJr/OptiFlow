@@ -1,0 +1,51 @@
+{
+  "id": "benchmark-minimal-obvious-v1",
+  "name": "Benchmark minimo com solucao obvia",
+  "operation": {
+    "startTimeMinutes": 480
+  },
+  "costs": {
+    "distanceUnitCost": 2,
+    "lateMinutePenalty": 10,
+    "unassignedOrderPenalty": 100
+  },
+  "locations": [
+    {
+      "id": "resource-pool",
+      "name": "Pool de recursos"
+    },
+    {
+      "id": "workload-a",
+      "name": "Demanda A"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "resource-a",
+      "capacity": 5,
+      "startLocationId": "resource-pool"
+    }
+  ],
+  "orders": [
+    {
+      "id": "demand-a",
+      "locationId": "workload-a",
+      "demand": 3,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 480,
+        "endMinutes": 600
+      }
+    }
+  ],
+  "distanceMatrix": {
+    "resource-pool": {
+      "resource-pool": 0,
+      "workload-a": 4
+    },
+    "workload-a": {
+      "resource-pool": 4,
+      "workload-a": 0
+    }
+  }
+}
