@@ -1,4 +1,5 @@
 import createExecutionMetadata from "./execution-metadata.js";
+import createExactSolverPlan from "./exact-solver.js";
 import createNearestNeighborPlan from "./nearest-neighbor.js";
 import evaluatePlan from "./metrics.js";
 import renderOptimizationMetrics from "./observability-metrics.js";
@@ -8,7 +9,7 @@ export function solveScenario(scenario, options = {}) {
   validateScenario(scenario);
 
   const metadata = createExecutionMetadata(readMetadataOptions(options));
-  const plan = createNearestNeighborPlan(scenario);
+  const plan = createPlan(scenario, options);
   const metrics = evaluatePlan(scenario, plan);
 
   return {
@@ -21,6 +22,36 @@ export function solveScenario(scenario, options = {}) {
   };
 }
 
+function createPlan(scenario, options) {
+  const strategy = readStrategy(options);
+
+  if (strategy === "nearest-neighbor-capacity") {
+    return createNearestNeighborPlan(scenario);
+  }
+
+  if (strategy === "exact-enumeration") {
+    return createExactSolverPlan(scenario, readSolverOptions(options));
+  }
+
+  throw new Error("Unknown optimization strategy: " + strategy);
+}
+
+function readStrategy(options) {
+  if (!options || typeof options !== "object" || !options.strategy) {
+    return "nearest-neighbor-capacity";
+  }
+
+  return options.strategy;
+}
+
+function readSolverOptions(options) {
+  if (!options || typeof options !== "object") {
+    return {};
+  }
+
+  return options.solver || {};
+}
+
 function readMetadataOptions(options) {
   if (!options || typeof options !== "object") {
     return {};
@@ -31,6 +62,7 @@ function readMetadataOptions(options) {
 
 export {
   createExecutionMetadata,
+  createExactSolverPlan,
   createNearestNeighborPlan,
   evaluatePlan,
   renderOptimizationMetrics,
