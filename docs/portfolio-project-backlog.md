@@ -49,7 +49,7 @@ ja auditado entre sessoes.
 | P1.5 Confiabilidade da publicacao RabbitMQ | Concluido | `sales-event-project` usa publisher confirms, `mandatory=true`, erro explicito para `nack`/mensagem nao roteavel e mantem retry/dead-letter da outbox. Verificacao: `make test` e `make test-integration` em 2026-09-12. | Usar a P1.6 como roteiro demonstravel dessas falhas. |
 | P1.6 Cenarios controlados de falha | Concluido | `sales-event-project` tem `scripts/run-failure-scenarios.sh` e `docs/failure-scenarios.md` cobrindo pagamento duplicado, consumidor atrasado, falha persistente de email e outbox retry/dead-letter. Verificacao: roteiro completo executado em 2026-09-12; `make test`; `make lint`. | Usar os cenarios como entrada para dashboard da jornada de negocio na P1.7. |
 | P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
-| P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
+| P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem schema inicial do `control_plane`, runner de migrations, camada PostgreSQL, startup com migrations, health com estado do banco e e2e com PostgreSQL real. Verificacao: `npm run check` em 2026-09-12. | Usar a base PostgreSQL para logs/IDs ja implementados e para as proximas entidades de SLO/incidentes. |
 | P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
 | P3 OptiFlow deterministico | Parcial | Heuristica, metricas, cenario pequeno, cenario de vendas, metadata de execucao e testes existem. | Fechar formulacao matematica e iniciar benchmarks/solver. |
 
@@ -298,11 +298,11 @@ expandir funcionalidades de produto.
 
 ### P2.1 Criar primeira migration e camada PostgreSQL
 
-- [ ] Definir schema inicial para projetos, servicos e configuracoes
+- [x] Definir schema inicial para projetos, servicos e configuracoes
   operacionais.
-- [ ] Criar runner de migration ou escolher ferramenta simples para migrations.
-- [ ] Implementar camada de acesso ao PostgreSQL.
-- [ ] Adicionar `.env.example` com variaveis necessarias.
+- [x] Criar runner de migration ou escolher ferramenta simples para migrations.
+- [x] Implementar camada de acesso ao PostgreSQL.
+- [x] Adicionar `.env.example` com variaveis necessarias.
 
 Criterio de aceite:
 
@@ -311,9 +311,21 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para camada de acesso.
-- Teste e2e cobrindo health com banco disponivel.
-- `npm run check`
+- [x] Testes unitarios para camada de acesso.
+- [x] Teste e2e cobrindo health com banco disponivel.
+- [x] `npm run check`
+
+Status:
+
+- Concluido. `operational-observability-platform` preserva a migration
+  `0001` do schema `control_plane` e adiciona
+  `0002_create_control_plane_core_tables.sql` com `projects`, `services` e
+  `operational_configurations`. O servidor carrega `DATABASE_URL`, valida/aplica
+  migrations no startup e o endpoint `/health` responde estado da API, do
+  PostgreSQL, das migrations e das tabelas iniciais. O e2e sobe Postgres via
+  Docker Compose, aplica migrations e valida o health com banco real.
+  Verificacao local em 2026-09-12: `npm run check`; consulta manual confirmou
+  tres tabelas em `control_plane` e duas migrations aplicadas.
 
 ### P2.2 Implementar convencoes de logs e IDs
 
