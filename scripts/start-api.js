@@ -3,7 +3,10 @@ import { createOptiFlowApiServer } from "../src/api-server.js";
 const port = readPort(process.env.OPTIFLOW_API_PORT || process.env.PORT || "3000");
 const host = process.env.OPTIFLOW_API_HOST || "127.0.0.1";
 const server = createOptiFlowApiServer({
-  historyFile: process.env.OPTIFLOW_HISTORY_FILE
+  defaultMaxAttempts: readOptionalPositiveInteger(process.env.OPTIFLOW_RUN_MAX_ATTEMPTS),
+  defaultTimeoutMs: readOptionalPositiveInteger(process.env.OPTIFLOW_RUN_TIMEOUT_MS),
+  historyFile: process.env.OPTIFLOW_HISTORY_FILE,
+  optimizationConcurrency: readOptionalPositiveInteger(process.env.OPTIFLOW_RUN_CONCURRENCY)
 });
 
 server.listen(port, host, function onListening() {
@@ -30,4 +33,13 @@ function readPort(value) {
   }
 
   return port;
+}
+
+function readOptionalPositiveInteger(value) {
+  if (!value) {
+    return undefined;
+  }
+
+  const number = Number(value);
+  return Number.isInteger(number) && number > 0 ? number : undefined;
 }

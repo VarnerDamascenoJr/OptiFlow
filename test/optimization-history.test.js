@@ -38,7 +38,7 @@ test("persists and recovers completed optimization runs", function testCompleted
 
   const recovered = createOptimizationHistoryRepository(historyFile).getRun("run-history-demo");
 
-  assert.strictEqual(recovered.optimizationRun.status, "succeeded");
+  assert.strictEqual(recovered.optimizationRun.status, "SUCCEEDED");
   assert.strictEqual(recovered.optimizationRun.strategy, "exact-enumeration");
   assert.strictEqual(recovered.optimizationRun.durationMs, 1250);
   assert.strictEqual(recovered.optimizationRun.error, null);
@@ -101,7 +101,7 @@ test("persists failed runs with explainable error details", function testFailedR
 
   const recovered = repository.getRun("run-history-failed");
 
-  assert.strictEqual(recovered.optimizationRun.status, "failed");
+  assert.strictEqual(recovered.optimizationRun.status, "FAILED");
   assert.strictEqual(recovered.optimizationRun.strategy, "exact-enumeration");
   assert.deepStrictEqual(recovered.optimizationRun.error, {
     name: "Error",
@@ -117,7 +117,7 @@ test("reads the versioned optimization history fixture", function testHistoryFix
   const repository = createOptimizationHistoryRepository(fixturePath);
   const recovered = repository.getRun("run-fixture-v1");
 
-  assert.strictEqual(recovered.optimizationRun.status, "succeeded");
+  assert.strictEqual(recovered.optimizationRun.status, "SUCCEEDED");
   assert.strictEqual(recovered.optimizationRun.strategy, "nearest-neighbor-capacity");
   assert.strictEqual(recovered.scenario.id, "fixture-scenario-v1");
   assert.strictEqual(recovered.routePlan.routes.length, 1);

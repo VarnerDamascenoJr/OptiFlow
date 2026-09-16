@@ -45,7 +45,7 @@
       "id": "run-fixture-v1",
       "scenarioRecordId": "scenario_fixture_v1",
       "scenarioId": "fixture-scenario-v1",
-      "status": "succeeded",
+      "status": "SUCCEEDED",
       "startedAt": "2026-09-16T10:00:00.000Z",
       "finishedAt": "2026-09-16T10:00:00.005Z",
       "strategy": "nearest-neighbor-capacity",

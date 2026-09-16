@@ -678,11 +678,11 @@ Status:
 
 ### P3.8 Criar processamento assincrono de otimizacao
 
-- [ ] Escolher fila ou mecanismo local inicial.
-- [ ] Executar otimizacoes fora do request HTTP.
-- [ ] Implementar status `QUEUED`, `RUNNING`, `SUCCEEDED` e `FAILED`.
-- [ ] Implementar tentativas, timeout e limite de concorrencia.
-- [ ] Registrar erro explicavel quando a execucao falhar.
+- [x] Escolher fila ou mecanismo local inicial.
+- [x] Executar otimizacoes fora do request HTTP.
+- [x] Implementar status `QUEUED`, `RUNNING`, `SUCCEEDED` e `FAILED`.
+- [x] Implementar tentativas, timeout e limite de concorrencia.
+- [x] Registrar erro explicavel quando a execucao falhar.
 
 Criterio de aceite:
 
@@ -691,8 +691,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para maquina de estados.
-- Teste de integracao com job bem-sucedido e job falho.
+- [x] Testes unitarios para maquina de estados.
+- [x] Teste de integracao com job bem-sucedido e job falho.
+
+Status:
+
+- Concluido. A API agora enfileira execucoes em uma fila local em memoria,
+  retorna `QUEUED` sem bloquear o request inicial e um worker in-process atualiza
+  o historico para `RUNNING`, `SUCCEEDED` ou `FAILED`, com tentativas, timeout e
+  limite de concorrencia configuraveis.
 
 ### P3.9 Preparar simulacao estatistica
 
