@@ -653,11 +653,11 @@ Status:
 
 ### P3.7 Criar API de cenarios e execucoes
 
-- [ ] Criar endpoint para criar cenario.
-- [ ] Criar endpoint para validar cenario.
-- [ ] Criar endpoint para iniciar execucao.
-- [ ] Criar endpoint para consultar status e resultado.
-- [ ] Padronizar erros de validacao.
+- [x] Criar endpoint para criar cenario.
+- [x] Criar endpoint para validar cenario.
+- [x] Criar endpoint para iniciar execucao.
+- [x] Criar endpoint para consultar status e resultado.
+- [x] Padronizar erros de validacao.
 
 Criterio de aceite:
 
@@ -666,9 +666,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios de handlers.
-- Testes e2e do fluxo principal.
-- Documentacao com exemplos `curl`.
+- [x] Testes unitarios de handlers.
+- [x] Testes e2e do fluxo principal.
+- [x] Documentacao com exemplos `curl`.
+
+Status:
+
+- Concluido. A primeira API HTTP local usa `node:http`, cria e valida cenarios,
+  executa otimizacoes de forma sincrona e consulta resultados persistidos no
+  historico da P3.6. Execucao assincrona fica para P3.8.
 
 ### P3.8 Criar processamento assincrono de otimizacao
 

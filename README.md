@@ -76,6 +76,13 @@ persiste uma execucao e consulta o resultado recuperado com:
 npm run scenario:small:history
 ```
 
+A primeira API HTTP local para criar, validar, executar e consultar cenarios
+esta documentada em [docs/scenario-run-api.md](docs/scenario-run-api.md):
+
+```bash
+npm run api
+```
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
@@ -179,7 +186,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 - [ ] Definir a arquitetura do backend NestJS.
 - [x] Modelar persistencia de cenarios, execucoes e resultados.
-- [ ] Criar API para criar, validar e consultar cenarios.
+- [x] Criar API para criar, validar e consultar cenarios.
 - [ ] Criar fila para execucoes assincronas de otimizacao.
 - [ ] Expor acompanhamento de status e resultados.
 - [ ] Adicionar tratamento de falhas, tentativas e limites de execucao.
