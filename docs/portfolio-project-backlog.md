@@ -703,12 +703,12 @@ Status:
 
 ### P3.9 Preparar simulacao estatistica
 
-- [ ] Definir variaveis incertas iniciais: tempo de viagem, demanda,
+- [x] Definir variaveis incertas iniciais: tempo de viagem, demanda,
   cancelamento ou capacidade.
-- [ ] Criar gerador sintetico com distribuicoes e parametros documentados.
-- [ ] Implementar estatisticas descritivas por plano.
-- [ ] Implementar Monte Carlo para avaliar plano fixo.
-- [ ] Calcular media, mediana, P90/P95, pior caso observado e probabilidade de
+- [x] Criar gerador sintetico com distribuicoes e parametros documentados.
+- [x] Implementar estatisticas descritivas por plano.
+- [x] Implementar Monte Carlo para avaliar plano fixo.
+- [x] Calcular media, mediana, P90/P95, pior caso observado e probabilidade de
   atraso.
 
 Criterio de aceite:
@@ -718,9 +718,16 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios com semente fixa.
-- Testes de percentis e estatisticas descritivas.
-- Script de simulacao reproduzivel.
+- [x] Testes unitarios com semente fixa.
+- [x] Testes de percentis e estatisticas descritivas.
+- [x] Script de simulacao reproduzivel.
+
+Status:
+
+- Concluido. `simulateFixedPlan` avalia um plano deterministico sob amostras
+  sinteticas de tempo de viagem, demanda e cancelamento, com gerador
+  reproduzivel por semente. O script `npm run scenario:small:simulate` gera
+  resumo com media, mediana, P90/P95, pior caso e probabilidades operacionais.
 
 ### P3.10 Avaliar decisao orientada a risco com CVaR
 
