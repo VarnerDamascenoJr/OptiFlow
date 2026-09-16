@@ -43,14 +43,14 @@ ja auditado entre sessoes.
 | --- | --- | --- | --- |
 | P0.1 Convencoes compartilhadas de correlacao | Concluido | `docs/portfolio-correlation-conventions.md` define IDs, HTTP, RabbitMQ, logs, traces, metricas, eventos e jornadas. Os READMEs dos tres projetos apontam para esse contrato. | Manter o documento como fonte de verdade quando novos fluxos surgirem. |
 | P0.2 Roteiro principal da narrativa | Documentado, pendente ensaio | `docs/portfolio-demo-runbook.md` define a narrativa executavel, comandos, fluxos e evidencias esperadas dos tres projetos. | Executar o roteiro completo em ambiente local reiniciado e registrar ajustes. |
-| P1.2 Correlacao da jornada de venda | Em andamento avancado | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata no evento `SALE_CREATED` e registra campos em logs estruturados. | Validar propagacao completa por pagamento, outbox, ticket, email e check-in. |
+| P1.2 Correlacao da jornada de venda | Concluido | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata por pagamento, outbox, ticket, email e check-in, e registra campos em logs estruturados. PR #6 merged. Validado com `make test`, `make test-integration` e `make lint` em 2026-09-16. | Manter os identificadores alinhados ao contrato compartilhado quando novos fluxos surgirem. |
 | P1.3 Contexto por RabbitMQ | Concluido | `sales-event-project` injeta headers AMQP de correlacao, contexto W3C de trace e preserva metadados de negocio no consumo e em eventos derivados. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`. | Usar este contrato como base para a instrumentacao OpenTelemetry da P1.4. |
 | P1.4 OpenTelemetry no `sales-event-project` | Concluido | API e worker exportam traces OTLP opcionais, propagam contexto por HTTP/RabbitMQ/outbox e possuem spans de negocio para venda, pagamento, outbox, ticket, email e check-in. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`. | Usar os traces como base para P1.5/P1.7 e para a integracao P4.1 com dashboards da plataforma. |
 | P1.5 Confiabilidade da publicacao RabbitMQ | Concluido | `sales-event-project` usa publisher confirms, `mandatory=true`, erro explicito para `nack`/mensagem nao roteavel e mantem retry/dead-letter da outbox. Verificacao: `make test` e `make test-integration` em 2026-09-12. | Usar a P1.6 como roteiro demonstravel dessas falhas. |
 | P1.6 Cenarios controlados de falha | Concluido | `sales-event-project` tem `scripts/run-failure-scenarios.sh` e `docs/failure-scenarios.md` cobrindo pagamento duplicado, consumidor atrasado, falha persistente de email e outbox retry/dead-letter. Verificacao: roteiro completo executado em 2026-09-12; `make test`; `make lint`. | Usar os cenarios como entrada para dashboard da jornada de negocio na P1.7. |
 | P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
-| P2.1 PostgreSQL na plataforma operacional | Parcial | `operational-observability-platform` tem primeira migration, runner, camada PostgreSQL, `.env.example` e testes de migrations/config. | Confirmar health/e2e com estado real do PostgreSQL antes de fechar o item. |
-| P2.2 IDs e logs na plataforma operacional | Em andamento avancado | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id` e `transaction_id` aos logs, com testes unitarios/e2e. | Incluir `trace_id` quando a instrumentacao OpenTelemetry da API entrar. |
+| P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem migrations, runner, camada PostgreSQL, `.env.example`, health com banco real e e2e. PR #6 merged. Validado com `npm run check` em 2026-09-16. | Usar a base de persistencia para SLOs, incidentes e historico operacional. |
+| P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs, com testes unitarios/e2e. PR #7 merged. Validado com `npm run check` em 2026-09-16. | Manter os campos compativeis com Loki, Tempo e o contrato compartilhado. |
 | P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -112,11 +112,11 @@ assincrono confiavel.
 
 ### P1.1 Separar retry de notificacoes em worker proprio
 
-- [ ] Criar processo, comando ou modo dedicado para retry de email.
-- [ ] Manter o worker de vendas focado em processamento de eventos de venda.
-- [ ] Garantir que o retry respeite backoff, limite de tentativas e
+- [x] Criar processo, comando ou modo dedicado para retry de email.
+- [x] Manter o worker de vendas focado em processamento de eventos de venda.
+- [x] Garantir que o retry respeite backoff, limite de tentativas e
   `DEAD_LETTER`.
-- [ ] Atualizar Docker Compose e documentacao de execucao.
+- [x] Atualizar Docker Compose e documentacao de execucao.
 
 Criterio de aceite:
 
@@ -126,18 +126,25 @@ Criterio de aceite:
 
 Verificacao:
 
-- Teste unitario para regras de retry e limite de tentativas.
-- Teste de integracao ou smoke test simulando email falho e retry.
-- `make test`
-- `make test-integration`
+- [x] Teste unitario para regras de retry e limite de tentativas.
+- [x] Teste de integracao ou smoke test simulando email falho e retry.
+- [x] `make test`
+- [x] `make test-integration`
+
+Status:
+
+- Concluido. PR #4 (`feat: split email retry into dedicated worker`) e PR #5
+  (`test: add email retry integration smoke`) foram mergeados. Validado em
+  2026-09-16 com `make test`, `make test-integration` e `make lint`; a
+  integracao confirmou falha persistente de email indo para `DEAD_LETTER`.
 
 ### P1.2 Fortalecer correlacao da jornada de venda
 
-- [ ] Gerar ou aceitar `correlation_id` no inicio do `POST /sales`.
-- [ ] Propagar `correlation_id` por venda, pagamento, outbox, ticket, email e
+- [x] Gerar ou aceitar `correlation_id` no inicio do `POST /sales`.
+- [x] Propagar `correlation_id` por venda, pagamento, outbox, ticket, email e
   check-in.
-- [ ] Persistir identificadores necessarios para investigacao historica.
-- [ ] Incluir os identificadores nos logs estruturados.
+- [x] Persistir identificadores necessarios para investigacao historica.
+- [x] Incluir os identificadores nos logs estruturados.
 
 Criterio de aceite:
 
@@ -146,11 +153,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para headers/payloads de correlacao.
-- Teste de integracao validando propagacao do identificador.
-- Consulta LogQL documentada filtrando uma venda pelo identificador.
-- `make test`
-- `make test-integration`
+- [x] Testes unitarios para headers/payloads de correlacao.
+- [x] Teste de integracao validando propagacao do identificador.
+- [x] Consulta LogQL documentada filtrando uma venda pelo identificador.
+- [x] `make test`
+- [x] `make test-integration`
+
+Status:
+
+- Concluido. PR #6 (`feat: strengthen sale journey correlation`) foi mergeado.
+  Validado em 2026-09-16 com `make test`, `make test-integration` e
+  `make lint`.
 
 ### P1.3 Propagar contexto por eventos RabbitMQ
 
@@ -298,11 +311,11 @@ expandir funcionalidades de produto.
 
 ### P2.1 Criar primeira migration e camada PostgreSQL
 
-- [ ] Definir schema inicial para projetos, servicos e configuracoes
+- [x] Definir schema inicial para projetos, servicos e configuracoes
   operacionais.
-- [ ] Criar runner de migration ou escolher ferramenta simples para migrations.
-- [ ] Implementar camada de acesso ao PostgreSQL.
-- [ ] Adicionar `.env.example` com variaveis necessarias.
+- [x] Criar runner de migration ou escolher ferramenta simples para migrations.
+- [x] Implementar camada de acesso ao PostgreSQL.
+- [x] Adicionar `.env.example` com variaveis necessarias.
 
 Criterio de aceite:
 
@@ -311,17 +324,22 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para camada de acesso.
-- Teste e2e cobrindo health com banco disponivel.
-- `npm run check`
+- [x] Testes unitarios para camada de acesso.
+- [x] Teste e2e cobrindo health com banco disponivel.
+- [x] `npm run check`
+
+Status:
+
+- Concluido. PR #6 (`feat: report PostgreSQL health`) foi mergeado. Validado em
+  2026-09-16 com `npm run check`, incluindo migrations e e2e com PostgreSQL.
 
 ### P2.2 Implementar convencoes de logs e IDs
 
-- [ ] Criar middleware para `request_id`.
-- [ ] Aceitar `correlation_id` recebido por header.
-- [ ] Emitir logs JSON com `trace_id`, `request_id` e `transaction_id` quando
+- [x] Criar middleware para `request_id`.
+- [x] Aceitar `correlation_id` recebido por header.
+- [x] Emitir logs JSON com `trace_id`, `request_id` e `transaction_id` quando
   aplicavel.
-- [ ] Documentar headers e campos de log.
+- [x] Documentar headers e campos de log.
 
 Criterio de aceite:
 
@@ -330,18 +348,23 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para middleware.
-- Teste e2e validando headers de resposta.
-- Consulta Loki documentada.
-- `npm run check`
+- [x] Testes unitarios para middleware.
+- [x] Teste e2e validando headers de resposta.
+- [x] Consulta Loki documentada.
+- [x] `npm run check`
+
+Status:
+
+- Concluido. PR #7 (`feat: add trace id log correlation`) foi mergeado.
+  Validado em 2026-09-16 com `npm run check`.
 
 ### P2.3 Criar API demonstradora instrumentada
 
-- [ ] Criar fluxo HTTP que simule uma transacao operacional.
-- [ ] Adicionar uma etapa assincrona demonstravel.
-- [ ] Simular dependencia lenta ou indisponivel.
-- [ ] Emitir metricas RED: rate, errors e duration.
-- [ ] Exportar traces para o Collector.
+- [x] Criar fluxo HTTP que simule uma transacao operacional.
+- [x] Adicionar uma etapa assincrona demonstravel.
+- [x] Simular dependencia lenta ou indisponivel.
+- [x] Emitir metricas RED: rate, errors e duration.
+- [x] Exportar traces para o Collector.
 
 Criterio de aceite:
 
@@ -350,18 +373,24 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para handlers e simulacao.
-- Teste e2e para sucesso e erro.
-- `npm run check`
-- `npm run smoke:observability`
+- [x] Testes unitarios para handlers e simulacao.
+- [x] Teste e2e para sucesso e erro.
+- [x] `npm run check`
+- [x] `npm run smoke:observability`
+
+Status:
+
+- Concluido. PR #8 (`feat: instrument demo transaction telemetry`) foi
+  mergeado. Validado em 2026-09-16 com `npm run check` e
+  `npm run smoke:observability`.
 
 ### P2.4 Criar dashboards tecnicos e de negocio
 
-- [ ] Criar dashboard tecnico por servico com throughput, erros e latencia.
-- [ ] Criar dashboard de negocio com transacoes, sucesso, falha e degradacao.
-- [ ] Adicionar filtros por servico, ambiente e periodo.
-- [ ] Criar links do Grafana para traces no Tempo.
-- [ ] Criar links de traces para logs no Loki.
+- [x] Criar dashboard tecnico por servico com throughput, erros e latencia.
+- [x] Criar dashboard de negocio com transacoes, sucesso, falha e degradacao.
+- [x] Adicionar filtros por servico, ambiente e periodo.
+- [x] Criar links do Grafana para traces no Tempo.
+- [x] Criar links de traces para logs no Loki.
 
 Criterio de aceite:
 
@@ -370,19 +399,25 @@ Criterio de aceite:
 
 Verificacao:
 
-- Dashboards provisionados.
-- `npm run validate:observability`
-- `npm run smoke:observability`
-- Roteiro manual de investigacao documentado.
+- [x] Dashboards provisionados.
+- [x] `npm run validate:observability`
+- [x] `npm run smoke:observability`
+- [x] Roteiro manual de investigacao documentado.
+
+Status:
+
+- Concluido. PR #9 (`feat: provision observability dashboards`) foi mergeado.
+  Validado em 2026-09-16 com `npm run validate:observability` e
+  `npm run smoke:observability`.
 
 ### P2.5 Modelar SLO, SLI e error budget
 
-- [ ] Criar tabelas de SLOs, SLIs e janelas de avaliacao.
-- [ ] Criar API para cadastrar e consultar SLOs.
-- [ ] Calcular disponibilidade simples.
-- [ ] Calcular SLI de latencia.
-- [ ] Calcular consumo e saldo de error budget.
-- [ ] Expor estado do SLO por endpoint ou dashboard.
+- [x] Criar tabelas de SLOs, SLIs e janelas de avaliacao.
+- [x] Criar API para cadastrar e consultar SLOs.
+- [x] Calcular disponibilidade simples.
+- [x] Calcular SLI de latencia.
+- [x] Calcular consumo e saldo de error budget.
+- [x] Expor estado do SLO por endpoint ou dashboard.
 
 Criterio de aceite:
 
@@ -391,17 +426,22 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para disponibilidade, latencia e error budget.
-- Teste e2e para cadastro e consulta de SLO.
-- `npm run check`
+- [x] Testes unitarios para disponibilidade, latencia e error budget.
+- [x] Teste e2e para cadastro e consulta de SLO.
+- [x] `npm run check`
+
+Status:
+
+- Concluido. PR #10 (`feat: model slo error budgets`) foi mergeado. Validado em
+  2026-09-16 com `npm run check`.
 
 ### P2.6 Criar alertas baseados em sintomas
 
-- [ ] Configurar regras Prometheus para erro alto.
-- [ ] Configurar regras Prometheus para latencia alta.
-- [ ] Configurar regra para consumo acelerado de error budget.
-- [ ] Documentar severidade, causa provavel e primeira acao de resposta.
-- [ ] Evitar alertas duplicados para o mesmo sintoma.
+- [x] Configurar regras Prometheus para erro alto.
+- [x] Configurar regras Prometheus para latencia alta.
+- [x] Configurar regra para consumo acelerado de error budget.
+- [x] Documentar severidade, causa provavel e primeira acao de resposta.
+- [x] Evitar alertas duplicados para o mesmo sintoma.
 
 Criterio de aceite:
 
@@ -410,18 +450,24 @@ Criterio de aceite:
 
 Verificacao:
 
-- Regras validadas no Prometheus.
-- Smoke manual provocando erro ou latencia.
-- Roteiro de incidente documentado.
+- [x] Regras validadas no Prometheus.
+- [x] Smoke manual provocando erro ou latencia.
+- [x] Roteiro de incidente documentado.
+
+Status:
+
+- Concluido. PR #11 (`feat: add symptom based alerts`) foi mergeado. Validado
+  em 2026-09-16 com `npm run validate:observability`, que confirmou 3 regras de
+  alerta, e `npm run smoke:observability`.
 
 ### P2.7 Modelar incidentes e investigacao guiada
 
-- [ ] Criar tabelas para incidentes, evidencias, hipoteses e linha do tempo.
-- [ ] Criar API para abrir, atualizar e encerrar incidentes.
-- [ ] Associar incidentes a alertas, servicos e SLOs afetados.
-- [ ] Registrar evidencias com links para dashboard, trace e logs.
-- [ ] Criar runbooks para erro alto, latencia alta e dependencia indisponivel.
-- [ ] Registrar causa raiz e acoes preventivas no encerramento.
+- [x] Criar tabelas para incidentes, evidencias, hipoteses e linha do tempo.
+- [x] Criar API para abrir, atualizar e encerrar incidentes.
+- [x] Associar incidentes a alertas, servicos e SLOs afetados.
+- [x] Registrar evidencias com links para dashboard, trace e logs.
+- [x] Criar runbooks para erro alto, latencia alta e dependencia indisponivel.
+- [x] Registrar causa raiz e acoes preventivas no encerramento.
 
 Criterio de aceite:
 
@@ -430,10 +476,18 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para regras de estado do incidente.
-- Teste e2e para abrir, atualizar e encerrar incidente.
-- Roteiro manual de investigacao usando um alerta simulado.
-- `npm run check`
+- [x] Testes unitarios para regras de estado do incidente.
+- [x] Teste e2e para abrir, atualizar e encerrar incidente.
+- [x] Roteiro manual de investigacao usando um alerta simulado.
+- [x] `npm run check`
+
+Status:
+
+- Concluido na branch `p2.7-guided-incident-investigation` com commit
+  `c52f304` (`feat: add guided incident investigation`). Validado em
+  2026-09-16 com `npm run check`; o e2e confirmou o fluxo de incidente da
+  abertura ate a resolucao. Atencao: nao ha PR associado a essa branch no GitHub
+  no momento desta auditoria.
 
 ## Prioridade P3: fortalecer o `OptiFlow`
 
