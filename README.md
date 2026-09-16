@@ -63,6 +63,11 @@ A comparacao entre estrategias esta documentada em
 [docs/strategy-comparison.md](docs/strategy-comparison.md) e pode ser executada
 com `npm run benchmark:compare`.
 
+Restricoes configuraveis por cenario estao documentadas em
+[docs/configurable-constraints.md](docs/configurable-constraints.md). Elas
+permitem alternar deadlines duros, jornada maxima por recurso e demandas
+obrigatorias sem mudar o motor.
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |

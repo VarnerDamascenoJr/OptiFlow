@@ -18,6 +18,7 @@ export function solveScenario(scenario, options = {}) {
     metadata: metadata,
     strategy: plan.strategy,
     routes: plan.routes,
+    unassignedOrderDetails: plan.unassignedOrderDetails || [],
     unassignedOrderIds: plan.unassignedOrderIds,
     metrics: metrics
   };

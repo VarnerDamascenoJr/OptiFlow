@@ -548,11 +548,11 @@ Status:
 
 ### P3.5 Implementar restricoes configuraveis
 
-- [ ] Definir schema para habilitar restricoes por cenario.
-- [ ] Implementar jornada maxima por veiculo.
-- [ ] Implementar janela de tempo como restricao dura opcional.
-- [ ] Implementar pedidos obrigatorios versus opcionais.
-- [ ] Garantir mensagens de validacao claras para restricoes invalidas.
+- [x] Definir schema para habilitar restricoes por cenario.
+- [x] Implementar jornada maxima por veiculo.
+- [x] Implementar janela de tempo como restricao dura opcional.
+- [x] Implementar pedidos obrigatorios versus opcionais.
+- [x] Garantir mensagens de validacao claras para restricoes invalidas.
 
 Criterio de aceite:
 
@@ -561,9 +561,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes de validacao de schema.
-- Testes de rotas com restricoes ligadas e desligadas.
-- `npm test`
+- [x] Testes de validacao de schema.
+- [x] Testes de rotas com restricoes ligadas e desligadas.
+- [x] `npm test`
+
+Status:
+
+- Concluido. `constraints` permite ativar deadlines duros, jornada maxima por
+  recurso e demandas obrigatorias. O resultado agora inclui
+  `unassignedOrderDetails` com motivo e obrigatoriedade para demandas inviaveis.
 
 ### P3.6 Persistir cenarios, execucoes e resultados
 

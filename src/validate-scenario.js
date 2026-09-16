@@ -14,7 +14,7 @@ export default function validateScenario(scenario) {
 
   const locationIds = collectUniqueIds(scenario.locations, "locations");
   const vehicleIds = collectUniqueIds(scenario.vehicles, "vehicles");
-  collectUniqueIds(scenario.orders, "orders");
+  const orderIds = collectUniqueIds(scenario.orders, "orders");
 
   if (vehicleIds.length === 0) {
     throw new Error("scenario.vehicles must contain at least one vehicle");
@@ -65,6 +65,8 @@ export default function validateScenario(scenario) {
       assertNonNegativeNumber(scenario.distanceMatrix[fromId][toId], "distanceMatrix." + fromId + "." + toId);
     }
   }
+
+  validateConstraints(scenario.constraints, orderIds, scenario.vehicles);
 }
 
 function collectUniqueIds(items, label) {
@@ -142,5 +144,50 @@ function assertNonNegativeNumber(value, label) {
 
   if (value < 0) {
     throw new Error(label + " must be greater than or equal to zero");
+  }
+}
+
+function validateConstraints(constraints, orderIds, vehicles) {
+  if (constraints === undefined) {
+    return;
+  }
+
+  assertObject(constraints, "constraints");
+  assertOptionalBoolean(constraints.hardTimeWindows, "constraints.hardTimeWindows");
+  assertOptionalBoolean(constraints.maxRouteDistance, "constraints.maxRouteDistance");
+
+  if (constraints.maxRouteDistance === true) {
+    for (let vehicleIndex = 0; vehicleIndex < vehicles.length; vehicleIndex += 1) {
+      if (vehicles[vehicleIndex].maxDistance === undefined) {
+        throw new Error("vehicles[" + vehicleIndex + "].maxDistance is required when constraints.maxRouteDistance is true");
+      }
+    }
+  }
+
+  if (constraints.requiredOrderIds !== undefined) {
+    assertArray(constraints.requiredOrderIds, "constraints.requiredOrderIds");
+
+    const seen = {};
+
+    for (let i = 0; i < constraints.requiredOrderIds.length; i += 1) {
+      const orderId = constraints.requiredOrderIds[i];
+      assertString(orderId, "constraints.requiredOrderIds[" + i + "]");
+
+      if (seen[orderId]) {
+        throw new Error("constraints.requiredOrderIds contains duplicate id: " + orderId);
+      }
+
+      if (orderIds.indexOf(orderId) === -1) {
+        throw new Error("constraints.requiredOrderIds[" + i + "] must reference a known order: " + orderId);
+      }
+
+      seen[orderId] = true;
+    }
+  }
+}
+
+function assertOptionalBoolean(value, label) {
+  if (value !== undefined && typeof value !== "boolean") {
+    throw new Error(label + " must be a boolean");
   }
 }
