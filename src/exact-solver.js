@@ -1,3 +1,8 @@
+import {
+  buildUnassignedOrderDetails,
+  canServeOrderAtThisPoint,
+  readScenarioConstraints
+} from "./constraints.js";
 import evaluatePlan from "./metrics.js";
 
 const defaultOptions = {
@@ -7,6 +12,7 @@ const defaultOptions = {
 
 export default function createExactSolverPlan(scenario, options = {}) {
   const solverOptions = normalizeOptions(options);
+  const constraints = readScenarioConstraints(scenario);
 
   if (scenario.orders.length > solverOptions.maxOrders) {
     throw new Error(
@@ -19,7 +25,7 @@ export default function createExactSolverPlan(scenario, options = {}) {
 
   const deadline = Date.now() + solverOptions.timeoutMs;
   const candidatesByVehicle = scenario.vehicles.map(function mapVehicle(vehicle) {
-    return buildRouteCandidates(scenario, vehicle, deadline);
+    return buildRouteCandidates(scenario, vehicle, deadline, constraints);
   });
   let bestPlan = null;
   let bestMetrics = null;
@@ -35,6 +41,7 @@ export default function createExactSolverPlan(scenario, options = {}) {
         bestMetrics = metrics;
       }
     },
+    constraints: constraints,
     scenario: scenario,
     selectedRoutes: [],
     usedOrderIds: new Set(),
@@ -67,7 +74,7 @@ function readPositiveInteger(value, fallback) {
   return value;
 }
 
-function buildRouteCandidates(scenario, vehicle, deadline) {
+function buildRouteCandidates(scenario, vehicle, deadline, constraints) {
   const candidates = [];
 
   collectRouteCandidates({
@@ -76,8 +83,12 @@ function buildRouteCandidates(scenario, vehicle, deadline) {
     remainingOrders: scenario.orders,
     scenario: scenario,
     selectedOrders: [],
+    totalDistance: 0,
+    currentLocationId: vehicle.startLocationId,
+    currentTime: scenario.operation.startTimeMinutes,
     usedCapacity: 0,
-    vehicle: vehicle
+    vehicle: vehicle,
+    constraints: constraints
   });
 
   return candidates;
@@ -95,14 +106,38 @@ function collectRouteCandidates(state) {
       continue;
     }
 
+    if (
+      !canServeOrderAtThisPoint(
+        state.scenario,
+        state.vehicle,
+        {
+          currentLocationId: state.currentLocationId,
+          currentTime: state.currentTime,
+          totalDistance: state.totalDistance
+        },
+        order,
+        state.constraints
+      )
+    ) {
+      continue;
+    }
+
+    const distance = state.scenario.distanceMatrix[state.currentLocationId][order.locationId];
+    const arrivalTime = state.currentTime + distance;
+    const serviceStart = Math.max(arrivalTime, order.timeWindow.startMinutes);
+
     collectRouteCandidates({
       candidates: state.candidates,
+      constraints: state.constraints,
+      currentLocationId: order.locationId,
+      currentTime: serviceStart + order.serviceTimeMinutes,
       deadline: state.deadline,
       remainingOrders: state.remainingOrders.filter(function filterRemaining(candidate) {
         return candidate.id !== order.id;
       }),
       scenario: state.scenario,
       selectedOrders: state.selectedOrders.concat(order),
+      totalDistance: state.totalDistance + distance,
       usedCapacity: nextCapacity,
       vehicle: state.vehicle
     });
@@ -124,6 +159,7 @@ function searchPlans(state) {
     state.onPlan({
       routes: state.selectedRoutes,
       strategy: "exact-enumeration",
+      unassignedOrderDetails: buildUnassignedOrderDetails(state.scenario, unassignedOrderIds, state.constraints),
       unassignedOrderIds: unassignedOrderIds
     });
     return;
@@ -148,6 +184,7 @@ function searchPlans(state) {
 
     searchPlans({
       candidatesByVehicle: state.candidatesByVehicle,
+      constraints: state.constraints,
       deadline: state.deadline,
       onPlan: state.onPlan,
       scenario: state.scenario,

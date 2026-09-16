@@ -234,6 +234,98 @@ test("rejects unknown optimization strategies", function testUnknownStrategy() {
   }, /Unknown optimization strategy: missing-strategy/);
 });
 
+test("rejects invalid configurable constraints", function testInvalidConstraints() {
+  const invalidScenario = clone(scenario);
+  invalidScenario.constraints = {
+    hardTimeWindows: "true"
+  };
+
+  assert.throws(function validate() {
+    optiflow.validateScenario(invalidScenario);
+  }, /constraints.hardTimeWindows must be a boolean/);
+
+  const missingMaxDistanceScenario = clone(scenario);
+  missingMaxDistanceScenario.constraints = {
+    maxRouteDistance: true
+  };
+
+  assert.throws(function validateMissingMaxDistance() {
+    optiflow.validateScenario(missingMaxDistanceScenario);
+  }, /vehicles\[0\].maxDistance is required when constraints.maxRouteDistance is true/);
+
+  const unknownRequiredOrderScenario = clone(scenario);
+  unknownRequiredOrderScenario.constraints = {
+    requiredOrderIds: ["missing-order"]
+  };
+
+  assert.throws(function validateUnknownRequiredOrder() {
+    optiflow.validateScenario(unknownRequiredOrderScenario);
+  }, /constraints.requiredOrderIds\[0\] must reference a known order: missing-order/);
+});
+
+test("can turn deadline windows into hard constraints", function testHardTimeWindowConstraint() {
+  const constrainedScenario = readScenario("benchmark-deadline-latency.json");
+  constrainedScenario.constraints = {
+    hardTimeWindows: true,
+    requiredOrderIds: ["critical-demand"]
+  };
+
+  const result = optiflow.solveScenario(constrainedScenario);
+
+  assert.strictEqual(result.metrics.servedOrders, 0);
+  assert.deepStrictEqual(result.unassignedOrderIds, ["critical-demand"]);
+  assert.deepStrictEqual(result.unassignedOrderDetails, [
+    {
+      orderId: "critical-demand",
+      reason: "hard_time_window_unreachable",
+      required: true
+    }
+  ]);
+});
+
+test("can enable or disable maximum route distance constraints", function testMaxRouteDistanceConstraint() {
+  const unconstrainedScenario = readScenario("benchmark-deadline-latency.json");
+  unconstrainedScenario.vehicles[0].maxDistance = 8;
+
+  const unconstrainedResult = optiflow.solveScenario(unconstrainedScenario);
+  assert.strictEqual(unconstrainedResult.metrics.servedOrders, 1);
+
+  const constrainedScenario = clone(unconstrainedScenario);
+  constrainedScenario.constraints = {
+    maxRouteDistance: true
+  };
+
+  const constrainedResult = optiflow.solveScenario(constrainedScenario);
+
+  assert.strictEqual(constrainedResult.metrics.servedOrders, 0);
+  assert.deepStrictEqual(constrainedResult.unassignedOrderDetails, [
+    {
+      orderId: "critical-demand",
+      reason: "max_route_distance_exceeded",
+      required: false
+    }
+  ]);
+});
+
+test("applies hard constraints to exact enumeration too", function testExactSolverConstraints() {
+  const constrainedScenario = readScenario("benchmark-deadline-latency.json");
+  constrainedScenario.constraints = {
+    hardTimeWindows: true
+  };
+
+  const result = optiflow.solveScenario(constrainedScenario, {
+    strategy: "exact-enumeration"
+  });
+
+  assert.strictEqual(result.metrics.servedOrders, 0);
+  assert.deepStrictEqual(result.unassignedOrderIds, ["critical-demand"]);
+  assert.deepStrictEqual(result.unassignedOrderDetails[0], {
+    orderId: "critical-demand",
+    reason: "hard_time_window_unreachable",
+    required: false
+  });
+});
+
 function getRouteOrderIds(route) {
   return route.stops
     .filter(function filterOrderStops(stop) {
@@ -246,4 +338,9 @@ function getRouteOrderIds(route) {
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function readScenario(fileName) {
+  const benchmarkPath = path.join(__dirname, "..", "data", "scenarios", fileName);
+  return JSON.parse(fs.readFileSync(benchmarkPath, "utf8"));
 }

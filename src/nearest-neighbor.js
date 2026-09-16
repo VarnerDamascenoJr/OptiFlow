@@ -1,25 +1,35 @@
+import {
+  buildUnassignedOrderDetails,
+  canServeOrderAtThisPoint,
+  readScenarioConstraints
+} from "./constraints.js";
+
 export default function createNearestNeighborPlan(scenario) {
+  const constraints = readScenarioConstraints(scenario);
   let remainingOrders = scenario.orders.slice();
   const routes = [];
 
   for (let vehicleIndex = 0; vehicleIndex < scenario.vehicles.length; vehicleIndex += 1) {
     const vehicle = scenario.vehicles[vehicleIndex];
-    const route = buildVehicleRoute(scenario, vehicle, remainingOrders);
+    const route = buildVehicleRoute(scenario, vehicle, remainingOrders, constraints);
     routes.push(route);
     remainingOrders = route.remainingOrders;
     delete route.remainingOrders;
   }
 
+  const unassignedOrderIds = remainingOrders.map(function mapOrderId(order) {
+    return order.id;
+  });
+
   return {
     strategy: "nearest-neighbor-capacity",
     routes: routes,
-    unassignedOrderIds: remainingOrders.map(function mapOrderId(order) {
-      return order.id;
-    })
+    unassignedOrderDetails: buildUnassignedOrderDetails(scenario, unassignedOrderIds, constraints),
+    unassignedOrderIds: unassignedOrderIds
   };
 }
 
-function buildVehicleRoute(scenario, vehicle, availableOrders) {
+function buildVehicleRoute(scenario, vehicle, availableOrders, constraints) {
   let currentLocationId = vehicle.startLocationId;
   let currentTime = scenario.operation.startTimeMinutes;
   let usedCapacity = 0;
@@ -39,7 +49,18 @@ function buildVehicleRoute(scenario, vehicle, availableOrders) {
   ];
 
   while (true) {
-    const candidate = findNearestFeasibleOrder(scenario, currentLocationId, vehicle.capacity - usedCapacity, remainingOrders);
+    const candidate = findNearestFeasibleOrder(
+      scenario,
+      vehicle,
+      {
+        currentLocationId: currentLocationId,
+        currentTime: currentTime,
+        totalDistance: totalDistance
+      },
+      vehicle.capacity - usedCapacity,
+      remainingOrders,
+      constraints
+    );
 
     if (!candidate) {
       break;
@@ -97,7 +118,7 @@ function buildVehicleRoute(scenario, vehicle, availableOrders) {
   };
 }
 
-function findNearestFeasibleOrder(scenario, currentLocationId, remainingCapacity, orders) {
+function findNearestFeasibleOrder(scenario, vehicle, routeState, remainingCapacity, orders, constraints) {
   let best = null;
 
   for (let i = 0; i < orders.length; i += 1) {
@@ -107,7 +128,11 @@ function findNearestFeasibleOrder(scenario, currentLocationId, remainingCapacity
       continue;
     }
 
-    const distance = scenario.distanceMatrix[currentLocationId][order.locationId];
+    if (!canServeOrderAtThisPoint(scenario, vehicle, routeState, order, constraints)) {
+      continue;
+    }
+
+    const distance = scenario.distanceMatrix[routeState.currentLocationId][order.locationId];
     const score = distance;
 
     if (!best || score < best.score || (score === best.score && order.id < best.order.id)) {
