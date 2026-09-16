@@ -90,6 +90,13 @@ documentada em [docs/statistical-simulation.md](docs/statistical-simulation.md):
 npm run scenario:small:simulate
 ```
 
+A decisao orientada a risco com VaR/CVaR esta documentada em
+[docs/risk-aware-decision.md](docs/risk-aware-decision.md):
+
+```bash
+npm run scenario:small:risk
+```
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
