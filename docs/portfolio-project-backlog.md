@@ -627,10 +627,10 @@ Status:
 
 ### P3.6 Persistir cenarios, execucoes e resultados
 
-- [ ] Escolher persistencia inicial alinhada ao backend futuro.
-- [ ] Modelar `scenario`, `optimization_run`, `route_plan` e metricas.
-- [ ] Registrar status, inicio, fim, estrategia, erro e duracao.
-- [ ] Criar fixtures ou migrations iniciais.
+- [x] Escolher persistencia inicial alinhada ao backend futuro.
+- [x] Modelar `scenario`, `optimization_run`, `route_plan` e metricas.
+- [x] Registrar status, inicio, fim, estrategia, erro e duracao.
+- [x] Criar fixtures ou migrations iniciais.
 
 Criterio de aceite:
 
@@ -639,8 +639,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes de repositorio ou integracao com banco local.
-- Script demonstrando criar, executar e consultar historico.
+- [x] Testes de repositorio para persistir e recuperar execucoes concluidas e
+  falhas.
+- [x] Script `npm run scenario:small:history` demonstrando criar, executar e
+  consultar historico.
+
+Status:
+
+- Concluido. A persistencia inicial usa um arquivo JSON local versionado em
+  `.optiflow/optimization-history.json`, com colecoes separadas para cenarios,
+  execucoes, planos e metricas. A decisao esta documentada em
+  [optimization-history.md](optimization-history.md).
 
 ### P3.7 Criar API de cenarios e execucoes
 

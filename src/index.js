@@ -1,6 +1,7 @@
 import createExecutionMetadata from "./execution-metadata.js";
 import createExactSolverPlan from "./exact-solver.js";
 import createNearestNeighborPlan from "./nearest-neighbor.js";
+import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import evaluatePlan from "./metrics.js";
 import renderOptimizationMetrics from "./observability-metrics.js";
 import { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
@@ -67,6 +68,7 @@ export {
   createExecutionMetadata,
   createExactSolverPlan,
   createNearestNeighborPlan,
+  createOptimizationHistoryRepository,
   evaluatePlan,
   renderOptimizationMetrics,
   renderComparisonReport,
