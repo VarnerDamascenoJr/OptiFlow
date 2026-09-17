@@ -1,7 +1,7 @@
 import http from "node:http";
-import { performance } from "node:perf_hooks";
 import createExecutionMetadata from "./execution-metadata.js";
 import { createOptimizationHistoryRepository } from "./optimization-history.js";
+import { createOptimizationRunQueue } from "./optimization-run-queue.js";
 import { solveScenario } from "./index.js";
 import validateScenario from "./validate-scenario.js";
 
@@ -11,10 +11,20 @@ export function createOptiFlowApiServer(options = {}) {
   const repository =
     options.repository || createOptimizationHistoryRepository(options.historyFile);
   const bodyLimitBytes = options.bodyLimitBytes || DEFAULT_BODY_LIMIT_BYTES;
+  const runQueue =
+    options.runQueue ||
+    createOptimizationRunQueue({
+      concurrency: options.optimizationConcurrency,
+      defaultMaxAttempts: options.defaultMaxAttempts,
+      defaultTimeoutMs: options.defaultTimeoutMs,
+      repository: repository,
+      solve: solveScenario
+    });
 
   return http.createServer(function handleRequest(request, response) {
     handleApiRequest(request, response, {
       bodyLimitBytes: bodyLimitBytes,
+      runQueue: runQueue,
       repository: repository
     }).catch(function handleUnexpectedError(error) {
       if (error.statusCode && error.code) {
@@ -127,37 +137,16 @@ async function handleCreateOptimizationRun(request, response, dependencies) {
 
   const strategy = readOptionalString(body.strategy) || "nearest-neighbor-capacity";
   const metadata = createExecutionMetadata(body.metadata || {});
-  const startedAt = new Date();
-  const started = performance.now();
+  const persisted = dependencies.runQueue.enqueue({
+    maxAttempts: readOptionalPositiveInteger(body.maxAttempts),
+    metadata: metadata,
+    scenario: scenario,
+    solver: body.solver || {},
+    strategy: strategy,
+    timeoutMs: readOptionalPositiveInteger(body.timeoutMs)
+  });
 
-  try {
-    const result = solveScenario(scenario, {
-      metadata: metadata,
-      solver: body.solver || {},
-      strategy: strategy
-    });
-    const persisted = dependencies.repository.recordCompletedRun({
-      durationMs: performance.now() - started,
-      finishedAt: new Date(),
-      result: result,
-      scenario: scenario,
-      startedAt: startedAt
-    });
-
-    sendJson(response, 201, renderOptimizationRun(persisted));
-  } catch (error) {
-    const persisted = dependencies.repository.recordFailedRun({
-      durationMs: performance.now() - started,
-      error: error,
-      finishedAt: new Date(),
-      metadata: metadata,
-      scenario: scenario,
-      startedAt: startedAt,
-      strategy: strategy
-    });
-
-    sendJson(response, 422, renderOptimizationRun(persisted));
-  }
+  sendJson(response, 202, renderOptimizationRun(persisted));
 }
 
 function handleGetOptimizationRun(pathname, response, dependencies) {
@@ -279,4 +268,12 @@ function createHttpError(statusCode, code, message) {
 
 function readOptionalString(value) {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+}
+
+function readOptionalPositiveInteger(value) {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  return Number.isInteger(value) && value > 0 ? value : undefined;
 }

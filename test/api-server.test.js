@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scenarioPath = path.join(__dirname, "..", "data", "scenarios", "small-delivery.json");
 const scenario = JSON.parse(fs.readFileSync(scenarioPath, "utf8"));
 
-test("validates, creates, runs and retrieves optimization history over HTTP", async function testApiFlow(t) {
+test("validates, creates, queues and retrieves optimization history over HTTP", async function testApiFlow(t) {
   const client = await startTestServer(t);
 
   const validation = await client.post("/scenarios/validate", { scenario: scenario });
@@ -32,17 +32,40 @@ test("validates, creates, runs and retrieves optimization history over HTTP", as
     scenarioRecordId: createdScenario.body.scenarioRecordId,
     strategy: "exact-enumeration"
   });
-  assert.strictEqual(createdRun.status, 201);
+  assert.strictEqual(createdRun.status, 202);
   assert.strictEqual(createdRun.body.optimizationRun.id, "run-api-flow");
-  assert.strictEqual(createdRun.body.optimizationRun.status, "succeeded");
+  assert.strictEqual(createdRun.body.optimizationRun.status, "QUEUED");
   assert.strictEqual(createdRun.body.optimizationRun.strategy, "exact-enumeration");
-  assert.strictEqual(createdRun.body.metrics.totalCost, 744);
+  assert.strictEqual(createdRun.body.metrics, null);
 
-  const recoveredRun = await client.get("/optimization-runs/run-api-flow");
+  const recoveredRun = await waitForRunStatus(client, "run-api-flow", "SUCCEEDED");
   assert.strictEqual(recoveredRun.status, 200);
   assert.strictEqual(recoveredRun.body.optimizationRun.id, "run-api-flow");
   assert.strictEqual(recoveredRun.body.routePlan.routes.length, 2);
   assert.strictEqual(recoveredRun.body.metrics.totalCost, 744);
+});
+
+test("persists failed asynchronous optimization runs", async function testFailedAsyncRun(t) {
+  const client = await startTestServer(t);
+  const createdRun = await client.post("/optimization-runs", {
+    metadata: {
+      optimizationRunId: "run-api-failed"
+    },
+    scenario: scenario,
+    solver: {
+      maxOrders: 1
+    },
+    strategy: "exact-enumeration"
+  });
+
+  assert.strictEqual(createdRun.status, 202);
+  assert.strictEqual(createdRun.body.optimizationRun.status, "QUEUED");
+
+  const recoveredRun = await waitForRunStatus(client, "run-api-failed", "FAILED");
+
+  assert.strictEqual(recoveredRun.body.optimizationRun.error.message, "exact-enumeration supports at most 1 orders; received 4");
+  assert.strictEqual(recoveredRun.body.routePlan, null);
+  assert.strictEqual(recoveredRun.body.metrics, null);
 });
 
 test("returns standardized validation errors", async function testValidationError(t) {
@@ -117,4 +140,20 @@ async function request(url, options) {
     status: response.status,
     body: await response.json()
   };
+}
+
+async function waitForRunStatus(client, optimizationRunId, expectedStatus) {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const response = await client.get("/optimization-runs/" + optimizationRunId);
+
+    if (response.body.optimizationRun.status === expectedStatus) {
+      return response;
+    }
+
+    await new Promise(function delay(resolve) {
+      setTimeout(resolve, 5);
+    });
+  }
+
+  return client.get("/optimization-runs/" + optimizationRunId);
 }

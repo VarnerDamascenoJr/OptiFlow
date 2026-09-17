@@ -17,6 +17,9 @@ Variaveis:
 | `OPTIFLOW_API_HOST` | `127.0.0.1` | Interface onde o servidor escuta. |
 | `OPTIFLOW_API_PORT` | `3000` | Porta HTTP. |
 | `OPTIFLOW_HISTORY_FILE` | `.optiflow/optimization-history.json` | Arquivo local de historico. |
+| `OPTIFLOW_RUN_CONCURRENCY` | `1` | Numero de execucoes processadas em paralelo. |
+| `OPTIFLOW_RUN_MAX_ATTEMPTS` | `1` | Tentativas padrao por execucao. |
+| `OPTIFLOW_RUN_TIMEOUT_MS` | `1000` | Timeout padrao por execucao. |
 
 ## Rotas
 
@@ -26,7 +29,7 @@ Variaveis:
 | `POST` | `/scenarios/validate` | Valida um cenario sem persistir. |
 | `POST` | `/scenarios` | Valida e persiste um snapshot de cenario. |
 | `GET` | `/scenarios/:scenarioRecordId` | Consulta o snapshot persistido. |
-| `POST` | `/optimization-runs` | Executa uma estrategia e persiste status, plano e metricas. |
+| `POST` | `/optimization-runs` | Enfileira uma estrategia e persiste status, plano e metricas. |
 | `GET` | `/optimization-runs/:optimizationRunId` | Consulta status e resultado persistidos. |
 
 ## Exemplos
@@ -47,7 +50,7 @@ curl -s http://127.0.0.1:3000/scenarios \
   -d @data/scenarios/small-delivery.json
 ```
 
-Executar usando um cenario persistido:
+Enfileirar usando um cenario persistido:
 
 ```bash
 curl -s http://127.0.0.1:3000/optimization-runs \
@@ -55,6 +58,8 @@ curl -s http://127.0.0.1:3000/optimization-runs \
   -d '{
     "scenarioRecordId": "scenario_HASH",
     "strategy": "exact-enumeration",
+    "maxAttempts": 2,
+    "timeoutMs": 1000,
     "metadata": {
       "optimizationRunId": "run-demo-api"
     }
@@ -66,6 +71,15 @@ Consultar execucao:
 ```bash
 curl -s http://127.0.0.1:3000/optimization-runs/run-demo-api
 ```
+
+Estados:
+
+| Estado | Significado |
+| --- | --- |
+| `QUEUED` | A execucao foi aceita e aguarda o worker local. |
+| `RUNNING` | A estrategia esta executando fora do request HTTP inicial. |
+| `SUCCEEDED` | Plano e metricas foram persistidos. |
+| `FAILED` | Todas as tentativas falharam ou a execucao excedeu o timeout. |
 
 ## Erros
 
@@ -81,5 +95,6 @@ Erros seguem o mesmo envelope:
 }
 ```
 
-Esta API executa a otimizacao no request atual. Execucao assincrona com estados
-`QUEUED` e `RUNNING` fica para a P3.8.
+Esta API usa uma fila local em memoria. Ela e suficiente para a demonstracao
+local e prepara a troca futura por uma fila persistente quando houver worker
+dedicado.

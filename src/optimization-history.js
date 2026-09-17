@@ -31,6 +31,12 @@ export function createOptimizationHistoryRepository(filePath = DEFAULT_HISTORY_F
     recordFailedRun: function recordFailedRun(input) {
       return persistFailedRun(historyFile, input);
     },
+    recordQueuedRun: function recordQueuedRun(input) {
+      return persistQueuedRun(historyFile, input);
+    },
+    recordRunningRun: function recordRunningRun(input) {
+      return persistRunningRun(historyFile, input);
+    },
     recordScenario: function recordScenario(input) {
       return persistScenario(historyFile, input);
     }
@@ -47,6 +53,82 @@ function persistScenario(historyFile, input) {
   upsertScenario(store, scenarioRecord);
   writeStore(historyFile, store);
   return readScenarioRecord(historyFile, scenarioRecord.id);
+}
+
+function persistQueuedRun(historyFile, input) {
+  assertObject(input, "history input");
+  assertObject(input.scenario, "history input.scenario");
+  assertObject(input.metadata, "history input.metadata");
+
+  const optimizationRunId = readString(input.metadata.optimizationRunId);
+
+  if (!optimizationRunId) {
+    throw new Error("metadata.optimizationRunId is required to persist optimization history");
+  }
+
+  const store = readStore(historyFile);
+  const existingRun = findRunRecord(store, optimizationRunId);
+  const scenarioRecord = buildScenarioRecord(input.scenario, input.sourcePath, input.queuedAt);
+
+  upsertScenario(store, scenarioRecord);
+  removeRunArtifacts(store, optimizationRunId);
+  store.optimizationRuns.push({
+    id: optimizationRunId,
+    scenarioRecordId: scenarioRecord.id,
+    scenarioId: input.scenario.id,
+    status: "QUEUED",
+    queuedAt: normalizeTimestamp(input.queuedAt),
+    startedAt: existingRun ? existingRun.startedAt : null,
+    finishedAt: null,
+    strategy: input.strategy,
+    error: input.error ? serializeError(input.error) : null,
+    durationMs: null,
+    attemptCount: readNonNegativeInteger(input.attemptCount, existingRun ? existingRun.attemptCount : 0),
+    maxAttempts: readPositiveInteger(input.maxAttempts, existingRun ? existingRun.maxAttempts : 1),
+    timeoutMs: readPositiveInteger(input.timeoutMs, existingRun ? existingRun.timeoutMs : null),
+    metadata: clone(input.metadata)
+  });
+
+  writeStore(historyFile, store);
+  return readRun(historyFile, optimizationRunId);
+}
+
+function persistRunningRun(historyFile, input) {
+  assertObject(input, "history input");
+  assertObject(input.scenario, "history input.scenario");
+  assertObject(input.metadata, "history input.metadata");
+
+  const optimizationRunId = readString(input.metadata.optimizationRunId);
+
+  if (!optimizationRunId) {
+    throw new Error("metadata.optimizationRunId is required to persist optimization history");
+  }
+
+  const store = readStore(historyFile);
+  const existingRun = findRunRecord(store, optimizationRunId);
+  const scenarioRecord = buildScenarioRecord(input.scenario, input.sourcePath, input.startedAt);
+
+  upsertScenario(store, scenarioRecord);
+  removeRunArtifacts(store, optimizationRunId);
+  store.optimizationRuns.push({
+    id: optimizationRunId,
+    scenarioRecordId: scenarioRecord.id,
+    scenarioId: input.scenario.id,
+    status: "RUNNING",
+    queuedAt: existingRun ? existingRun.queuedAt : normalizeTimestamp(input.startedAt),
+    startedAt: normalizeTimestamp(input.startedAt),
+    finishedAt: null,
+    strategy: input.strategy,
+    error: null,
+    durationMs: null,
+    attemptCount: readPositiveInteger(input.attemptCount, existingRun ? existingRun.attemptCount + 1 : 1),
+    maxAttempts: readPositiveInteger(input.maxAttempts, existingRun ? existingRun.maxAttempts : 1),
+    timeoutMs: readPositiveInteger(input.timeoutMs, existingRun ? existingRun.timeoutMs : null),
+    metadata: clone(input.metadata)
+  });
+
+  writeStore(historyFile, store);
+  return readRun(historyFile, optimizationRunId);
 }
 
 function persistCompletedRun(historyFile, input) {
@@ -66,6 +148,7 @@ function persistCompletedRun(historyFile, input) {
   const startedAt = normalizeTimestamp(input.startedAt);
   const durationMs = normalizeDurationMs(input.durationMs, startedAt, finishedAt);
   const store = readStore(historyFile);
+  const existingRun = findRunRecord(store, optimizationRunId);
 
   upsertScenario(store, scenarioRecord);
   removeRunArtifacts(store, optimizationRunId);
@@ -73,12 +156,16 @@ function persistCompletedRun(historyFile, input) {
     id: optimizationRunId,
     scenarioRecordId: scenarioRecord.id,
     scenarioId: input.scenario.id,
-    status: "succeeded",
+    status: "SUCCEEDED",
+    queuedAt: existingRun ? existingRun.queuedAt : startedAt,
     startedAt: startedAt,
     finishedAt: finishedAt,
     strategy: input.result.strategy,
     error: null,
     durationMs: durationMs,
+    attemptCount: readPositiveInteger(input.attemptCount, existingRun ? existingRun.attemptCount : 1),
+    maxAttempts: readPositiveInteger(input.maxAttempts, existingRun ? existingRun.maxAttempts : 1),
+    timeoutMs: readPositiveInteger(input.timeoutMs, existingRun ? existingRun.timeoutMs : null),
     metadata: clone(input.result.metadata)
   });
   store.routePlans.push({
@@ -115,6 +202,7 @@ function persistFailedRun(historyFile, input) {
   const startedAt = normalizeTimestamp(input.startedAt);
   const durationMs = normalizeDurationMs(input.durationMs, startedAt, finishedAt);
   const store = readStore(historyFile);
+  const existingRun = findRunRecord(store, optimizationRunId);
 
   upsertScenario(store, scenarioRecord);
   removeRunArtifacts(store, optimizationRunId);
@@ -122,12 +210,16 @@ function persistFailedRun(historyFile, input) {
     id: optimizationRunId,
     scenarioRecordId: scenarioRecord.id,
     scenarioId: input.scenario.id,
-    status: "failed",
+    status: "FAILED",
+    queuedAt: existingRun ? existingRun.queuedAt : startedAt,
     startedAt: startedAt,
     finishedAt: finishedAt,
     strategy: input.strategy,
     error: serializeError(input.error),
     durationMs: durationMs,
+    attemptCount: readPositiveInteger(input.attemptCount, existingRun ? existingRun.attemptCount : 1),
+    maxAttempts: readPositiveInteger(input.maxAttempts, existingRun ? existingRun.maxAttempts : 1),
+    timeoutMs: readPositiveInteger(input.timeoutMs, existingRun ? existingRun.timeoutMs : null),
     metadata: clone(input.metadata)
   });
 
@@ -154,6 +246,12 @@ function findScenarioRecordByScenarioId(historyFile, scenarioId) {
   }
 
   return clone(matches[matches.length - 1]);
+}
+
+function findRunRecord(store, optimizationRunId) {
+  return store.optimizationRuns.find(function findRun(candidate) {
+    return candidate.id === optimizationRunId;
+  });
 }
 
 function readRun(historyFile, optimizationRunId) {
@@ -318,4 +416,20 @@ function readString(value) {
 
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function readPositiveInteger(value, fallback) {
+  if (Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  return fallback;
+}
+
+function readNonNegativeInteger(value, fallback) {
+  if (Number.isInteger(value) && value >= 0) {
+    return value;
+  }
+
+  return fallback;
 }
