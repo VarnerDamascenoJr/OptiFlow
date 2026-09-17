@@ -114,6 +114,14 @@ npm run sales-event:import
 npm run scenario:sales-event
 ```
 
+Metricas Prometheus e logs JSON das execucoes da API estao documentados em
+[docs/execution-observability.md](docs/execution-observability.md). Depois de
+subir a API, o scrape local fica em:
+
+```bash
+curl http://127.0.0.1:3000/metrics
+```
+
 Entrega local, Docker e CI estao documentados em
 [docs/local-delivery.md](docs/local-delivery.md). O smoke independente do
 projeto roda com:

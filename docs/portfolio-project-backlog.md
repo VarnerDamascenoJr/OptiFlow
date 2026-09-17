@@ -909,11 +909,11 @@ Status:
 
 ### P4.4 Expor metricas de execucao do `OptiFlow`
 
-- [ ] Definir metricas de otimizacao: duracao, status, estrategia, custo,
+- [x] Definir metricas de otimizacao: duracao, status, estrategia, custo,
   atraso, distancia e pedidos nao alocados.
-- [ ] Expor metricas Prometheus ou OTLP.
-- [ ] Incluir `optimization_run_id` e `correlation_id` nos logs.
-- [ ] Criar painel inicial na plataforma.
+- [x] Expor metricas Prometheus ou OTLP.
+- [x] Incluir `optimization_run_id` e `correlation_id` nos logs.
+- [x] Criar painel inicial na plataforma.
 
 Criterio de aceite:
 
@@ -922,9 +922,20 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes de serializacao/exportacao de metricas.
-- Smoke manual consultando metricas ou visualizando no Grafana.
-- `npm test`
+- [x] Testes de serializacao/exportacao de metricas.
+- [x] Smoke manual consultando metricas ou visualizando no Grafana.
+- [x] `npm test`
+
+Status:
+
+- Concluido. O `OptiFlow` agora expoe `/metrics` na API com series Prometheus
+  para execucoes, duracao, custo, atraso, distancia, pedidos nao alocados e
+  fila local, alem de logs JSON com `optimization_run_id`, `correlation_id`,
+  `request_id` e `transaction_id`.
+- A `operational-observability-platform` agora coleta `optiflow-api` e
+  provisiona o dashboard `Operational Observability - OptiFlow Execution`.
+  Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p4.4-optiflow-execution-metrics-2026-09-17`.
 
 ## Prioridade P5: entrega de portfolio
 
