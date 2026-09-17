@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OptiFlow Scenario Console</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="toolbar" aria-label="Scenario controls">
+        <div>
+          <h1>OptiFlow</h1>
+          <p>Scenario console</p>
+        </div>
+        <div class="actions">
+          <button id="loadSampleButton" type="button">Load sample</button>
+          <button id="duplicateButton" type="button">Duplicate</button>
+          <button id="validateButton" type="button">Validate</button>
+          <button id="saveButton" type="button">Save</button>
+          <button id="runButton" type="button">Run comparison</button>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <section class="panel editor-panel" aria-label="Scenario editor">
+          <div class="panel-header">
+            <h2>Scenario</h2>
+            <span id="scenarioStatus" class="status neutral">Draft</span>
+          </div>
+          <textarea id="scenarioEditor" spellcheck="false"></textarea>
+        </section>
+
+        <section class="panel results-panel" aria-label="Optimization results">
+          <div class="panel-header">
+            <h2>Results</h2>
+            <span id="runStatus" class="status neutral">Idle</span>
+          </div>
+          <div id="metricGrid" class="metric-grid"></div>
+          <div class="comparison">
+            <h3>Strategy comparison</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th>Cost</th>
+                  <th>Distance</th>
+                  <th>Late</th>
+                  <th>Served</th>
+                  <th>Unassigned</th>
+                </tr>
+              </thead>
+              <tbody id="comparisonRows"></tbody>
+            </table>
+          </div>
+          <pre id="messageLog" class="message-log"></pre>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

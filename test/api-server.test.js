@@ -97,6 +97,20 @@ test("returns standardized JSON parse errors", async function testInvalidJson(t)
   assert.strictEqual(body.error.code, "invalid_json");
 });
 
+test("serves the scenario interface assets", async function testInterfaceAssets(t) {
+  const client = await startTestServer(t);
+  const home = await fetch(client.url("/"));
+  const script = await fetch(client.url("/app.js"));
+  const styles = await fetch(client.url("/app.css"));
+
+  assert.strictEqual(home.status, 200);
+  assert.match(await home.text(), /OptiFlow Scenario Console/);
+  assert.strictEqual(script.status, 200);
+  assert.match(await script.text(), /runComparison/);
+  assert.strictEqual(styles.status, 200);
+  assert.match(await styles.text(), /metric-grid/);
+});
+
 async function startTestServer(t) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "optiflow-api-"));
   const historyFile = path.join(directory, "history.json");

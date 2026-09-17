@@ -97,6 +97,14 @@ A decisao orientada a risco com VaR/CVaR esta documentada em
 npm run scenario:small:risk
 ```
 
+A interface local para editar cenarios e comparar estrategias esta documentada
+em [docs/scenario-interface.md](docs/scenario-interface.md). Ela e servida pelo
+comando da API:
+
+```bash
+npm run api
+```
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
