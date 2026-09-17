@@ -731,11 +731,11 @@ Status:
 
 ### P3.10 Avaliar decisao orientada a risco com CVaR
 
-- [ ] Definir metrica de risco inicial para custo, atraso ou pedidos nao
+- [x] Definir metrica de risco inicial para custo, atraso ou pedidos nao
   atendidos.
-- [ ] Implementar calculo de VaR e CVaR sobre resultados simulados.
-- [ ] Comparar decisao por menor custo medio versus decisao por risco.
-- [ ] Documentar quando uma solucao mais cara pode ser operacionalmente melhor.
+- [x] Implementar calculo de VaR e CVaR sobre resultados simulados.
+- [x] Comparar decisao por menor custo medio versus decisao por risco.
+- [x] Documentar quando uma solucao mais cara pode ser operacionalmente melhor.
 
 Criterio de aceite:
 
@@ -745,10 +745,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes unitarios para VaR e CVaR com dataset pequeno conhecido.
-- Teste de comparacao entre duas estrategias simuladas.
-- Script de simulacao reproduzivel.
-- `npm test`
+- [x] Testes unitarios para VaR e CVaR com dataset pequeno conhecido.
+- [x] Teste de comparacao entre duas estrategias simuladas.
+- [x] Script de simulacao reproduzivel.
+- [x] `npm test`
+
+Status:
+
+- Concluido. `calculateVarCvar` calcula VaR/CVaR sobre amostras simuladas e
+  `compareRiskAdjustedStrategies` compara recomendacao por custo esperado contra
+  risco de cauda. O script `npm run scenario:small:risk` produz uma saida
+  reproduzivel para portfolio.
 
 ### P3.11 Criar interface para editar e comparar cenarios
 
