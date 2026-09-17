@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "scenario_fixture_v1",
+      "scenarioId": "fixture-scenario-v1",
+      "name": "Fixture scenario",
+      "contentHash": "fixture-hash",
+      "sourcePath": null,
+      "createdAt": "2026-09-16T10:00:00.000Z",
+      "payload": {
+        "id": "fixture-scenario-v1",
+        "name": "Fixture scenario",
+        "operation": {
+          "startTimeMinutes": 480
+        },
+        "costs": {
+          "distanceUnitCost": 1,
+          "lateMinutePenalty": 1,
+          "unassignedOrderPenalty": 100
+        },
+        "locations": [
+          {
+            "id": "origin"
+          }
+        ],
+        "vehicles": [
+          {
+            "id": "resource-1",
+            "capacity": 1,
+            "startLocationId": "origin"
+          }
+        ],
+        "orders": [],
+        "distanceMatrix": {
+          "origin": {
+            "origin": 0
+          }
+        }
+      }
+    }
+  ],
+  "optimizationRuns": [
+    {
+      "id": "run-fixture-v1",
+      "scenarioRecordId": "scenario_fixture_v1",
+      "scenarioId": "fixture-scenario-v1",
+      "status": "succeeded",
+      "startedAt": "2026-09-16T10:00:00.000Z",
+      "finishedAt": "2026-09-16T10:00:00.005Z",
+      "strategy": "nearest-neighbor-capacity",
+      "error": null,
+      "durationMs": 5,
+      "metadata": {
+        "requestId": "req-fixture",
+        "correlationId": "corr-fixture",
+        "transactionId": "run-fixture-v1",
+        "optimizationRunId": "run-fixture-v1",
+        "service": "optiflow-core",
+        "environment": "test"
+      }
+    }
+  ],
+  "routePlans": [
+    {
+      "runId": "run-fixture-v1",
+      "scenarioId": "fixture-scenario-v1",
+      "strategy": "nearest-neighbor-capacity",
+      "routes": [
+        {
+          "vehicleId": "resource-1",
+          "stops": [],
+          "totalDistance": 0,
+          "usedCapacity": 0,
+          "capacity": 1
+        }
+      ],
+      "unassignedOrderIds": [],
+      "unassignedOrderDetails": []
+    }
+  ],
+  "metrics": [
+    {
+      "runId": "run-fixture-v1",
+      "scenarioId": "fixture-scenario-v1",
+      "values": {
+        "servedOrders": 0,
+        "unassignedOrders": 0,
+        "totalDemand": 0,
+        "totalDistance": 0,
+        "totalLateMinutes": 0,
+        "distanceCost": 0,
+        "latenessCost": 0,
+        "unassignedCost": 0,
+        "totalCost": 0,
+        "vehicleUtilization": []
+      }
+    }
+  ]
+}

@@ -68,6 +68,14 @@ Restricoes configuraveis por cenario estao documentadas em
 permitem alternar deadlines duros, jornada maxima por recurso e demandas
 obrigatorias sem mudar o motor.
 
+Historico local de cenarios, execucoes e resultados esta documentado em
+[docs/optimization-history.md](docs/optimization-history.md). A demonstracao
+persiste uma execucao e consulta o resultado recuperado com:
+
+```bash
+npm run scenario:small:history
+```
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
@@ -170,7 +178,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 ### 3. Backend e processamento
 
 - [ ] Definir a arquitetura do backend NestJS.
-- [ ] Modelar persistencia de cenarios, execucoes e resultados.
+- [x] Modelar persistencia de cenarios, execucoes e resultados.
 - [ ] Criar API para criar, validar e consultar cenarios.
 - [ ] Criar fila para execucoes assincronas de otimizacao.
 - [ ] Expor acompanhamento de status e resultados.
