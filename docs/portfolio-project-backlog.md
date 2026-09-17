@@ -784,12 +784,12 @@ Status:
 
 ### P3.12 Preparar Docker, CI e demonstracao do `OptiFlow`
 
-- [ ] Criar Dockerfile ou Compose local para API, worker e banco quando essas
+- [x] Criar Dockerfile ou Compose local para API, worker e banco quando essas
   camadas existirem.
-- [ ] Configurar CI com testes e checks do projeto.
-- [ ] Adicionar comando unico de demonstracao local.
-- [ ] Documentar variaveis de ambiente, portas e problemas conhecidos.
-- [ ] Garantir que a demo rode sem depender dos outros repositorios.
+- [x] Configurar CI com testes e checks do projeto.
+- [x] Adicionar comando unico de demonstracao local.
+- [x] Documentar variaveis de ambiente, portas e problemas conhecidos.
+- [x] Garantir que a demo rode sem depender dos outros repositorios.
 
 Criterio de aceite:
 
@@ -799,10 +799,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- `npm test`
-- `npm run scenario:small`
-- Execucao local via Docker quando disponivel.
-- Ultima execucao verde do CI.
+- [x] `npm test`
+- [x] `npm run scenario:small`
+- [x] Execucao local via Docker quando disponivel.
+- [x] Ultima execucao verde do CI.
+
+Status:
+
+- Concluido. O OptiFlow agora tem Dockerfile, Compose local com volume de
+  historico, workflow de CI e comando `npm run demo:local` para validar o
+  projeto isoladamente. A entrega local esta documentada em
+  [local-delivery.md](local-delivery.md).
 
 ## Prioridade P4: integracao entre os projetos
 

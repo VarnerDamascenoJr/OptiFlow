@@ -105,6 +105,14 @@ comando da API:
 npm run api
 ```
 
+Entrega local, Docker e CI estao documentados em
+[docs/local-delivery.md](docs/local-delivery.md). O smoke independente do
+projeto roda com:
+
+```bash
+npm run demo:local
+```
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
@@ -227,9 +235,9 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 - [x] Cobrir regras de dominio e motor com testes.
 - [ ] Adicionar testes de API e fluxos principais da interface.
 - [ ] Documentar modelo, decisoes e limitacoes do solver.
-- [ ] Preparar ambiente local com Docker.
-- [ ] Configurar CI.
-- [ ] Publicar uma demonstracao e documentar o projeto para portfolio.
+- [x] Preparar ambiente local com Docker.
+- [x] Configurar CI.
+- [x] Publicar uma demonstracao e documentar o projeto para portfolio.
 
 ## Decisoes em aberto
 
