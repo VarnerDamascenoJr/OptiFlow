@@ -10,19 +10,43 @@ export function createOptimizationHistoryRepository(filePath = DEFAULT_HISTORY_F
 
   return {
     filePath: historyFile,
+    findScenarioRecordByScenarioId: function findScenarioRecordByScenarioId(scenarioId) {
+      return findScenarioRecordByScenarioId(historyFile, scenarioId);
+    },
+    getScenarioRecord: function getScenarioRecord(scenarioRecordId) {
+      return readScenarioRecord(historyFile, scenarioRecordId);
+    },
     getRun: function getRun(optimizationRunId) {
       return readRun(historyFile, optimizationRunId);
     },
     listRuns: function listRuns() {
       return readStore(historyFile).optimizationRuns.slice();
     },
+    listScenarioRecords: function listScenarioRecords() {
+      return readStore(historyFile).scenarios.slice();
+    },
     recordCompletedRun: function recordCompletedRun(input) {
       return persistCompletedRun(historyFile, input);
     },
     recordFailedRun: function recordFailedRun(input) {
       return persistFailedRun(historyFile, input);
+    },
+    recordScenario: function recordScenario(input) {
+      return persistScenario(historyFile, input);
     }
   };
+}
+
+function persistScenario(historyFile, input) {
+  assertObject(input, "history input");
+  assertObject(input.scenario, "history input.scenario");
+
+  const store = readStore(historyFile);
+  const scenarioRecord = buildScenarioRecord(input.scenario, input.sourcePath, input.createdAt);
+
+  upsertScenario(store, scenarioRecord);
+  writeStore(historyFile, store);
+  return readScenarioRecord(historyFile, scenarioRecord.id);
 }
 
 function persistCompletedRun(historyFile, input) {
@@ -109,6 +133,27 @@ function persistFailedRun(historyFile, input) {
 
   writeStore(historyFile, store);
   return readRun(historyFile, optimizationRunId);
+}
+
+function readScenarioRecord(historyFile, scenarioRecordId) {
+  const store = readStore(historyFile);
+  const scenarioRecord = store.scenarios.find(function findScenario(candidate) {
+    return candidate.id === scenarioRecordId;
+  });
+
+  return scenarioRecord ? clone(scenarioRecord) : null;
+}
+
+function findScenarioRecordByScenarioId(historyFile, scenarioId) {
+  const matches = readStore(historyFile).scenarios.filter(function findScenario(candidate) {
+    return candidate.scenarioId === scenarioId;
+  });
+
+  if (matches.length === 0) {
+    return null;
+  }
+
+  return clone(matches[matches.length - 1]);
 }
 
 function readRun(historyFile, optimizationRunId) {

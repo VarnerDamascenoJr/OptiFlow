@@ -6,6 +6,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "api": "node scripts/start-api.js",
     "test": "node --test",
     "benchmark:compare": "node scripts/compare-strategies.js",
     "scenario:small": "node scripts/run-scenario.js data/scenarios/small-delivery.json",
