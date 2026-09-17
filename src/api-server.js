@@ -1,4 +1,6 @@
 import http from "node:http";
+import fs from "node:fs";
+import path from "node:path";
 import createExecutionMetadata from "./execution-metadata.js";
 import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import { createOptimizationRunQueue } from "./optimization-run-queue.js";
@@ -43,6 +45,11 @@ async function handleApiRequest(request, response, dependencies) {
   const url = new URL(request.url, "http://localhost");
   const method = request.method || "GET";
 
+  if (method === "GET" && isStaticAssetPath(url.pathname)) {
+    serveStaticAsset(url.pathname, response);
+    return;
+  }
+
   if (method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, { status: "ok", service: "optiflow-api" });
     return;
@@ -74,6 +81,30 @@ async function handleApiRequest(request, response, dependencies) {
   }
 
   sendError(response, 404, "not_found", "Route not found");
+}
+
+function isStaticAssetPath(pathname) {
+  return pathname === "/" || pathname === "/app.css" || pathname === "/app.js";
+}
+
+function serveStaticAsset(pathname, response) {
+  const fileName = pathname === "/" ? "index.html" : pathname.slice(1);
+  const filePath = path.join(process.cwd(), "public", fileName);
+  const contentTypes = {
+    "app.css": "text/css; charset=utf-8",
+    "app.js": "application/javascript; charset=utf-8",
+    "index.html": "text/html; charset=utf-8"
+  };
+
+  if (!fs.existsSync(filePath)) {
+    sendError(response, 404, "static_asset_not_found", "Static asset not found");
+    return;
+  }
+
+  response.writeHead(200, {
+    "content-type": contentTypes[fileName]
+  });
+  response.end(fs.readFileSync(filePath));
 }
 
 async function handleValidateScenario(request, response, dependencies) {

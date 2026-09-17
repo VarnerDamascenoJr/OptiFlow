@@ -759,11 +759,11 @@ Status:
 
 ### P3.11 Criar interface para editar e comparar cenarios
 
-- [ ] Definir experiencia principal para criar, editar e duplicar cenarios.
-- [ ] Criar tela ou prototipo funcional para visualizar entradas do cenario.
-- [ ] Exibir status de execucao e resultado do plano.
-- [ ] Exibir comparacao entre heuristica e solver.
-- [ ] Destacar custo, distancia, atraso, pedidos atendidos e utilizacao.
+- [x] Definir experiencia principal para criar, editar e duplicar cenarios.
+- [x] Criar tela ou prototipo funcional para visualizar entradas do cenario.
+- [x] Exibir status de execucao e resultado do plano.
+- [x] Exibir comparacao entre heuristica e solver.
+- [x] Destacar custo, distancia, atraso, pedidos atendidos e utilizacao.
 
 Criterio de aceite:
 
@@ -772,9 +772,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Testes de componentes ou fluxo principal da interface.
-- Smoke manual criando ou carregando cenario e comparando resultados.
-- Screenshot ou roteiro de demonstracao documentado.
+- [x] Testes de componentes ou fluxo principal da interface.
+- [x] Smoke manual criando ou carregando cenario e comparando resultados.
+- [x] Screenshot ou roteiro de demonstracao documentado.
+
+Status:
+
+- Concluido. A API agora serve um console local em `/` para editar JSON do
+  cenario, validar, salvar, enfileirar heuristica e solver, acompanhar status e
+  comparar custo, distancia, atraso, demandas atendidas e nao atendidas.
 
 ### P3.12 Preparar Docker, CI e demonstracao do `OptiFlow`
 
