@@ -1,0 +1,10 @@
+.git
+.github
+.optiflow
+coverage
+dist
+build
+node_modules
+npm-debug.log
+*.log
+.DS_Store

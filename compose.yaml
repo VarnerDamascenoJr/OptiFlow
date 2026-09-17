@@ -1,0 +1,28 @@
+services:
+  optiflow:
+    build:
+      context: .
+    environment:
+      OPTIFLOW_API_HOST: 0.0.0.0
+      OPTIFLOW_API_PORT: 3000
+      OPTIFLOW_HISTORY_FILE: /data/optimization-history.json
+      OPTIFLOW_RUN_CONCURRENCY: 1
+      OPTIFLOW_RUN_MAX_ATTEMPTS: 1
+      OPTIFLOW_RUN_TIMEOUT_MS: 1000
+    ports:
+      - "3000:3000"
+    volumes:
+      - optiflow-history:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+volumes:
+  optiflow-history:
