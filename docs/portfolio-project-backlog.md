@@ -876,11 +876,11 @@ Status:
 
 ### P4.3 Gerar dados do `sales-event-project` para o `OptiFlow`
 
-- [ ] Definir formato de exportacao de pedidos ou historico operacional.
-- [ ] Criar script de exportacao no `sales-event-project` ou fixture
+- [x] Definir formato de exportacao de pedidos ou historico operacional.
+- [x] Criar script de exportacao no `sales-event-project` ou fixture
   compartilhavel.
-- [ ] Criar importador no `OptiFlow` para transformar dados em `Scenario`.
-- [ ] Validar o cenario importado com o validador existente.
+- [x] Criar importador no `OptiFlow` para transformar dados em `Scenario`.
+- [x] Validar o cenario importado com o validador existente.
 
 Criterio de aceite:
 
@@ -890,10 +890,22 @@ Criterio de aceite:
 
 Verificacao:
 
-- Teste unitario do mapeamento.
-- Fixture de exportacao versionada.
-- `npm test`
-- `npm run scenario:small` ou script equivalente do cenario importado.
+- [x] Teste unitario do mapeamento.
+- [x] Fixture de exportacao versionada.
+- [x] `npm test`
+- [x] `npm run scenario:sales-event`
+
+Status:
+
+- Concluido. O `sales-event-project` agora possui o comando
+  `cmd/optiflow-export`, documentado em `docs/optiflow-export.md`, para gerar
+  um export JSON `sales-event-optiflow-export.v1` com vendas, itens,
+  pagamentos, emails, tickets emitidos, check-ins e campos de correlacao.
+- O `OptiFlow` agora possui o importador `importSalesEventScenario`, fixture
+  versionada em `data/sales-event-exports/optiflow-sales-history.example.json`
+  e cenario reproduzivel em `data/scenarios/sales-event-fulfillment.json`.
+  Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p4.3-sales-data-optiflow-2026-09-17`.
 
 ### P4.4 Expor metricas de execucao do `OptiFlow`
 

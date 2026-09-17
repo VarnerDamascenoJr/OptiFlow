@@ -105,6 +105,15 @@ comando da API:
 npm run api
 ```
 
+Importacao de historico operacional do `sales-event-project` esta documentada
+em [docs/sales-event-import.md](docs/sales-event-import.md). A fixture
+versionada pode ser regenerada como cenario e executada com:
+
+```bash
+npm run sales-event:import
+npm run scenario:sales-event
+```
+
 Entrega local, Docker e CI estao documentados em
 [docs/local-delivery.md](docs/local-delivery.md). O smoke independente do
 projeto roda com:
