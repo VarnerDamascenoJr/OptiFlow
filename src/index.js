@@ -4,6 +4,7 @@ import createNearestNeighborPlan from "./nearest-neighbor.js";
 import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import evaluatePlan from "./metrics.js";
 import renderOptimizationMetrics from "./observability-metrics.js";
+import { simulateFixedPlan, summarizeSamples } from "./simulation.js";
 import { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
 import validateScenario from "./validate-scenario.js";
 
@@ -72,5 +73,7 @@ export {
   evaluatePlan,
   renderOptimizationMetrics,
   renderComparisonReport,
+  simulateFixedPlan,
+  summarizeSamples,
   validateScenario
 };

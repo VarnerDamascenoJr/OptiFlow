@@ -83,6 +83,13 @@ esta documentada em [docs/scenario-run-api.md](docs/scenario-run-api.md):
 npm run api
 ```
 
+Simulacao estatistica para avaliar um plano fixo sob incerteza sintetica esta
+documentada em [docs/statistical-simulation.md](docs/statistical-simulation.md):
+
+```bash
+npm run scenario:small:simulate
+```
+
 ## Caminho de Aprendizado
 
 | Fase | Conceitos para estudar | Aplicacao no OptiFlow | Marco de conclusao |
