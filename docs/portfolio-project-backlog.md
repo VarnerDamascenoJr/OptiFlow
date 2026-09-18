@@ -818,11 +818,11 @@ monolito.
 
 ### P4.1 Conectar traces do `sales-event-project` na plataforma
 
-- [ ] Configurar `sales-event-project` para exportar OTLP para o Collector da
+- [x] Configurar `sales-event-project` para exportar OTLP para o Collector da
   plataforma.
-- [ ] Garantir nomes de servico distintos para API e worker.
-- [ ] Preservar correlacao entre HTTP, RabbitMQ e worker.
-- [ ] Documentar setup local com os dois repositorios.
+- [x] Garantir nomes de servico distintos para API e worker.
+- [x] Preservar correlacao entre HTTP, RabbitMQ e worker.
+- [x] Documentar setup local com os dois repositorios.
 
 Criterio de aceite:
 
@@ -831,9 +831,19 @@ Criterio de aceite:
 
 Verificacao:
 
-- `make test-integration` no `sales-event-project`.
-- `npm run smoke:observability` na plataforma.
-- Roteiro manual com evidencia no Grafana.
+- [x] `make test-integration` no `sales-event-project`.
+- [x] `npm run smoke:observability` na plataforma.
+- [x] Roteiro manual com evidencia no Grafana.
+
+Status:
+
+- Concluido. O `sales-event-project` agora explicita nomes OTEL para API,
+  worker e email retry worker, preserva `traceparent` nos headers RabbitMQ com
+  teste dedicado e documenta a demo integrada em
+  `docs/observability-platform-integration.md`.
+- A `operational-observability-platform` agora cria a rede compartilhada
+  `operational-observability-network`, coleta metricas dos servicos de venda no
+  Prometheus e documenta o setup em `docs/sales-event-integration.md`.
 
 ### P4.2 Criar dashboard da jornada de venda na plataforma
 
