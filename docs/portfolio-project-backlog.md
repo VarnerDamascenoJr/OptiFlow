@@ -1014,11 +1014,11 @@ Status:
 
 ### P5.4 Preparar CI e badges consistentes
 
-- [ ] Garantir CI do `sales-event-project`.
-- [ ] Garantir CI da `operational-observability-platform`.
-- [ ] Garantir CI do `OptiFlow`.
-- [ ] Adicionar badges apenas quando refletirem checks reais.
-- [ ] Padronizar comandos de qualidade nos READMEs.
+- [x] Garantir CI do `sales-event-project`.
+- [x] Garantir CI da `operational-observability-platform`.
+- [x] Garantir CI do `OptiFlow`.
+- [x] Adicionar badges apenas quando refletirem checks reais.
+- [x] Padronizar comandos de qualidade nos READMEs.
 
 Criterio de aceite:
 
@@ -1027,8 +1027,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- Ultima execucao verde nos tres repositorios.
-- Links dos workflows nos READMEs ou na pagina do repositorio.
+- [ ] Ultima execucao verde nos tres repositorios.
+- [x] Links dos workflows nos READMEs ou na pagina do repositorio.
+
+Status:
+
+- Documentado e configurado, pendente execucao verde no GitHub Actions. O
+  `sales-event-project` passa a ter workflow de CI com `make test`,
+  `make lint`, `make test-integration` e `make build`. Os READMEs dos tres
+  repositorios apontam para workflows reais e badges correspondentes.
 
 ## Ordem recomendada de ataque
 

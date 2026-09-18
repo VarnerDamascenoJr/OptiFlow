@@ -1,5 +1,7 @@
 # OptiFlow
 
+[![CI](https://github.com/VarnerDamascenoJr/OptiFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/VarnerDamascenoJr/OptiFlow/actions/workflows/ci.yml)
+
 Motor de otimizacao operacional para comparar cenarios de distribuicao e alocacao, equilibrando custo, tempo e distancia sob restricoes configuraveis.
 
 > Status: MVP deterministico iniciado. O primeiro dominio confirmado e distribuicao de entregas, com uma heuristica de referencia implementada para comparar contra solver em uma etapa posterior.
@@ -135,6 +137,12 @@ projeto roda com:
 ```bash
 npm run demo:local
 ```
+
+O workflow
+[`CI`](https://github.com/VarnerDamascenoJr/OptiFlow/actions/workflows/ci.yml)
+roda `npm test`, `npm run scenario:small`, `npm run benchmark:compare`,
+`npm run scenario:small:simulate`, `npm run scenario:small:risk` e
+`git diff --check`.
 
 ## Caminho de Aprendizado
 

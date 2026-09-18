@@ -55,6 +55,9 @@ O workflow `.github/workflows/ci.yml` roda testes, cenario pequeno, benchmark,
 simulacao estatistica, comparacao de risco e checagem de whitespace em pushes
 para `main` e pull requests.
 
+Link do workflow:
+<https://github.com/VarnerDamascenoJr/OptiFlow/actions/workflows/ci.yml>.
+
 ## Problemas Conhecidos
 
 - O projeto declara Node via `.nvmrc`; use `nvm install` se a versao ainda nao
