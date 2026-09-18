@@ -847,11 +847,11 @@ Status:
 
 ### P4.2 Criar dashboard da jornada de venda na plataforma
 
-- [ ] Criar dashboard consolidado para venda, pagamento, outbox, ticket, email e
+- [x] Criar dashboard consolidado para venda, pagamento, outbox, ticket, email e
   check-in.
-- [ ] Adicionar links para logs e traces.
-- [ ] Adicionar paineis para falhas controladas.
-- [ ] Documentar investigacao de uma venda com problema.
+- [x] Adicionar links para logs e traces.
+- [x] Adicionar paineis para falhas controladas.
+- [x] Documentar investigacao de uma venda com problema.
 
 Criterio de aceite:
 
@@ -860,9 +860,19 @@ Criterio de aceite:
 
 Verificacao:
 
-- Smoke manual com venda aprovada.
-- Smoke manual com falha de email ou pagamento duplicado.
-- Evidencia documentada no roteiro de demo.
+- [x] Smoke manual com venda aprovada.
+- [x] Smoke manual com falha de email ou pagamento duplicado.
+- [x] Evidencia documentada no roteiro de demo.
+
+Status:
+
+- Concluido. A `operational-observability-platform` agora provisiona o dashboard
+  `Operational Observability - Sales Event Journey`, com paineis para venda,
+  pagamento, outbox, RabbitMQ, worker, ticket, email, check-in e falhas
+  controladas.
+- O dashboard inclui links para Tempo e Loki usando `trace_id` e
+  `correlation_id`. O roteiro de investigacao esta em
+  `docs/sales-journey-investigation.md`.
 
 ### P4.3 Gerar dados do `sales-event-project` para o `OptiFlow`
 
