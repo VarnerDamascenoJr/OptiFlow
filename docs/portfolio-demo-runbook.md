@@ -28,6 +28,9 @@ esperado e problemas conhecidos, esta em
 Os diagramas finais da arquitetura e dos fluxos estao em
 [portfolio-architecture-diagrams.md](portfolio-architecture-diagrams.md).
 
+O roteiro gravavel de 5 a 10 minutos esta em
+[portfolio-recordable-demo-script.md](portfolio-recordable-demo-script.md).
+
 ## Pre-check
 
 Execute antes de gravar ou demonstrar:
