@@ -54,6 +54,7 @@ ja auditado entre sessoes.
 | P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
 | P5.1 Documentacao final de execucao local | Documentado, pendente ensaio final | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. | Executar o guia completo em ambiente local reiniciado. |
 | P5.2 Diagramas finais | Documentado, pendente renderizacao local | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. | Renderizar os diagramas localmente ou pelo preview do GitHub. |
+| P5.3 Roteiro de demo gravavel | Documentado, pendente ensaio | `docs/portfolio-recordable-demo-script.md` define uma demo de 5 a 10 minutos com venda bem-sucedida, falha investigada, dados exportados e comparacao no OptiFlow. | Ensaiar localmente, cronometrar e ajustar cortes. |
 
 ## Prioridade P0: contrato comum do portfolio
 
@@ -989,11 +990,11 @@ Status:
 
 ### P5.3 Criar roteiro de demo gravavel
 
-- [ ] Escrever roteiro de 5 a 10 minutos.
-- [ ] Incluir uma venda bem-sucedida.
-- [ ] Incluir uma falha investigada com observabilidade.
-- [ ] Incluir uma comparacao de otimizacao no `OptiFlow`.
-- [ ] Incluir conclusao sobre decisoes melhores a partir dos dados.
+- [x] Escrever roteiro de 5 a 10 minutos.
+- [x] Incluir uma venda bem-sucedida.
+- [x] Incluir uma falha investigada com observabilidade.
+- [x] Incluir uma comparacao de otimizacao no `OptiFlow`.
+- [x] Incluir conclusao sobre decisoes melhores a partir dos dados.
 
 Criterio de aceite:
 
@@ -1003,8 +1004,13 @@ Criterio de aceite:
 
 Verificacao:
 
-- Ensaio local completo.
-- Ajustes registrados apos o primeiro ensaio.
+- [ ] Ensaio local completo.
+- [ ] Ajustes registrados apos o primeiro ensaio.
+
+Status:
+
+- Documentado, pendente ensaio. O roteiro gravavel esta em
+  [portfolio-recordable-demo-script.md](portfolio-recordable-demo-script.md).
 
 ### P5.4 Preparar CI e badges consistentes
 

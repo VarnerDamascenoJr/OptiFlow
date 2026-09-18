@@ -26,6 +26,8 @@ O guia final de execucao local esta em
 [docs/portfolio-local-execution.md](docs/portfolio-local-execution.md), e os
 diagramas finais estao em
 [docs/portfolio-architecture-diagrams.md](docs/portfolio-architecture-diagrams.md).
+O roteiro gravavel de 5 a 10 minutos esta em
+[docs/portfolio-recordable-demo-script.md](docs/portfolio-recordable-demo-script.md).
 
 ## Direcao Recomendada do MVP
 
