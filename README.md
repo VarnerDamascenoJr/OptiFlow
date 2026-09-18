@@ -22,6 +22,10 @@ Essa composicao demonstra tres competencias diferentes: processar operacoes com 
 
 O roteiro executavel da narrativa do portfolio esta em
 [docs/portfolio-demo-runbook.md](docs/portfolio-demo-runbook.md).
+O guia final de execucao local esta em
+[docs/portfolio-local-execution.md](docs/portfolio-local-execution.md), e os
+diagramas finais estao em
+[docs/portfolio-architecture-diagrams.md](docs/portfolio-architecture-diagrams.md).
 
 ## Direcao Recomendada do MVP
 
@@ -197,8 +201,8 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 - [x] Linkar as convencoes de correlacao nos READMEs dos tres projetos.
 - [x] Adicionar metadata de execucao ao resultado do OptiFlow.
 - [x] Permitir que `scenario:small` receba IDs por variaveis de ambiente.
-- [ ] Expor metricas de execucao do OptiFlow para observabilidade externa.
-- [ ] Validar uma demonstracao integrada com `sales-event-project` e
+- [x] Expor metricas de execucao do OptiFlow para observabilidade externa.
+- [x] Validar uma demonstracao integrada com `sales-event-project` e
   `operational-observability-platform`.
 
 ### 1. Definicao do problema
@@ -214,19 +218,19 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 - [x] Modelar o problema matematicamente.
 - [x] Implementar uma solucao heuristica de referencia.
 - [ ] Integrar o solver OR-Tools.
-- [ ] Implementar as restricoes configuraveis.
+- [x] Implementar as restricoes configuraveis.
 - [x] Medir custo, tempo de execucao e qualidade das solucoes.
-- [ ] Comparar heuristica e solucao otimizada.
+- [x] Comparar heuristica e solucao otimizada.
 
 ### 2.1 Evolucao estatistica
 
-- [ ] Definir quais variaveis sao incertas: demanda, tempo de viagem, cancelamento ou capacidade.
-- [ ] Criar dados sinteticos e explicitar suas distribuicoes e parametros.
-- [ ] Calcular metricas descritivas para cada execucao.
-- [ ] Implementar simulacao de Monte Carlo para avaliar os planos.
-- [ ] Exibir custo esperado, percentis e probabilidade de atraso.
-- [ ] Realizar analise de sensibilidade dos parametros do modelo.
-- [ ] Avaliar otimizacao orientada a risco com uma metrica como CVaR.
+- [x] Definir quais variaveis sao incertas: demanda, tempo de viagem, cancelamento ou capacidade.
+- [x] Criar dados sinteticos e explicitar suas distribuicoes e parametros.
+- [x] Calcular metricas descritivas para cada execucao.
+- [x] Implementar simulacao de Monte Carlo para avaliar os planos.
+- [x] Exibir custo esperado, percentis e probabilidade de atraso.
+- [x] Realizar analise de sensibilidade dos parametros do modelo.
+- [x] Avaliar otimizacao orientada a risco com uma metrica como CVaR.
 - [ ] Adicionar previsao de demanda somente apos validar a base deterministica.
 
 ### 3. Backend e processamento
@@ -234,18 +238,18 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 - [ ] Definir a arquitetura do backend NestJS.
 - [x] Modelar persistencia de cenarios, execucoes e resultados.
 - [x] Criar API para criar, validar e consultar cenarios.
-- [ ] Criar fila para execucoes assincronas de otimizacao.
-- [ ] Expor acompanhamento de status e resultados.
-- [ ] Adicionar tratamento de falhas, tentativas e limites de execucao.
+- [x] Criar fila para execucoes assincronas de otimizacao.
+- [x] Expor acompanhamento de status e resultados.
+- [x] Adicionar tratamento de falhas, tentativas e limites de execucao.
 
 ### 4. Interface de cenarios
 
-- [ ] Definir a experiencia principal da aplicacao.
-- [ ] Criar formulario ou editor para dados e restricoes do cenario.
-- [ ] Exibir status das execucoes.
-- [ ] Visualizar a solucao heuristica e a otimizada.
-- [ ] Destacar metricas e ganhos obtidos.
-- [ ] Permitir duplicar e comparar cenarios.
+- [x] Definir a experiencia principal da aplicacao.
+- [x] Criar formulario ou editor para dados e restricoes do cenario.
+- [x] Exibir status das execucoes.
+- [x] Visualizar a solucao heuristica e a otimizada.
+- [x] Destacar metricas e ganhos obtidos.
+- [x] Permitir duplicar e comparar cenarios.
 
 ### 5. Qualidade e entrega
 

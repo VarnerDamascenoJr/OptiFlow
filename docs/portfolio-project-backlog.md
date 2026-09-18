@@ -52,6 +52,8 @@ ja auditado entre sessoes.
 | P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem migrations, runner, camada PostgreSQL, `.env.example`, health com banco real e e2e. PR #6 merged. Validado com `npm run check` em 2026-09-16. | Usar a base de persistencia para SLOs, incidentes e historico operacional. |
 | P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs, com testes unitarios/e2e. PR #7 merged. Validado com `npm run check` em 2026-09-16. | Manter os campos compativeis com Loki, Tempo e o contrato compartilhado. |
 | P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
+| P5.1 Documentacao final de execucao local | Documentado, pendente ensaio final | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. | Executar o guia completo em ambiente local reiniciado. |
+| P5.2 Diagramas finais | Documentado, pendente renderizacao local | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. | Renderizar os diagramas localmente ou pelo preview do GitHub. |
 
 ## Prioridade P0: contrato comum do portfolio
 
@@ -943,10 +945,10 @@ Objetivo: tornar os tres projetos demonstraveis por outra pessoa.
 
 ### P5.1 Criar documentacao final de execucao local
 
-- [ ] Criar guia de setup por projeto.
-- [ ] Criar guia de demonstracao integrada.
-- [ ] Documentar portas, variaveis, comandos e problemas conhecidos.
-- [ ] Indicar tempo esperado de subida da stack.
+- [x] Criar guia de setup por projeto.
+- [x] Criar guia de demonstracao integrada.
+- [x] Documentar portas, variaveis, comandos e problemas conhecidos.
+- [x] Indicar tempo esperado de subida da stack.
 
 Criterio de aceite:
 
@@ -955,15 +957,20 @@ Criterio de aceite:
 
 Verificacao:
 
-- Execucao do guia em ambiente local reiniciado.
-- Comandos base dos tres projetos passando.
+- [ ] Execucao do guia em ambiente local reiniciado.
+- [ ] Comandos base dos tres projetos passando.
+
+Status:
+
+- Documentado, pendente ensaio final. O guia consolidado esta em
+  [portfolio-local-execution.md](portfolio-local-execution.md).
 
 ### P5.2 Criar diagramas finais
 
-- [ ] Criar diagrama de arquitetura por projeto.
-- [ ] Criar diagrama da jornada de venda observavel.
-- [ ] Criar diagrama de dados entre venda, observabilidade e otimizacao.
-- [ ] Criar diagrama do fluxo de execucao do `OptiFlow`.
+- [x] Criar diagrama de arquitetura por projeto.
+- [x] Criar diagrama da jornada de venda observavel.
+- [x] Criar diagrama de dados entre venda, observabilidade e otimizacao.
+- [x] Criar diagrama do fluxo de execucao do `OptiFlow`.
 
 Criterio de aceite:
 
@@ -972,8 +979,13 @@ Criterio de aceite:
 
 Verificacao:
 
-- Revisao manual dos diagramas.
-- Renderizacao local quando usar Mermaid ou ferramenta equivalente.
+- [x] Revisao manual dos diagramas.
+- [ ] Renderizacao local quando usar Mermaid ou ferramenta equivalente.
+
+Status:
+
+- Documentado, pendente renderizacao local. Os diagramas estao em
+  [portfolio-architecture-diagrams.md](portfolio-architecture-diagrams.md).
 
 ### P5.3 Criar roteiro de demo gravavel
 
