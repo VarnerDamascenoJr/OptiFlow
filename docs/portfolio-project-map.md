@@ -20,9 +20,9 @@ Cada repositorio cobre uma parte diferente dessa historia:
 
 | Projeto | Papel principal | Estado atual |
 | --- | --- | --- |
-| `sales-event-project` | Sistema de negocio assicrono e confiavel | Mais maduro; fluxo completo com API, fila, worker, banco, outbox, retry e observabilidade basica |
-| `operational-observability-platform` | Plataforma para medir, correlacionar e investigar sistemas distribuidos | Fundacao criada; stack local de telemetria pronta; falta aplicacao instrumentada e modelo operacional |
-| `OptiFlow` | Motor de decisao e otimizacao operacional | MVP deterministico iniciado; heuristica e metricas prontas; falta solver, backend, persistencia e comparacao |
+| `sales-event-project` | Sistema de negocio assicrono e confiavel | Fluxo completo com API, fila, worker, banco, outbox, retry, OpenTelemetry, dashboard local e export para OptiFlow |
+| `operational-observability-platform` | Plataforma para medir, correlacionar e investigar sistemas distribuidos | Stack local de telemetria, SLOs, incidentes, dashboards de vendas e dashboard de execucao do OptiFlow |
+| `OptiFlow` | Motor de decisao e otimizacao operacional | MVP deterministico com API, fila local, historico, simulacao, import de vendas, metricas Prometheus e dashboard integrado |
 
 ## Estado de Integracao
 
@@ -81,20 +81,20 @@ No `OptiFlow`:
   traces dos sistemas.
 - O `OptiFlow` pode consumir dados operacionais e devolver recomendacoes.
 
-### Ainda nao integrado entre repositorios
+### Integrado entre repositorios
 
-- O `sales-event-project` ainda nao envia traces OpenTelemetry para a plataforma
-  de observabilidade em uma demonstracao integrada validada.
-- O contexto de correlacao ja e publicado por RabbitMQ, mas ainda precisa ser
-  validado ponta a ponta entre API, broker, worker, logs e eventos derivados.
-- O `sales-event-project` ja possui um dashboard local da jornada de venda; a
-  plataforma de observabilidade ainda nao possui a versao consolidada entre
-  projetos.
-- O `OptiFlow` ainda nao consome dados reais do `sales-event-project`.
-- O `OptiFlow` ainda nao envia metricas ou resultados para a plataforma de
-  observabilidade.
-- O contrato compartilhado ainda precisa ser exercitado em uma demonstracao
-  integrada com evidencia no Grafana.
+- O `sales-event-project` envia traces OpenTelemetry para a plataforma em uma
+  demonstracao integrada.
+- O contexto de correlacao e preservado em HTTP, RabbitMQ, outbox, worker,
+  logs e eventos derivados.
+- A plataforma de observabilidade possui o dashboard consolidado
+  `Operational Observability - Sales Event Journey`.
+- O `OptiFlow` importa historico exportado pelo `sales-event-project` como
+  cenario versionado.
+- O `OptiFlow` expoe metricas Prometheus e logs JSON de execucao, coletados
+  pelo dashboard `Operational Observability - OptiFlow Execution`.
+- O contrato compartilhado ja foi exercitado em evidencias locais das entregas
+  P4.1 a P4.4.
 
 ## Sales Event Project
 
@@ -131,17 +131,10 @@ No `OptiFlow`:
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Separar o retry de notificacoes em worker proprio.
-- Validar a correlacao completa entre venda, pagamento, outbox, ticket, email e
-  check-in.
-- Completar spans de negocio e evidencia OpenTelemetry no Tempo/Grafana.
-- Garantir que consumidores restaurem metadados de negocio recebidos por
-  RabbitMQ nos logs e eventos derivados.
-- Criar cenarios controlados de falha para demonstracao: pagamento duplicado,
-  consumidor atrasado, falha persistente de email e publicacao com retry.
-- Documentar um roteiro de demonstracao operacional.
-- Reutilizar o dashboard local da jornada de negocio como base para a visao
-  consolidada da plataforma operacional.
+- Manter a documentacao final alinhada ao roteiro integrado.
+- Ensaiar a demonstracao completa em ambiente local reiniciado.
+- Evoluir novos cenarios de falha somente quando agregarem uma historia de
+  investigacao diferente das ja cobertas.
 
 ### Papel na aceleracao
 
@@ -170,20 +163,10 @@ narrativa, porque ja demonstra processamento assicrono real com confiabilidade.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Validar health/e2e com estado real do PostgreSQL antes de fechar P2.1.
-- Incluir `trace_id` nos logs quando a instrumentacao OpenTelemetry da API
-  entrar.
-- API ou modulo de demonstracao que produza telemetria real.
-- Instrumentacao HTTP com OpenTelemetry.
-- Metricas RED: rate, errors e duration.
-- Traces enviados ao Collector.
-- Logs JSON com `trace_id`, `request_id` e identificador de transacao.
-- Fluxo assincrono demonstravel.
-- Dashboards tecnicos e de negocio.
-- Modelo de SLO, SLI e error budget no PostgreSQL.
-- Alertas baseados em sintomas.
-- Modelo de incidentes, evidencias, hipoteses e linha do tempo.
-- Integracao com `sales-event-project`.
+- Ensaiar a demonstracao integrada completa depois dos guias finais.
+- Manter dashboards e validadores sincronizados quando novos targets forem
+  adicionados.
+- Evoluir a investigacao operacional para um roteiro gravavel de portfolio.
 
 ### Papel na aceleracao
 
@@ -217,22 +200,12 @@ mostrar investigacao ponta a ponta.
 
 ### O que ainda precisa ser implementado ou fortalecido
 
-- Fechar a formulacao matematica do problema.
-- Integrar OR-Tools ou outro solver adequado.
-- Comparar heuristica versus solver com os mesmos cenarios.
-- Implementar restricoes configuraveis alem de capacidade basica.
-- Persistir cenarios, execucoes e resultados.
-- Criar API para criar, validar e consultar cenarios.
-- Criar processamento assincrono de execucoes de otimizacao.
-- Expor status e resultado das execucoes.
-- Adicionar tratamento de falhas, tentativas e limites de execucao.
-- Criar interface para editar, duplicar e comparar cenarios.
-- Definir variaveis incertas para simulacao: demanda, tempo de viagem,
-  cancelamento ou capacidade.
-- Implementar estatisticas descritivas, Monte Carlo, percentis e analise de
-  sensibilidade.
-- Avaliar decisao orientada a risco com CVaR.
-- Preparar Docker, CI e demonstracao.
+- Integrar OR-Tools ou outro solver externo adequado.
+- Substituir ou complementar a fila local em memoria quando houver backend
+  persistente.
+- Evoluir a interface para uma experiencia completa de edicao, duplicacao e
+  comparacao de cenarios.
+- Ensaiar a demonstracao completa com dados exportados do fluxo de venda.
 
 ### Papel na aceleracao
 
@@ -318,13 +291,6 @@ processar evento -> observar comportamento -> comparar cenarios -> justificar de
 
 ## Proxima Melhor Acao
 
-A proxima melhor acao e fazer uma rodada curta de consolidacao no
-`sales-event-project`, porque ele ja tem o maior numero de pecas implementadas e
-gera material real para os outros dois projetos.
-
-Depois disso, a segunda acao deve ser instrumentar esse fluxo na
-`operational-observability-platform`.
-
-O `OptiFlow` deve ser acelerado na sequencia, com foco primeiro em comparacao
-deterministica entre heuristica e solver. A parte estatistica e a otimizacao sob
-incerteza devem entrar depois que a base deterministica estiver confiavel.
+A proxima melhor acao e fechar a entrega de portfolio: executar o guia final em
+ambiente local reiniciado, registrar ajustes de tempo/portas e transformar a
+demonstracao integrada em roteiro gravavel de 5 a 10 minutos.

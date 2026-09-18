@@ -19,6 +19,15 @@ observavel ou resultado JSON comparavel.
 | `operational-observability-platform` | `../operational-observability-platform` | Validar a fundacao de observabilidade: Collector, Prometheus, Tempo, Loki, Grafana e API de controle | `npm run check`, `npm run validate:observability`, `npm run smoke:observability` |
 | `OptiFlow` | `.` | Comparar uma decisao operacional deterministica e expor metadata rastreavel | `npm test`, `npm run scenario:small` |
 
+## Guia final
+
+O guia operacional consolidado, com setup por projeto, portas, variaveis, tempo
+esperado e problemas conhecidos, esta em
+[portfolio-local-execution.md](portfolio-local-execution.md).
+
+Os diagramas finais da arquitetura e dos fluxos estao em
+[portfolio-architecture-diagrams.md](portfolio-architecture-diagrams.md).
+
 ## Pre-check
 
 Execute antes de gravar ou demonstrar:
@@ -183,12 +192,13 @@ Proxima entrega recomendada depois deste roteiro:
 
 ## Limitacoes atuais
 
-- A demonstracao integrada completa ainda nao esta fechada. Alguns servicos
-  usam portas iguais quando as stacks sobem completas ao mesmo tempo.
-- O `sales-event-project` ja possui OpenTelemetry opcional, mas ainda falta
-  evidencia documentada no Tempo/Grafana usando a plataforma operacional.
-- O `OptiFlow` ainda nao expoe metricas Prometheus/OTLP nem consome dados reais
-  do `sales-event-project`.
+- Os projetos continuam independentes; a integracao usa telemetria, Prometheus
+  e export JSON em vez de dependencias diretas entre repositorios.
+- `sales-event-project` e `operational-observability-platform` publicam
+  PostgreSQL em `5432`; para demonstracao integrada, suba somente os servicos
+  necessarios do sales junto da plataforma.
+- O Prometheus da plataforma coleta o OptiFlow em `host.docker.internal:3000`;
+  por isso a API do OptiFlow deve escutar em `0.0.0.0` nessa etapa.
 
 ## Checklist de ensaio
 
@@ -199,4 +209,5 @@ Proxima entrega recomendada depois deste roteiro:
   `npm run smoke:observability` na plataforma operacional.
 - [ ] Rodar `npm test` e `npm run scenario:small` no `OptiFlow`.
 - [ ] Capturar a saida relevante de cada etapa.
-- [ ] Registrar ajustes de porta, ambiente ou tempo de inicializacao.
+- [ ] Registrar ajustes de porta, ambiente ou tempo de inicializacao no guia
+  final de execucao local.
