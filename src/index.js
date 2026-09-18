@@ -8,6 +8,7 @@ import { calculateVarCvar, compareRiskAdjustedStrategies } from "./risk-analysis
 import { simulateFixedPlan, summarizeSamples } from "./simulation.js";
 import { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
 import validateScenario from "./validate-scenario.js";
+import { importSalesEventScenario } from "./sales-event-scenario-importer.js";
 
 export function solveScenario(scenario, options = {}) {
   validateScenario(scenario);
@@ -74,6 +75,7 @@ export {
   createNearestNeighborPlan,
   createOptimizationHistoryRepository,
   evaluatePlan,
+  importSalesEventScenario,
   renderOptimizationMetrics,
   renderComparisonReport,
   simulateFixedPlan,
