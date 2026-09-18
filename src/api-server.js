@@ -4,6 +4,7 @@ import path from "node:path";
 import createExecutionMetadata from "./execution-metadata.js";
 import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import { createOptimizationRunQueue } from "./optimization-run-queue.js";
+import { renderOptimizationRepositoryMetrics } from "./observability-metrics.js";
 import { solveScenario } from "./index.js";
 import validateScenario from "./validate-scenario.js";
 
@@ -13,12 +14,24 @@ export function createOptiFlowApiServer(options = {}) {
   const repository =
     options.repository || createOptimizationHistoryRepository(options.historyFile);
   const bodyLimitBytes = options.bodyLimitBytes || DEFAULT_BODY_LIMIT_BYTES;
+  const service = options.serviceName || process.env.OPTIFLOW_SERVICE_NAME || "optiflow-api";
+  const environment = options.environment || process.env.OPTIFLOW_ENVIRONMENT || "local";
+  const logger = options.logger || createJsonLogger({
+    environment: environment,
+    service: service
+  });
   const runQueue =
     options.runQueue ||
     createOptimizationRunQueue({
       concurrency: options.optimizationConcurrency,
       defaultMaxAttempts: options.defaultMaxAttempts,
       defaultTimeoutMs: options.defaultTimeoutMs,
+      onEvent: function onOptimizationRunEvent(event) {
+        logOptimizationRunEvent(logger, event, {
+          environment: environment,
+          service: service
+        });
+      },
       repository: repository,
       solve: solveScenario
     });
@@ -26,8 +39,10 @@ export function createOptiFlowApiServer(options = {}) {
   return http.createServer(function handleRequest(request, response) {
     handleApiRequest(request, response, {
       bodyLimitBytes: bodyLimitBytes,
+      environment: environment,
       runQueue: runQueue,
-      repository: repository
+      repository: repository,
+      service: service
     }).catch(function handleUnexpectedError(error) {
       if (error.statusCode && error.code) {
         sendError(response, error.statusCode, error.code, error.message);
@@ -52,6 +67,16 @@ async function handleApiRequest(request, response, dependencies) {
 
   if (method === "GET" && url.pathname === "/health") {
     sendJson(response, 200, { status: "ok", service: "optiflow-api" });
+    return;
+  }
+
+  if (method === "GET" && url.pathname === "/metrics") {
+    sendText(response, 200, renderOptimizationRepositoryMetrics({
+      environment: dependencies.environment,
+      queueStats: dependencies.runQueue.getStats(),
+      repository: dependencies.repository,
+      service: dependencies.service
+    }), "text/plain; version=0.0.4; charset=utf-8");
     return;
   }
 
@@ -280,6 +305,13 @@ function sendJson(response, statusCode, payload) {
   response.end(JSON.stringify(payload, null, 2) + "\n");
 }
 
+function sendText(response, statusCode, payload, contentType) {
+  response.writeHead(statusCode, {
+    "content-type": contentType
+  });
+  response.end(payload);
+}
+
 function sendError(response, statusCode, code, message, details) {
   sendJson(response, statusCode, {
     error: {
@@ -307,4 +339,46 @@ function readOptionalPositiveInteger(value) {
   }
 
   return Number.isInteger(value) && value > 0 ? value : undefined;
+}
+
+function createJsonLogger(defaultFields) {
+  return {
+    info: function info(payload) {
+      console.log(JSON.stringify({
+        ...defaultFields,
+        ...payload
+      }));
+    }
+  };
+}
+
+function logOptimizationRunEvent(logger, event, defaults) {
+  const persisted = event.persisted;
+  const run = persisted.optimizationRun;
+  const metadata = run.metadata || {};
+  const metrics = persisted.metrics || {};
+  const payload = {
+    event: event.eventName,
+    service: defaults.service,
+    environment: defaults.environment,
+    optimization_run_id: run.id,
+    request_id: metadata.requestId || "",
+    correlation_id: metadata.correlationId || "",
+    transaction_id: metadata.transactionId || "",
+    scenario_id: run.scenarioId,
+    strategy: run.strategy,
+    status: run.status,
+    attempt_count: run.attemptCount,
+    max_attempts: run.maxAttempts,
+    duration_ms: run.durationMs,
+    total_cost: metrics.totalCost,
+    total_distance: metrics.totalDistance,
+    total_late_minutes: metrics.totalLateMinutes,
+    unassigned_orders: metrics.unassignedOrders,
+    error: run.error ? run.error.message : null
+  };
+
+  if (logger && typeof logger.info === "function") {
+    logger.info(payload);
+  }
 }

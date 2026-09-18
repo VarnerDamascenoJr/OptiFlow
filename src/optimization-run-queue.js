@@ -20,6 +20,7 @@ export function createOptimizationRunQueue(options) {
   const concurrency = readPositiveInteger(source.concurrency, DEFAULT_CONCURRENCY);
   const defaultMaxAttempts = readPositiveInteger(source.defaultMaxAttempts, DEFAULT_MAX_ATTEMPTS);
   const defaultTimeoutMs = readPositiveInteger(source.defaultTimeoutMs, DEFAULT_TIMEOUT_MS);
+  const onEvent = typeof source.onEvent === "function" ? source.onEvent : null;
   const jobs = [];
   const idleResolvers = [];
   let activeCount = 0;
@@ -43,6 +44,7 @@ export function createOptimizationRunQueue(options) {
       });
 
       jobs.push(job);
+      emitRunEvent("optimization_run_queued", persisted);
       schedule();
       return persisted;
     },
@@ -100,7 +102,7 @@ export function createOptimizationRunQueue(options) {
     const startedAt = new Date();
     const started = performance.now();
 
-    repository.recordRunningRun({
+    const running = repository.recordRunningRun({
       attemptCount: job.attemptCount,
       maxAttempts: job.maxAttempts,
       metadata: job.metadata,
@@ -109,6 +111,7 @@ export function createOptimizationRunQueue(options) {
       strategy: job.strategy,
       timeoutMs: job.timeoutMs
     });
+    emitRunEvent("optimization_run_started", running);
 
     try {
       const result = solve(job.scenario, {
@@ -122,7 +125,7 @@ export function createOptimizationRunQueue(options) {
         throw new Error("optimization run exceeded timeout of " + job.timeoutMs + "ms");
       }
 
-      repository.recordCompletedRun({
+      const completed = repository.recordCompletedRun({
         attemptCount: job.attemptCount,
         durationMs: durationMs,
         finishedAt: new Date(),
@@ -132,11 +135,12 @@ export function createOptimizationRunQueue(options) {
         startedAt: startedAt,
         timeoutMs: job.timeoutMs
       });
+      emitRunEvent("optimization_run_succeeded", completed);
     } catch (error) {
       const durationMs = performance.now() - started;
 
       if (job.attemptCount < job.maxAttempts) {
-        repository.recordQueuedRun({
+        const retry = repository.recordQueuedRun({
           attemptCount: job.attemptCount,
           error: error,
           maxAttempts: job.maxAttempts,
@@ -146,11 +150,12 @@ export function createOptimizationRunQueue(options) {
           strategy: job.strategy,
           timeoutMs: job.timeoutMs
         });
+        emitRunEvent("optimization_run_retry_queued", retry);
         jobs.push(job);
         return;
       }
 
-      repository.recordFailedRun({
+      const failed = repository.recordFailedRun({
         attemptCount: job.attemptCount,
         durationMs: durationMs,
         error: error,
@@ -162,7 +167,19 @@ export function createOptimizationRunQueue(options) {
         strategy: job.strategy,
         timeoutMs: job.timeoutMs
       });
+      emitRunEvent("optimization_run_failed", failed);
     }
+  }
+
+  function emitRunEvent(eventName, persisted) {
+    if (!onEvent) {
+      return;
+    }
+
+    onEvent({
+      eventName: eventName,
+      persisted: persisted
+    });
   }
 
   function resolveIdleIfNeeded() {
