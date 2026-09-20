@@ -1,0 +1,51 @@
+{
+  "id": "benchmark-cost-aware-deadline-v1",
+  "name": "Pedido urgente versus pedido mais proximo",
+  "operation": {
+    "startTimeMinutes": 0
+  },
+  "costs": {
+    "distanceUnitCost": 1,
+    "lateMinutePenalty": 10,
+    "unassignedOrderPenalty": 100
+  },
+  "locations": [
+    { "id": "depot" },
+    { "id": "near" },
+    { "id": "urgent" }
+  ],
+  "vehicles": [
+    {
+      "id": "vehicle-1",
+      "capacity": 2,
+      "startLocationId": "depot"
+    }
+  ],
+  "orders": [
+    {
+      "id": "near-order",
+      "locationId": "near",
+      "demand": 1,
+      "serviceTimeMinutes": 5,
+      "timeWindow": {
+        "startMinutes": 0,
+        "endMinutes": 100
+      }
+    },
+    {
+      "id": "urgent-order",
+      "locationId": "urgent",
+      "demand": 1,
+      "serviceTimeMinutes": 1,
+      "timeWindow": {
+        "startMinutes": 0,
+        "endMinutes": 4
+      }
+    }
+  ],
+  "distanceMatrix": {
+    "depot": { "depot": 0, "near": 1, "urgent": 3 },
+    "near": { "depot": 1, "near": 0, "urgent": 2 },
+    "urgent": { "depot": 3, "near": 2, "urgent": 0 }
+  }
+}

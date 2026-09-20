@@ -1,6 +1,6 @@
 import createExactSolverPlan from "./exact-solver.js";
 import evaluatePlan from "./metrics.js";
-import createNearestNeighborPlan from "./nearest-neighbor.js";
+import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
 import validateScenario from "./validate-scenario.js";
 
 const DEFAULT_SIMULATION_OPTIONS = {
@@ -62,6 +62,10 @@ function solveBaseScenario(scenario, strategy, solverOptions) {
 function createPlan(scenario, strategy, solverOptions) {
   if (strategy === "nearest-neighbor-capacity") {
     return createNearestNeighborPlan(scenario);
+  }
+
+  if (strategy === "cost-aware-greedy") {
+    return createCostAwareGreedyPlan(scenario);
   }
 
   if (strategy === "exact-enumeration") {

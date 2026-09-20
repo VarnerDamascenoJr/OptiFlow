@@ -22,6 +22,7 @@ as mesmas entradas e metricas.
 | `benchmark-minimal-obvious-v1` | Caso minimo com uma demanda e um recurso. | Atende 1 demanda, distancia 8, custo 16. |
 | `benchmark-capacity-insufficient-v1` | Capacidade insuficiente para atender tudo. | Atende 1 demanda, rejeita 1, distancia 6, custo 206. |
 | `benchmark-deadline-latency-v1` | Deadline apertado que gera atraso mensuravel. | Atende 1 demanda, atraso 3, distancia 10, custo 160. |
+| `benchmark-cost-aware-deadline-v1` | Escolha entre pedido proximo e pedido urgente. | A estrategia por distancia custa 46; a variante por custo custa 6, com a mesma distancia 6. |
 | `benchmark-multi-resource-tradeoff-v1` | Uso de multiplos recursos para evitar demanda nao atendida. | Atende 2 demandas, distancia 26, custo 52. |
 
 ## Cenario Minimo Obvio
@@ -95,6 +96,26 @@ totalDistance = 26
 distanceCost = 26 * 2 = 52
 totalCost = 52
 ```
+
+## Pedido Urgente versus Pedido Proximo
+
+Arquivo: `data/scenarios/benchmark-cost-aware-deadline.json`
+
+O pedido proximo fica a 1 unidade do deposito, mas leva 5 minutos para ser
+atendido. Se vier primeiro, o pedido urgente com prazo no minuto 4 so comeca
+no minuto 8. A estrategia `cost-aware-greedy` estima esse atraso antes de
+escolher o primeiro pedido e atende o urgente antes.
+
+```text
+nearest-neighbor-capacity: depot -> near -> urgent -> depot
+  distance = 6, late = 4, totalCost = 6 + 4 * 10 = 46
+
+cost-aware-greedy: depot -> urgent -> near -> depot
+  distance = 6, late = 0, totalCost = 6
+```
+
+Execute `npm run benchmark:compare:cost-aware` para comparar as duas no mesmo
+cenario.
 
 ## Uso nas Proximas Etapas
 

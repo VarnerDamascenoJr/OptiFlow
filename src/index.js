@@ -1,6 +1,6 @@
 import createExecutionMetadata from "./execution-metadata.js";
 import createExactSolverPlan from "./exact-solver.js";
-import createNearestNeighborPlan from "./nearest-neighbor.js";
+import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
 import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import evaluatePlan from "./metrics.js";
 import renderOptimizationMetrics from "./observability-metrics.js";
@@ -33,6 +33,10 @@ function createPlan(scenario, options) {
 
   if (strategy === "nearest-neighbor-capacity") {
     return createNearestNeighborPlan(scenario);
+  }
+
+  if (strategy === "cost-aware-greedy") {
+    return createCostAwareGreedyPlan(scenario);
   }
 
   if (strategy === "exact-enumeration") {
@@ -72,6 +76,7 @@ export {
   compareRiskAdjustedStrategies,
   createExecutionMetadata,
   createExactSolverPlan,
+  createCostAwareGreedyPlan,
   createNearestNeighborPlan,
   createOptimizationHistoryRepository,
   evaluatePlan,

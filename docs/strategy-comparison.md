@@ -29,6 +29,20 @@ OPTIFLOW_OUTPUT_FORMAT=json npm run benchmark:compare
 - Base: `nearest-neighbor-capacity`
 - Candidata: `exact-enumeration`
 
+Para comparar as duas heuristicas no mesmo cenario de prazo:
+
+```bash
+npm run benchmark:compare:cost-aware
+OPTIFLOW_OUTPUT_FORMAT=json npm run benchmark:compare:cost-aware
+```
+
+O primeiro comando mostra as metricas lado a lado. O segundo inclui as rotas
+completas de cada estrategia. No cenario `benchmark-cost-aware-deadline-v1`,
+ambas percorrem 6 unidades de distancia e atendem 2 pedidos. A heuristica por
+distancia acumula 4 minutos de atraso e custo 46; a variante por custo evita o
+atraso e termina com custo 6. Esse exemplo ilustra a diferenca de criterio,
+sem afirmar que a variante vence em todos os cenarios.
+
 As estrategias podem ser alteradas por variaveis de ambiente:
 
 ```bash

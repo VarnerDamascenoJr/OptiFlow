@@ -1,6 +1,6 @@
 # Estrategias de Solucao
 
-O OptiFlow agora possui duas estrategias executaveis sobre o mesmo contrato de
+O OptiFlow agora possui tres estrategias executaveis sobre o mesmo contrato de
 cenario.
 
 ## `nearest-neighbor-capacity`
@@ -21,6 +21,36 @@ Caracteristicas:
 - Respeita capacidade.
 - Usa distancia como criterio local.
 - Nao garante melhor plano global.
+
+## `cost-aware-greedy`
+
+E uma variante da heuristica gulosa. Mantem os mesmos filtros de capacidade e
+restricoes, mas pontua cada proximo pedido por:
+
+```text
+distancia adicional da rota * distanceUnitCost
++ atraso previsto do pedido * lateMinutePenalty
++ aumento estimado do atraso dos outros pedidos * lateMinutePenalty
+```
+
+A distancia adicional inclui a mudanca no percurso de retorno ao deposito. Se
+uma janela de tempo rigida tornaria outro pedido inviavel apos a escolha, a
+estimativa acrescenta `unassignedOrderPenalty`. O efeito nos outros pedidos e
+uma estimativa local: nao representa uma reotimizacao completa nem garante
+melhora em todos os cenarios. Empates de custo usam a menor distancia e depois
+o menor ID do pedido.
+
+Para executar em um cenario:
+
+```bash
+OPTIFLOW_STRATEGY=cost-aware-greedy npm run scenario:small
+```
+
+Para comparar com a heuristica original em um cenario que mostra a diferenca:
+
+```bash
+npm run benchmark:compare:cost-aware
+```
 
 ## `exact-enumeration`
 
