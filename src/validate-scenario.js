@@ -20,12 +20,11 @@ export default function validateScenario(scenario) {
     throw new Error("scenario.vehicles must contain at least one vehicle");
   }
 
-  for (let i = 0; i < scenario.locations.length; i += 1) {
-    assertString(scenario.locations[i].id, "locations[" + i + "].id");
+  for (const [i, location] of scenario.locations.entries()) {
+    assertString(location.id, "locations[" + i + "].id");
   }
 
-  for (let vehicleIndex = 0; vehicleIndex < scenario.vehicles.length; vehicleIndex += 1) {
-    const vehicle = scenario.vehicles[vehicleIndex];
+  for (const [vehicleIndex, vehicle] of scenario.vehicles.entries()) {
     assertString(vehicle.id, "vehicles[" + vehicleIndex + "].id");
     assertPositiveNumber(vehicle.capacity, "vehicles[" + vehicleIndex + "].capacity");
     assertKnownLocation(locationIds, vehicle.startLocationId, "vehicles[" + vehicleIndex + "].startLocationId");
@@ -37,8 +36,7 @@ export default function validateScenario(scenario) {
 
   const maxVehicleCapacity = getMaxVehicleCapacity(scenario.vehicles);
 
-  for (let orderIndex = 0; orderIndex < scenario.orders.length; orderIndex += 1) {
-    const order = scenario.orders[orderIndex];
+  for (const [orderIndex, order] of scenario.orders.entries()) {
     assertString(order.id, "orders[" + orderIndex + "].id");
     assertKnownLocation(locationIds, order.locationId, "orders[" + orderIndex + "].locationId");
     assertPositiveNumber(order.demand, "orders[" + orderIndex + "].demand");
@@ -56,12 +54,10 @@ export default function validateScenario(scenario) {
     }
   }
 
-  for (let fromIndex = 0; fromIndex < locationIds.length; fromIndex += 1) {
-    const fromId = locationIds[fromIndex];
+  for (const fromId of locationIds) {
     assertObject(scenario.distanceMatrix[fromId], "distanceMatrix." + fromId);
 
-    for (let toIndex = 0; toIndex < locationIds.length; toIndex += 1) {
-      const toId = locationIds[toIndex];
+    for (const toId of locationIds) {
       assertNonNegativeNumber(scenario.distanceMatrix[fromId][toId], "distanceMatrix." + fromId + "." + toId);
     }
   }
@@ -73,15 +69,15 @@ function collectUniqueIds(items, label) {
   const ids = [];
   const seen = {};
 
-  for (let i = 0; i < items.length; i += 1) {
-    assertString(items[i].id, label + "[" + i + "].id");
+  for (const [i, item] of items.entries()) {
+    assertString(item.id, label + "[" + i + "].id");
 
-    if (seen[items[i].id]) {
-      throw new Error(label + " contains duplicate id: " + items[i].id);
+    if (seen[item.id]) {
+      throw new Error(label + " contains duplicate id: " + item.id);
     }
 
-    seen[items[i].id] = true;
-    ids.push(items[i].id);
+    seen[item.id] = true;
+    ids.push(item.id);
   }
 
   return ids;
@@ -90,9 +86,9 @@ function collectUniqueIds(items, label) {
 function getMaxVehicleCapacity(vehicles) {
   let max = 0;
 
-  for (let i = 0; i < vehicles.length; i += 1) {
-    if (vehicles[i].capacity > max) {
-      max = vehicles[i].capacity;
+  for (const vehicle of vehicles) {
+    if (vehicle.capacity > max) {
+      max = vehicle.capacity;
     }
   }
 
@@ -102,32 +98,32 @@ function getMaxVehicleCapacity(vehicles) {
 function assertKnownLocation(locationIds, locationId, label) {
   assertString(locationId, label);
 
-  if (locationIds.indexOf(locationId) === -1) {
+  if (!locationIds.includes(locationId)) {
     throw new Error(label + " must reference a known location: " + locationId);
   }
 }
 
 function assertArray(value, label) {
   if (!Array.isArray(value)) {
-    throw new Error(label + " must be an array");
+    throw new TypeError(label + " must be an array");
   }
 }
 
 function assertObject(value, label) {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new Error(label + " must be an object");
+    throw new TypeError(label + " must be an object");
   }
 }
 
 function assertString(value, label) {
   if (typeof value !== "string" || value.length === 0) {
-    throw new Error(label + " must be a non-empty string");
+    throw new TypeError(label + " must be a non-empty string");
   }
 }
 
 function assertNumber(value, label) {
-  if (typeof value !== "number" || !isFinite(value)) {
-    throw new Error(label + " must be a finite number");
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new TypeError(label + " must be a finite number");
   }
 }
 
@@ -157,37 +153,40 @@ function validateConstraints(constraints, orderIds, vehicles) {
   assertOptionalBoolean(constraints.maxRouteDistance, "constraints.maxRouteDistance");
 
   if (constraints.maxRouteDistance === true) {
-    for (let vehicleIndex = 0; vehicleIndex < vehicles.length; vehicleIndex += 1) {
-      if (vehicles[vehicleIndex].maxDistance === undefined) {
+    for (const [vehicleIndex, vehicle] of vehicles.entries()) {
+      if (vehicle.maxDistance === undefined) {
         throw new Error("vehicles[" + vehicleIndex + "].maxDistance is required when constraints.maxRouteDistance is true");
       }
     }
   }
 
   if (constraints.requiredOrderIds !== undefined) {
-    assertArray(constraints.requiredOrderIds, "constraints.requiredOrderIds");
+    validateRequiredOrderIds(constraints.requiredOrderIds, orderIds);
+  }
+}
 
-    const seen = {};
+function validateRequiredOrderIds(requiredOrderIds, orderIds) {
+  assertArray(requiredOrderIds, "constraints.requiredOrderIds");
 
-    for (let i = 0; i < constraints.requiredOrderIds.length; i += 1) {
-      const orderId = constraints.requiredOrderIds[i];
-      assertString(orderId, "constraints.requiredOrderIds[" + i + "]");
+  const seen = {};
 
-      if (seen[orderId]) {
-        throw new Error("constraints.requiredOrderIds contains duplicate id: " + orderId);
-      }
+  for (const [i, orderId] of requiredOrderIds.entries()) {
+    assertString(orderId, "constraints.requiredOrderIds[" + i + "]");
 
-      if (orderIds.indexOf(orderId) === -1) {
-        throw new Error("constraints.requiredOrderIds[" + i + "] must reference a known order: " + orderId);
-      }
-
-      seen[orderId] = true;
+    if (seen[orderId]) {
+      throw new Error("constraints.requiredOrderIds contains duplicate id: " + orderId);
     }
+
+    if (!orderIds.includes(orderId)) {
+      throw new Error("constraints.requiredOrderIds[" + i + "] must reference a known order: " + orderId);
+    }
+
+    seen[orderId] = true;
   }
 }
 
 function assertOptionalBoolean(value, label) {
   if (value !== undefined && typeof value !== "boolean") {
-    throw new Error(label + " must be a boolean");
+    throw new TypeError(label + " must be a boolean");
   }
 }
