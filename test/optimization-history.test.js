@@ -80,6 +80,15 @@ test("models scenario, run, route plan and metrics as separate history collectio
   assert.strictEqual(store.metrics[0].runId, "run-history-collections");
 });
 
+test("finds a stored scenario by scenario id", function testFindScenarioById(t) {
+  const directory = createTemporaryDirectory(t);
+  const repository = createOptimizationHistoryRepository(path.join(directory, "history.json"));
+  const stored = repository.recordScenario({ scenario: scenario });
+
+  assert.deepStrictEqual(repository.findScenarioRecordByScenarioId(scenario.id), stored);
+  assert.strictEqual(repository.findScenarioRecordByScenarioId("unknown-scenario"), null);
+});
+
 test("persists failed runs with explainable error details", function testFailedRun(t) {
   const directory = createTemporaryDirectory(t);
   const historyFile = path.join(directory, "history.json");

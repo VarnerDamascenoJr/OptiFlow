@@ -10,7 +10,7 @@ export function createOptimizationHistoryRepository(filePath = DEFAULT_HISTORY_F
 
   return {
     filePath: historyFile,
-    findScenarioRecordByScenarioId: function findScenarioRecordByScenarioId(scenarioId) {
+    findScenarioRecordByScenarioId: function lookupScenarioRecordByScenarioId(scenarioId) {
       return findScenarioRecordByScenarioId(historyFile, scenarioId);
     },
     getScenarioRecord: function getScenarioRecord(scenarioRecordId) {
