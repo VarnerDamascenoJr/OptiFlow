@@ -116,7 +116,7 @@ function normalizeOptions(options) {
     ...options,
     costs: {
       ...defaultOptions.costs,
-      ...(options.costs || {})
+      ...options.costs
     }
   };
 
