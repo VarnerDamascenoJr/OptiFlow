@@ -1,14 +1,8 @@
 import createExecutionMetadata from "./execution-metadata.js";
 import createExactSolverPlan from "./exact-solver.js";
 import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
-import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import evaluatePlan from "./metrics.js";
-import renderOptimizationMetrics from "./observability-metrics.js";
-import { calculateVarCvar, compareRiskAdjustedStrategies } from "./risk-analysis.js";
-import { simulateFixedPlan, summarizeSamples } from "./simulation.js";
-import { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
 import validateScenario from "./validate-scenario.js";
-import { importSalesEventScenario } from "./sales-event-scenario-importer.js";
 
 export function solveScenario(scenario, options = {}) {
   validateScenario(scenario);
@@ -71,19 +65,17 @@ function readMetadataOptions(options) {
 }
 
 export {
-  compareStrategies,
-  calculateVarCvar,
-  compareRiskAdjustedStrategies,
   createExecutionMetadata,
   createExactSolverPlan,
   createCostAwareGreedyPlan,
   createNearestNeighborPlan,
-  createOptimizationHistoryRepository,
   evaluatePlan,
-  importSalesEventScenario,
-  renderOptimizationMetrics,
-  renderComparisonReport,
-  simulateFixedPlan,
-  summarizeSamples,
   validateScenario
 };
+
+export { createOptimizationHistoryRepository } from "./optimization-history.js";
+export { default as renderOptimizationMetrics } from "./observability-metrics.js";
+export { calculateVarCvar, compareRiskAdjustedStrategies } from "./risk-analysis.js";
+export { importSalesEventScenario } from "./sales-event-scenario-importer.js";
+export { simulateFixedPlan, summarizeSamples } from "./simulation.js";
+export { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";

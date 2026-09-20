@@ -11,7 +11,7 @@ export function readScenarioConstraints(scenario) {
 }
 
 export function isOrderRequired(constraints, orderId) {
-  return constraints.requiredOrderIds.indexOf(orderId) !== -1;
+  return constraints.requiredOrderIds.includes(orderId);
 }
 
 export function canServeOrderAtThisPoint(scenario, vehicle, routeState, order, constraints) {
