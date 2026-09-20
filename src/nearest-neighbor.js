@@ -17,8 +17,7 @@ function buildGreedyPlan(scenario, strategy) {
   let remainingOrders = scenario.orders.slice();
   const routes = [];
 
-  for (let vehicleIndex = 0; vehicleIndex < scenario.vehicles.length; vehicleIndex += 1) {
-    const vehicle = scenario.vehicles[vehicleIndex];
+  for (const vehicle of scenario.vehicles) {
     const route = buildVehicleRoute(scenario, vehicle, remainingOrders, constraints, strategy);
     routes.push(route);
     remainingOrders = route.remainingOrders;
