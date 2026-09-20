@@ -400,7 +400,7 @@ function hashJson(value) {
 }
 
 function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+  return structuredClone(value);
 }
 
 function assertObject(value, label) {
