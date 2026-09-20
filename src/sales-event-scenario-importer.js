@@ -28,7 +28,7 @@ export function importSalesEventScenario(exportDocument, options = {}) {
   assertArray(exportDocument.sales, "salesEventExport.sales");
 
   const eligibleSales = exportDocument.sales.filter(function filterCompletedSales(sale) {
-    return normalizedOptions.completedStatuses.indexOf(sale.status) !== -1;
+    return normalizedOptions.completedStatuses.includes(sale.status);
   });
 
   if (eligibleSales.length === 0) {
@@ -75,8 +75,8 @@ export function importSalesEventScenario(exportDocument, options = {}) {
         correlationId: sale.correlationId || "",
         transactionId: sale.transactionId || sale.saleId,
         totalAmount: sale.totalAmount,
-        issuedTicketCount: readInteger(sale.issuedTicketCount, "issuedTicketCount"),
-        checkedInTicketCount: readInteger(sale.checkedInTicketCount, "checkedInTicketCount")
+        issuedTicketCount: readInteger(sale.issuedTicketCount),
+        checkedInTicketCount: readInteger(sale.checkedInTicketCount)
       }
     });
   }
@@ -189,12 +189,10 @@ function createVehicles(depotId, maxDemand) {
 function createDistanceMatrix(locations, coordinatesByLocationId) {
   const matrix = {};
 
-  for (let fromIndex = 0; fromIndex < locations.length; fromIndex += 1) {
-    const from = locations[fromIndex];
+  for (const from of locations) {
     matrix[from.id] = {};
 
-    for (let toIndex = 0; toIndex < locations.length; toIndex += 1) {
-      const to = locations[toIndex];
+    for (const to of locations) {
       matrix[from.id][to.id] = calculateDistance(
         coordinatesByLocationId[from.id],
         coordinatesByLocationId[to.id]
@@ -235,8 +233,8 @@ function createDeterministicCoordinates(seed, index) {
 function hashString(value) {
   let hash = 2166136261;
 
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i);
+  for (const character of value) {
+    hash ^= character.codePointAt(0);
     hash = Math.imul(hash, 16777619);
   }
 
@@ -247,7 +245,8 @@ function sanitizeIdentifier(value) {
   return String(value)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/^-/, "")
+    .replace(/-$/, "");
 }
 
 function assertEquals(value, expected, label) {
@@ -258,19 +257,19 @@ function assertEquals(value, expected, label) {
 
 function assertArray(value, label) {
   if (!Array.isArray(value)) {
-    throw new Error(label + " must be an array");
+    throw new TypeError(label + " must be an array");
   }
 }
 
 function assertObject(value, label) {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new Error(label + " must be an object");
+    throw new TypeError(label + " must be an object");
   }
 }
 
 function assertString(value, label) {
   if (typeof value !== "string" || value.length === 0) {
-    throw new Error(label + " must be a non-empty string");
+    throw new TypeError(label + " must be a non-empty string");
   }
 }
 
