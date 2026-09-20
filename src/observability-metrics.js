@@ -112,9 +112,9 @@ function labelsText(labels) {
 
 function escapeLabelValue(value) {
   return value
-    .replaceAll("\\", "\\\\")
-    .replaceAll("\n", "\\n")
-    .replaceAll('"', '\\"');
+    .replaceAll("\\", String.raw`\\`)
+    .replaceAll("\n", String.raw`\n`)
+    .replaceAll('"', String.raw`\"`);
 }
 
 function numberMetric(value) {
