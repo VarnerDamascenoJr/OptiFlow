@@ -9,6 +9,7 @@
     "api": "node scripts/start-api.js",
     "test": "node --test",
     "benchmark:compare": "node scripts/compare-strategies.js",
+    "benchmark:compare:cost-aware": "OPTIFLOW_BASELINE_STRATEGY=nearest-neighbor-capacity OPTIFLOW_CANDIDATE_STRATEGY=cost-aware-greedy node scripts/compare-strategies.js data/scenarios/benchmark-cost-aware-deadline.json",
     "demo:local": "bash scripts/demo-local.sh",
     "scenario:small": "node scripts/run-scenario.js data/scenarios/small-delivery.json",
     "scenario:small:history": "node scripts/run-scenario-history.js data/scenarios/small-delivery.json",

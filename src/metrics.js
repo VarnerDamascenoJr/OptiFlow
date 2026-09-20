@@ -5,8 +5,7 @@ export default function evaluatePlan(scenario, plan) {
   let totalLateMinutes = 0;
   const vehicleUtilization = [];
 
-  for (let routeIndex = 0; routeIndex < plan.routes.length; routeIndex += 1) {
-    const route = plan.routes[routeIndex];
+  for (const route of plan.routes) {
     totalDistance += route.totalDistance;
     totalDemand += route.usedCapacity;
     vehicleUtilization.push({
@@ -16,8 +15,7 @@ export default function evaluatePlan(scenario, plan) {
       utilizationRate: route.capacity === 0 ? 0 : round(route.usedCapacity / route.capacity, 4)
     });
 
-    for (let stopIndex = 0; stopIndex < route.stops.length; stopIndex += 1) {
-      const stop = route.stops[stopIndex];
+    for (const stop of route.stops) {
       totalLateMinutes += stop.lateMinutes;
 
       if (stop.type === "order") {

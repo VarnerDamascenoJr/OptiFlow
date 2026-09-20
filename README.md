@@ -57,6 +57,17 @@ npm run scenario:small
 
 O resultado atual usa a estrategia `nearest-neighbor-capacity`: uma heuristica gulosa que escolhe o pedido viavel mais proximo para cada veiculo, respeitando capacidade e registrando atraso como metrica.
 
+A variante `cost-aware-greedy` considera o custo adicional de distancia, o
+atraso previsto e o efeito estimado de adiar outros pedidos. As duas podem ser
+comparadas no mesmo cenario com:
+
+```bash
+npm run benchmark:compare:cost-aware
+```
+
+Use `OPTIFLOW_OUTPUT_FORMAT=json npm run benchmark:compare:cost-aware` para ver
+tambem as rotas completas das duas estrategias.
+
 Cenarios deterministicos de benchmark estao documentados em
 [docs/benchmark-scenarios.md](docs/benchmark-scenarios.md). Eles usam entregas
 como instancia executavel, mas isolam propriedades gerais de otimizacao

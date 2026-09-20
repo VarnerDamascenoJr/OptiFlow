@@ -84,6 +84,28 @@ test("builds a deterministic nearest-neighbor baseline plan", function testBasel
   assert.deepStrictEqual(result.unassignedOrderIds, ["order-south"]);
 });
 
+test("cost-aware greedy serves an urgent order before a closer one", function testCostAwarePlan() {
+  const deadlineScenario = readScenario("benchmark-cost-aware-deadline.json");
+  const nearest = optiflow.solveScenario(deadlineScenario);
+  const costAware = optiflow.solveScenario(deadlineScenario, { strategy: "cost-aware-greedy" });
+
+  assert.deepStrictEqual(getRouteOrderIds(nearest.routes[0]), ["near-order", "urgent-order"]);
+  assert.deepStrictEqual(getRouteOrderIds(costAware.routes[0]), ["urgent-order", "near-order"]);
+  assert.strictEqual(nearest.metrics.totalDistance, 6);
+  assert.strictEqual(costAware.metrics.totalDistance, 6);
+  assert.strictEqual(nearest.metrics.totalLateMinutes, 4);
+  assert.strictEqual(costAware.metrics.totalLateMinutes, 0);
+  assert.strictEqual(nearest.metrics.totalCost, 46);
+  assert.strictEqual(costAware.metrics.totalCost, 6);
+
+  const hardDeadlineScenario = clone(deadlineScenario);
+  hardDeadlineScenario.constraints = { hardTimeWindows: true };
+  const hardDeadlinePlan = optiflow.solveScenario(hardDeadlineScenario, { strategy: "cost-aware-greedy" });
+
+  assert.deepStrictEqual(getRouteOrderIds(hardDeadlinePlan.routes[0]), ["urgent-order", "near-order"]);
+  assert.deepStrictEqual(hardDeadlinePlan.unassignedOrderIds, []);
+});
+
 test("preserves execution metadata provided by callers", function testProvidedMetadata() {
   const result = optiflow.solveScenario(scenario, {
     metadata: {

@@ -1,6 +1,6 @@
 import createExactSolverPlan from "./exact-solver.js";
 import evaluatePlan from "./metrics.js";
-import createNearestNeighborPlan from "./nearest-neighbor.js";
+import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
 import validateScenario from "./validate-scenario.js";
 
 const DEFAULT_SIMULATION_OPTIONS = {
@@ -62,6 +62,10 @@ function solveBaseScenario(scenario, strategy, solverOptions) {
 function createPlan(scenario, strategy, solverOptions) {
   if (strategy === "nearest-neighbor-capacity") {
     return createNearestNeighborPlan(scenario);
+  }
+
+  if (strategy === "cost-aware-greedy") {
+    return createCostAwareGreedyPlan(scenario);
   }
 
   if (strategy === "exact-enumeration") {
@@ -183,7 +187,7 @@ export function summarizeSamples(samples) {
 }
 
 function sampleScenario(scenario, uncertainty, random) {
-  const sampledScenario = clone(scenario);
+  const sampledScenario = structuredClone(scenario);
 
   sampledScenario.orders = sampledScenario.orders.map(function sampleOrder(order) {
     const sampledOrder = { ...order };
@@ -293,7 +297,7 @@ function indexById(items) {
 function normalizeSimulationOptions(options) {
   const uncertainty = {
     ...DEFAULT_SIMULATION_OPTIONS.uncertainty,
-    ...(options.uncertainty || {})
+    ...options.uncertainty
   };
 
   return {
@@ -347,8 +351,4 @@ function readProbability(value, fallback) {
 function round(value, decimals) {
   const multiplier = Math.pow(10, decimals);
   return Math.round(value * multiplier) / multiplier;
-}
-
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
 }

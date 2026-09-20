@@ -27,6 +27,21 @@ test("compares heuristic and exact solver metrics", function testCompareStrategi
   assert.strictEqual(comparison.deltas.unassignedOrdersDelta, 0);
 });
 
+test("compares nearest and cost-aware greedy on the same scenario", function testCompareGreedyStrategies() {
+  const deadlinePath = path.join(__dirname, "..", "data", "scenarios", "benchmark-cost-aware-deadline.json");
+  const deadlineScenario = JSON.parse(fs.readFileSync(deadlinePath, "utf8"));
+  const comparison = compareStrategies(deadlineScenario, {
+    baselineStrategy: "nearest-neighbor-capacity",
+    candidateStrategy: "cost-aware-greedy"
+  });
+
+  assert.strictEqual(comparison.baseline.metrics.totalCost, 46);
+  assert.strictEqual(comparison.candidate.metrics.totalCost, 6);
+  assert.strictEqual(comparison.deltas.totalCostGain, 40);
+  assert.strictEqual(comparison.deltas.totalLateMinutesDelta, -4);
+  assert.strictEqual(comparison.outcome, "improved");
+});
+
 test("renders a stable portfolio-friendly comparison report", function testRenderComparisonReport() {
   const report = renderComparisonReport(compareStrategies(scenario));
 

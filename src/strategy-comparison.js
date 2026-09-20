@@ -1,5 +1,5 @@
 import createExactSolverPlan from "./exact-solver.js";
-import createNearestNeighborPlan from "./nearest-neighbor.js";
+import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
 import evaluatePlan from "./metrics.js";
 import validateScenario from "./validate-scenario.js";
 
@@ -30,10 +30,9 @@ export function renderComparisonReport(comparisons) {
   const entries = Array.isArray(comparisons) ? comparisons : [comparisons];
   const lines = ["OptiFlow strategy comparison", ""];
 
-  for (let i = 0; i < entries.length; i += 1) {
-    const comparison = entries[i];
-    lines.push("Scenario: " + comparison.scenarioId);
+  for (const comparison of entries) {
     lines.push(
+      "Scenario: " + comparison.scenarioId,
       "  " +
         comparison.baseline.strategy +
         " cost=" +
@@ -43,9 +42,7 @@ export function renderComparisonReport(comparisons) {
         ", late=" +
         comparison.baseline.metrics.totalLateMinutes +
         ", served=" +
-        comparison.baseline.metrics.servedOrders
-    );
-    lines.push(
+        comparison.baseline.metrics.servedOrders,
       "  " +
         comparison.candidate.strategy +
         " cost=" +
@@ -55,9 +52,7 @@ export function renderComparisonReport(comparisons) {
         ", late=" +
         comparison.candidate.metrics.totalLateMinutes +
         ", served=" +
-        comparison.candidate.metrics.servedOrders
-    );
-    lines.push(
+        comparison.candidate.metrics.servedOrders,
       "  outcome=" +
         comparison.outcome +
         ", cost_delta=" +
@@ -72,9 +67,9 @@ export function renderComparisonReport(comparisons) {
         ", late_delta=" +
         formatSignedNumber(comparison.deltas.totalLateMinutesDelta) +
         ", served_delta=" +
-        formatSignedNumber(comparison.deltas.servedOrdersDelta)
+        formatSignedNumber(comparison.deltas.servedOrdersDelta),
+      ""
     );
-    lines.push("");
   }
 
   return lines.join("\n").trimEnd() + "\n";
@@ -94,6 +89,10 @@ function solveForComparison(scenario, strategy, options) {
 function createPlan(scenario, strategy, solverOptions) {
   if (strategy === "nearest-neighbor-capacity") {
     return createNearestNeighborPlan(scenario);
+  }
+
+  if (strategy === "cost-aware-greedy") {
+    return createCostAwareGreedyPlan(scenario);
   }
 
   if (strategy === "exact-enumeration") {
