@@ -1,4 +1,5 @@
 import { simulateFixedPlan } from "./simulation.js";
+import { mean, round } from "./shared/numbers.js";
 
 const DEFAULT_RISK_OPTIONS = {
   confidenceLevel: 0.95,
@@ -131,19 +132,6 @@ function normalizeRiskOptions(options) {
   };
 }
 
-function mean(values) {
-  return (
-    values.reduce(function sumValues(sum, value) {
-      return sum + value;
-    }, 0) / values.length
-  );
-}
-
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
-}
-
-function round(value, decimals) {
-  const multiplier = Math.pow(10, decimals);
-  return Math.round(value * multiplier) / multiplier;
 }

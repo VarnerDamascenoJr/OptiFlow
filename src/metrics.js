@@ -1,3 +1,5 @@
+import { round } from "./shared/numbers.js";
+
 export default function evaluatePlan(scenario, plan) {
   const servedOrderIds = [];
   let totalDistance = 0;
@@ -41,9 +43,4 @@ export default function evaluatePlan(scenario, plan) {
     totalCost: round(totalCost, 2),
     vehicleUtilization: vehicleUtilization
   };
-}
-
-function round(value, decimals) {
-  const multiplier = Math.pow(10, decimals);
-  return Math.round(value * multiplier) / multiplier;
 }

@@ -1,4 +1,5 @@
 import validateScenario from "./validate-scenario.js";
+import { assertArray, assertObject, assertString } from "./shared/validation.js";
 
 const schemaVersion = "sales-event-optiflow-export.v1";
 
@@ -252,24 +253,6 @@ function sanitizeIdentifier(value) {
 function assertEquals(value, expected, label) {
   if (value !== expected) {
     throw new Error(label + " must be " + expected);
-  }
-}
-
-function assertArray(value, label) {
-  if (!Array.isArray(value)) {
-    throw new TypeError(label + " must be an array");
-  }
-}
-
-function assertObject(value, label) {
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new TypeError(label + " must be an object");
-  }
-}
-
-function assertString(value, label) {
-  if (typeof value !== "string" || value.length === 0) {
-    throw new TypeError(label + " must be a non-empty string");
   }
 }
 

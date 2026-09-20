@@ -1,4 +1,5 @@
 import { performance } from "node:perf_hooks";
+import { readPositiveInteger } from "./shared/numbers.js";
 
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_MAX_ATTEMPTS = 1;
@@ -207,12 +208,4 @@ function normalizeJob(input, defaults) {
     strategy: input.strategy || "nearest-neighbor-capacity",
     timeoutMs: readPositiveInteger(input.timeoutMs, defaults.defaultTimeoutMs)
   };
-}
-
-function readPositiveInteger(value, fallback) {
-  if (Number.isInteger(value) && value > 0) {
-    return value;
-  }
-
-  return fallback;
 }

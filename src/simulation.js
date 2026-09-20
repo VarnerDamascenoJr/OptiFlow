@@ -1,6 +1,6 @@
-import createExactSolverPlan from "./exact-solver.js";
 import evaluatePlan from "./metrics.js";
-import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
+import { mean, readPositiveInteger, round } from "./shared/numbers.js";
+import { createPlanForStrategy } from "./shared/plan-factory.js";
 import validateScenario from "./validate-scenario.js";
 
 const DEFAULT_SIMULATION_OPTIONS = {
@@ -47,7 +47,7 @@ export function simulateFixedPlan(scenario, options = {}) {
 }
 
 function solveBaseScenario(scenario, strategy, solverOptions) {
-  const plan = createPlan(scenario, strategy, solverOptions);
+  const plan = createPlanForStrategy(scenario, strategy, solverOptions);
 
   return {
     scenarioId: scenario.id,
@@ -57,22 +57,6 @@ function solveBaseScenario(scenario, strategy, solverOptions) {
     unassignedOrderIds: plan.unassignedOrderIds,
     metrics: evaluatePlan(scenario, plan)
   };
-}
-
-function createPlan(scenario, strategy, solverOptions) {
-  if (strategy === "nearest-neighbor-capacity") {
-    return createNearestNeighborPlan(scenario);
-  }
-
-  if (strategy === "cost-aware-greedy") {
-    return createCostAwareGreedyPlan(scenario);
-  }
-
-  if (strategy === "exact-enumeration") {
-    return createExactSolverPlan(scenario, solverOptions);
-  }
-
-  throw new Error("Unknown optimization strategy: " + strategy);
 }
 
 function evaluateFixedPlanAgainstScenario(sampledScenario, baseResult) {
@@ -271,18 +255,6 @@ function probability(samples, predicate) {
   return round(matches / samples.length, 4);
 }
 
-function mean(values) {
-  if (values.length === 0) {
-    return 0;
-  }
-
-  return (
-    values.reduce(function sumValues(sum, value) {
-      return sum + value;
-    }, 0) / values.length
-  );
-}
-
 function sampleSymmetricMultiplier(random, variationRate) {
   return 1 + (random() * 2 - 1) * variationRate;
 }
@@ -334,10 +306,6 @@ function createSeededRandom(seed) {
   };
 }
 
-function readPositiveInteger(value, fallback) {
-  return Number.isInteger(value) && value > 0 ? value : fallback;
-}
-
 function readNonNegativeNumber(value, fallback) {
   return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : fallback;
 }
@@ -346,9 +314,4 @@ function readProbability(value, fallback) {
   return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1
     ? value
     : fallback;
-}
-
-function round(value, decimals) {
-  const multiplier = Math.pow(10, decimals);
-  return Math.round(value * multiplier) / multiplier;
 }

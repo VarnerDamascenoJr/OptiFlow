@@ -1,6 +1,6 @@
-import createExactSolverPlan from "./exact-solver.js";
-import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
 import evaluatePlan from "./metrics.js";
+import { round } from "./shared/numbers.js";
+import { createPlanForStrategy } from "./shared/plan-factory.js";
 import validateScenario from "./validate-scenario.js";
 
 const defaultComparisonOptions = {
@@ -76,7 +76,7 @@ export function renderComparisonReport(comparisons) {
 }
 
 function solveForComparison(scenario, strategy, options) {
-  const plan = createPlan(scenario, strategy, options.solver || {});
+  const plan = createPlanForStrategy(scenario, strategy, options.solver || {});
 
   return {
     strategy: strategy,
@@ -84,22 +84,6 @@ function solveForComparison(scenario, strategy, options) {
     unassignedOrderIds: plan.unassignedOrderIds,
     metrics: evaluatePlan(scenario, plan)
   };
-}
-
-function createPlan(scenario, strategy, solverOptions) {
-  if (strategy === "nearest-neighbor-capacity") {
-    return createNearestNeighborPlan(scenario);
-  }
-
-  if (strategy === "cost-aware-greedy") {
-    return createCostAwareGreedyPlan(scenario);
-  }
-
-  if (strategy === "exact-enumeration") {
-    return createExactSolverPlan(scenario, solverOptions);
-  }
-
-  throw new Error("Unknown optimization strategy: " + strategy);
 }
 
 function calculateDeltas(baseline, candidate) {
@@ -153,9 +137,4 @@ function formatSignedNumber(value) {
   }
 
   return String(value);
-}
-
-function round(value, decimals) {
-  const multiplier = Math.pow(10, decimals);
-  return Math.round(value * multiplier) / multiplier;
 }
