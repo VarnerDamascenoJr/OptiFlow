@@ -1,4 +1,5 @@
 import { performance } from "node:perf_hooks";
+import { readPositiveInteger } from "./shared/numbers.js";
 
 const DEFAULT_CONCURRENCY = 1;
 const DEFAULT_MAX_ATTEMPTS = 1;
@@ -14,7 +15,7 @@ export function createOptimizationRunQueue(options) {
   }
 
   if (typeof solve !== "function") {
-    throw new Error("optimization run queue requires a solve function");
+    throw new TypeError("optimization run queue requires a solve function");
   }
 
   const concurrency = readPositiveInteger(source.concurrency, DEFAULT_CONCURRENCY);
@@ -195,7 +196,7 @@ export function createOptimizationRunQueue(options) {
 
 function normalizeJob(input, defaults) {
   if (!input || typeof input !== "object") {
-    throw new Error("optimization run job must be an object");
+    throw new TypeError("optimization run job must be an object");
   }
 
   return {
@@ -207,12 +208,4 @@ function normalizeJob(input, defaults) {
     strategy: input.strategy || "nearest-neighbor-capacity",
     timeoutMs: readPositiveInteger(input.timeoutMs, defaults.defaultTimeoutMs)
   };
-}
-
-function readPositiveInteger(value, fallback) {
-  if (Number.isInteger(value) && value > 0) {
-    return value;
-  }
-
-  return fallback;
 }

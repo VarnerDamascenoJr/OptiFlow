@@ -98,8 +98,7 @@ function collectRouteCandidates(state) {
   assertWithinDeadline(state.deadline);
   state.candidates.push(buildRoute(state.scenario, state.vehicle, state.selectedOrders));
 
-  for (let i = 0; i < state.remainingOrders.length; i += 1) {
-    const order = state.remainingOrders[i];
+  for (const order of state.remainingOrders) {
     const nextCapacity = state.usedCapacity + order.demand;
 
     if (nextCapacity > state.vehicle.capacity) {
@@ -167,8 +166,7 @@ function searchPlans(state) {
 
   const candidates = state.candidatesByVehicle[state.vehicleIndex];
 
-  for (let i = 0; i < candidates.length; i += 1) {
-    const route = candidates[i];
+  for (const route of candidates) {
 
     if (route.orderIds.some(function hasUsedOrder(orderId) {
       return state.usedOrderIds.has(orderId);
@@ -178,8 +176,8 @@ function searchPlans(state) {
 
     const nextUsedOrderIds = new Set(state.usedOrderIds);
 
-    for (let orderIndex = 0; orderIndex < route.orderIds.length; orderIndex += 1) {
-      nextUsedOrderIds.add(route.orderIds[orderIndex]);
+    for (const orderId of route.orderIds) {
+      nextUsedOrderIds.add(orderId);
     }
 
     searchPlans({
@@ -213,8 +211,7 @@ function buildRoute(scenario, vehicle, orders) {
     }
   ];
 
-  for (let i = 0; i < orders.length; i += 1) {
-    const order = orders[i];
+  for (const order of orders) {
     const distance = scenario.distanceMatrix[currentLocationId][order.locationId];
     const arrivalTime = currentTime + distance;
     const serviceStart = Math.max(arrivalTime, order.timeWindow.startMinutes);

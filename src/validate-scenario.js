@@ -1,3 +1,5 @@
+import { assertArray, assertObject, assertString } from "./shared/validation.js";
+
 export default function validateScenario(scenario) {
   assertObject(scenario, "scenario");
   assertString(scenario.id, "scenario.id");
@@ -100,24 +102,6 @@ function assertKnownLocation(locationIds, locationId, label) {
 
   if (!locationIds.includes(locationId)) {
     throw new Error(label + " must reference a known location: " + locationId);
-  }
-}
-
-function assertArray(value, label) {
-  if (!Array.isArray(value)) {
-    throw new TypeError(label + " must be an array");
-  }
-}
-
-function assertObject(value, label) {
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new TypeError(label + " must be an object");
-  }
-}
-
-function assertString(value, label) {
-  if (typeof value !== "string" || value.length === 0) {
-    throw new TypeError(label + " must be a non-empty string");
   }
 }
 

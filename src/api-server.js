@@ -6,6 +6,7 @@ import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import { createOptimizationRunQueue } from "./optimization-run-queue.js";
 import { renderOptimizationRepositoryMetrics } from "./observability-metrics.js";
 import { solveScenario } from "./index.js";
+import { readNonEmptyString } from "./shared/strings.js";
 import validateScenario from "./validate-scenario.js";
 
 const DEFAULT_BODY_LIMIT_BYTES = 1024 * 1024;
@@ -191,7 +192,7 @@ async function handleCreateOptimizationRun(request, response, dependencies) {
     return;
   }
 
-  const strategy = readOptionalString(body.strategy) || "nearest-neighbor-capacity";
+  const strategy = readNonEmptyString(body.strategy) || "nearest-neighbor-capacity";
   const metadata = createExecutionMetadata(body.metadata || {});
   const persisted = dependencies.runQueue.enqueue({
     maxAttempts: readOptionalPositiveInteger(body.maxAttempts),
@@ -327,10 +328,6 @@ function createHttpError(statusCode, code, message) {
   error.statusCode = statusCode;
   error.code = code;
   return error;
-}
-
-function readOptionalString(value) {
-  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 }
 
 function readOptionalPositiveInteger(value) {

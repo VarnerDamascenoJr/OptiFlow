@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { readPositiveInteger } from "./shared/numbers.js";
+import { readNonEmptyString } from "./shared/strings.js";
 
 const STORE_VERSION = 1;
 const DEFAULT_HISTORY_FILE = ".optiflow/optimization-history.json";
@@ -10,7 +12,7 @@ export function createOptimizationHistoryRepository(filePath = DEFAULT_HISTORY_F
 
   return {
     filePath: historyFile,
-    findScenarioRecordByScenarioId: function findScenarioRecordByScenarioId(scenarioId) {
+    findScenarioRecordByScenarioId: function lookupScenarioRecordByScenarioId(scenarioId) {
       return findScenarioRecordByScenarioId(historyFile, scenarioId);
     },
     getScenarioRecord: function getScenarioRecord(scenarioRecordId) {
@@ -60,7 +62,7 @@ function persistQueuedRun(historyFile, input) {
   assertObject(input.scenario, "history input.scenario");
   assertObject(input.metadata, "history input.metadata");
 
-  const optimizationRunId = readString(input.metadata.optimizationRunId);
+  const optimizationRunId = readNonEmptyString(input.metadata.optimizationRunId);
 
   if (!optimizationRunId) {
     throw new Error("metadata.optimizationRunId is required to persist optimization history");
@@ -98,7 +100,7 @@ function persistRunningRun(historyFile, input) {
   assertObject(input.scenario, "history input.scenario");
   assertObject(input.metadata, "history input.metadata");
 
-  const optimizationRunId = readString(input.metadata.optimizationRunId);
+  const optimizationRunId = readNonEmptyString(input.metadata.optimizationRunId);
 
   if (!optimizationRunId) {
     throw new Error("metadata.optimizationRunId is required to persist optimization history");
@@ -137,7 +139,7 @@ function persistCompletedRun(historyFile, input) {
   assertObject(input.result, "history input.result");
   assertObject(input.result.metadata, "history input.result.metadata");
 
-  const optimizationRunId = readString(input.result.metadata.optimizationRunId);
+  const optimizationRunId = readNonEmptyString(input.result.metadata.optimizationRunId);
 
   if (!optimizationRunId) {
     throw new Error("result.metadata.optimizationRunId is required to persist optimization history");
@@ -191,7 +193,7 @@ function persistFailedRun(historyFile, input) {
   assertObject(input.scenario, "history input.scenario");
   assertObject(input.metadata, "history input.metadata");
 
-  const optimizationRunId = readString(input.metadata.optimizationRunId);
+  const optimizationRunId = readNonEmptyString(input.metadata.optimizationRunId);
 
   if (!optimizationRunId) {
     throw new Error("metadata.optimizationRunId is required to persist optimization history");
@@ -400,30 +402,13 @@ function hashJson(value) {
 }
 
 function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+  return structuredClone(value);
 }
 
 function assertObject(value, label) {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(label + " must be an object");
   }
-}
-
-function readString(value) {
-  if (typeof value !== "string") {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-function readPositiveInteger(value, fallback) {
-  if (Number.isInteger(value) && value > 0) {
-    return value;
-  }
-
-  return fallback;
 }
 
 function readNonNegativeInteger(value, fallback) {

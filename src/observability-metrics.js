@@ -34,8 +34,7 @@ export function renderOptimizationRepositoryMetrics(input) {
   const runCounts = new Map();
   const latestSamples = new Map();
 
-  for (let i = 0; i < runs.length; i += 1) {
-    const run = runs[i];
+  for (const run of runs) {
     const status = normalizeStatus(run.status);
     const baseLabels = {
       environment: environment,
@@ -113,9 +112,9 @@ function labelsText(labels) {
 
 function escapeLabelValue(value) {
   return value
-    .replaceAll("\\", "\\\\")
-    .replaceAll("\n", "\\n")
-    .replaceAll('"', '\\"');
+    .replaceAll("\\", String.raw`\\`)
+    .replaceAll("\n", String.raw`\n`)
+    .replaceAll('"', String.raw`\"`);
 }
 
 function numberMetric(value) {
