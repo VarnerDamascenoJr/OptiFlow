@@ -34,8 +34,7 @@ export function renderOptimizationRepositoryMetrics(input) {
   const runCounts = new Map();
   const latestSamples = new Map();
 
-  for (let i = 0; i < runs.length; i += 1) {
-    const run = runs[i];
+  for (const run of runs) {
     const status = normalizeStatus(run.status);
     const baseLabels = {
       environment: environment,
