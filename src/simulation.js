@@ -187,7 +187,7 @@ export function summarizeSamples(samples) {
 }
 
 function sampleScenario(scenario, uncertainty, random) {
-  const sampledScenario = clone(scenario);
+  const sampledScenario = structuredClone(scenario);
 
   sampledScenario.orders = sampledScenario.orders.map(function sampleOrder(order) {
     const sampledOrder = { ...order };
@@ -297,7 +297,7 @@ function indexById(items) {
 function normalizeSimulationOptions(options) {
   const uncertainty = {
     ...DEFAULT_SIMULATION_OPTIONS.uncertainty,
-    ...(options.uncertainty || {})
+    ...options.uncertainty
   };
 
   return {
@@ -351,8 +351,4 @@ function readProbability(value, fallback) {
 function round(value, decimals) {
   const multiplier = Math.pow(10, decimals);
   return Math.round(value * multiplier) / multiplier;
-}
-
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
 }
