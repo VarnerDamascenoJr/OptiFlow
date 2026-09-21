@@ -54,7 +54,7 @@ ja auditado entre sessoes.
 | P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
 | P5.1 Documentacao final de execucao local | Concluido | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. Validado em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.1-local-execution-2026-09-21`. | Usar os achados da carga validada para limpar dados historicos incompletos quando necessario. |
 | P5.2 Diagramas finais | Concluido | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. Renderizado localmente em SVG e PNG em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.2-architecture-diagrams-2026-09-21`. | Usar os SVGs quando precisar revisar diagramas largos com zoom. |
-| P5.3 Roteiro de demo gravavel | Documentado, pendente ensaio | `docs/portfolio-recordable-demo-script.md` define uma demo de 5 a 10 minutos com venda bem-sucedida, falha investigada, dados exportados e comparacao no OptiFlow. | Ensaiar localmente, cronometrar e ajustar cortes. |
+| P5.3 Roteiro de demo gravavel | Concluido | Ensaio tecnico completo em 2026-09-21 com venda bem-sucedida, replay de webhook, dashboards/Prometheus, export Sales -> OptiFlow e execucao HTTP do OptiFlow. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.3-recordable-demo-rehearsal-2026-09-21`. | Na gravacao final, usar `OPTIFLOW_API_PORT=3300` se a porta `3000` estiver ocupada e ajustar o target temporario do Prometheus. |
 
 ## Prioridade P0: contrato comum do portfolio
 
@@ -1010,13 +1010,15 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Ensaio local completo.
-- [ ] Ajustes registrados apos o primeiro ensaio.
+- [x] Ensaio local completo.
+- [x] Ajustes registrados apos o primeiro ensaio.
 
 Status:
 
-- Documentado, pendente ensaio. O roteiro gravavel esta em
+- Concluido com ensaio tecnico em 2026-09-21. O roteiro gravavel esta em
   [portfolio-recordable-demo-script.md](portfolio-recordable-demo-script.md).
+  Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p5.3-recordable-demo-rehearsal-2026-09-21`.
 
 ### P5.4 Preparar CI e badges consistentes
 

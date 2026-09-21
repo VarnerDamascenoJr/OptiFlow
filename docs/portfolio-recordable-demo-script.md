@@ -57,6 +57,11 @@ Deixe abertas estas telas:
 - Interface do OptiFlow: `http://127.0.0.1:3000`
 - Terminal com comandos curl prontos
 
+Se a porta `3000` ja estiver ocupada na maquina de ensaio, use outra porta
+para o `OptiFlow`, por exemplo `OPTIFLOW_API_PORT=3300`, e ajuste
+temporariamente o target `optiflow-api` do Prometheus para
+`host.docker.internal:3300`.
+
 ## Linha do Tempo
 
 | Tempo | Cena | Mensagem |
@@ -265,13 +270,26 @@ Pontos finais:
 
 ## Checklist de Ensaio
 
-- [ ] Cronometrar a gravacao e cortar telas que passem de 10 minutos.
-- [ ] Confirmar que a venda retorna `saleId`.
-- [ ] Confirmar que o dashboard de vendas mostra sinais atualizados.
-- [ ] Confirmar que a falha escolhida aparece no dashboard ou nos logs.
-- [ ] Confirmar que o export do sales gera JSON valido.
-- [ ] Confirmar que o OptiFlow executa o cenario importado.
-- [ ] Confirmar que o Prometheus da plataforma coleta `optiflow-api`.
-- [ ] Encerrar stacks com `docker compose down` nos repositorios usados.
-- [ ] Parar Colima se a sessao acabou: `colima stop`.
+- [x] Cronometrar a gravacao e cortar telas que passem de 10 minutos.
+- [x] Confirmar que a venda retorna `saleId`.
+- [x] Confirmar que o dashboard de vendas mostra sinais atualizados.
+- [x] Confirmar que a falha escolhida aparece no dashboard ou nos logs.
+- [x] Confirmar que o export do sales gera JSON valido.
+- [x] Confirmar que o OptiFlow executa o cenario importado.
+- [x] Confirmar que o Prometheus da plataforma coleta `optiflow-api`.
+- [x] Encerrar stacks com `docker compose down` nos repositorios usados.
+- [x] Parar Colima se a sessao acabou: `colima stop`.
 
+## Resultado do Ensaio de 2026-09-21
+
+- Ensaio tecnico completo executado com a stack da plataforma, `sales-event-project`
+  em projeto Compose temporario e `OptiFlow` na porta `3300`.
+- Venda bem-sucedida validada com `saleId` e status final `COMPLETED`.
+- Falha investigavel validada por replay idempotente de webhook de pagamento,
+  com `payment_webhook_replays_total{provider="p5_3_rehearsal"} = 1`.
+- Export Sales -> OptiFlow gerou JSON `sales-event-optiflow-export.v1` com
+  2 vendas `COMPLETED`, 2 itens e total `20000`.
+- Execucao HTTP do `OptiFlow` terminou `SUCCEEDED`; Prometheus coletou
+  `optiflow_optimization_plan_cost = 162` em `host.docker.internal:3300`.
+- Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p5.3-recordable-demo-rehearsal-2026-09-21`.
