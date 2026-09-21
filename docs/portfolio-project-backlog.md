@@ -55,7 +55,7 @@ ja auditado entre sessoes.
 | P5.1 Documentacao final de execucao local | Concluido | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. Validado em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.1-local-execution-2026-09-21`. | Usar os achados da carga validada para limpar dados historicos incompletos quando necessario. |
 | P5.2 Diagramas finais | Concluido | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. Renderizado localmente em SVG e PNG em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.2-architecture-diagrams-2026-09-21`. | Usar os SVGs quando precisar revisar diagramas largos com zoom. |
 | P5.3 Roteiro de demo gravavel | Concluido | Ensaio tecnico completo em 2026-09-21 com venda bem-sucedida, replay de webhook, dashboards/Prometheus, export Sales -> OptiFlow e execucao HTTP do OptiFlow. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.3-recordable-demo-rehearsal-2026-09-21`. | Na gravacao final, usar `OPTIFLOW_API_PORT=3300` se a porta `3000` estiver ocupada e ajustar o target temporario do Prometheus. |
-| P5.4 CI e badges consistentes | Concluido | Ultimas execucoes verdes nos tres repositorios em 2026-09-21: Sales run `35647856838`, plataforma run `35648584673`, OptiFlow run `35613643489`. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.4-ci-badges-2026-09-21`. | Manter badges apontando apenas para workflows reais. |
+| P5.4 CI e badges consistentes | Concluido | Execucoes verdes verificadas nos tres repositorios em 2026-09-21, com badges apontando para workflows reais. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.4-ci-badges-2026-09-21`. | Manter badges apontando apenas para workflows reais. |
 
 ## Prioridade P0: contrato comum do portfolio
 
@@ -1044,9 +1044,8 @@ Status:
 - Concluido em 2026-09-21. O `sales-event-project` passou a ter workflow de CI
   com `make test`, `make lint`, `make test-integration` e `make build`, alem de
   badge real no README. A `operational-observability-platform` recebeu badge
-  real no README. As ultimas execucoes verdes verificadas foram:
-  `sales-event-project` run `35647856838`, `operational-observability-platform`
-  run `35648584673` e `OptiFlow` run `35613643489`. Evidencia:
+  real no README. Foram verificadas execucoes verdes nos tres repositorios, com
+  IDs e links registrados na evidencia:
   `/Users/varnerdamasceno/github-varner/evidence/p5.4-ci-badges-2026-09-21`.
 
 ## Ordem recomendada de ataque
