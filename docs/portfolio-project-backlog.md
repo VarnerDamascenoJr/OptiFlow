@@ -52,8 +52,8 @@ ja auditado entre sessoes.
 | P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem migrations, runner, camada PostgreSQL, `.env.example`, health com banco real e e2e. PR #6 merged. Validado com `npm run check` em 2026-09-16. | Usar a base de persistencia para SLOs, incidentes e historico operacional. |
 | P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs, com testes unitarios/e2e. PR #7 merged. Validado com `npm run check` em 2026-09-16. | Manter os campos compativeis com Loki, Tempo e o contrato compartilhado. |
 | P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
-| P5.1 Documentacao final de execucao local | Documentado, pendente ensaio final | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. | Executar o guia completo em ambiente local reiniciado. |
-| P5.2 Diagramas finais | Documentado, pendente renderizacao local | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. | Renderizar os diagramas localmente ou pelo preview do GitHub. |
+| P5.1 Documentacao final de execucao local | Concluido | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. Validado em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.1-local-execution-2026-09-21`. | Usar os achados da carga validada para limpar dados historicos incompletos quando necessario. |
+| P5.2 Diagramas finais | Concluido | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. Renderizado localmente em SVG e PNG em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.2-architecture-diagrams-2026-09-21`. | Usar os SVGs quando precisar revisar diagramas largos com zoom. |
 | P5.3 Roteiro de demo gravavel | Documentado, pendente ensaio | `docs/portfolio-recordable-demo-script.md` define uma demo de 5 a 10 minutos com venda bem-sucedida, falha investigada, dados exportados e comparacao no OptiFlow. | Ensaiar localmente, cronometrar e ajustar cortes. |
 
 ## Prioridade P0: contrato comum do portfolio
@@ -985,12 +985,14 @@ Criterio de aceite:
 Verificacao:
 
 - [x] Revisao manual dos diagramas.
-- [ ] Renderizacao local quando usar Mermaid ou ferramenta equivalente.
+- [x] Renderizacao local quando usar Mermaid ou ferramenta equivalente.
 
 Status:
 
-- Documentado, pendente renderizacao local. Os diagramas estao em
-  [portfolio-architecture-diagrams.md](portfolio-architecture-diagrams.md).
+- Concluido com renderizacao local em 2026-09-21. Os diagramas estao em
+  [portfolio-architecture-diagrams.md](portfolio-architecture-diagrams.md) e
+  foram renderizados em SVG e PNG. Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p5.2-architecture-diagrams-2026-09-21`.
 
 ### P5.3 Criar roteiro de demo gravavel
 
