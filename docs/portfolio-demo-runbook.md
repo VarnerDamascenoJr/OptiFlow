@@ -205,12 +205,30 @@ Proxima entrega recomendada depois deste roteiro:
 
 ## Checklist de ensaio
 
-- [ ] Rodar os comandos de pre-check nos tres repositorios.
-- [ ] Rodar `make test`, `make test-integration` e `make lint` no
+- [x] Rodar os comandos de pre-check nos tres repositorios.
+- [x] Rodar `make test`, `make test-integration` e `make lint` no
   `sales-event-project`.
-- [ ] Rodar `npm run check`, `npm run validate:observability` e
+- [x] Rodar `npm run check`, `npm run validate:observability` e
   `npm run smoke:observability` na plataforma operacional.
-- [ ] Rodar `npm test` e `npm run scenario:small` no `OptiFlow`.
-- [ ] Capturar a saida relevante de cada etapa.
-- [ ] Registrar ajustes de porta, ambiente ou tempo de inicializacao no guia
+- [x] Rodar `npm test` e `npm run scenario:small` no `OptiFlow`.
+- [x] Capturar a saida relevante de cada etapa.
+- [x] Registrar ajustes de porta, ambiente ou tempo de inicializacao no guia
   final de execucao local.
+
+## Resultado do Ensaio de 2026-09-21
+
+- Pre-check executado nos tres repositorios: todos em `main`, atualizados com
+  `origin/main` e sem mudancas locais inesperadas no inicio do ensaio.
+- `sales-event-project`: `make test`, `make lint`, `make test-integration` e
+  `make build` passaram localmente.
+- `operational-observability-platform`: `docker compose up -d --wait`,
+  `npm run validate:observability`, `npm run smoke:observability` e
+  `npm run check` passaram localmente.
+- `OptiFlow`: `npm test` passou com 42 testes, e `npm run scenario:small`
+  preservou `requestId`, `correlationId`, `transactionId`,
+  `optimizationRunId`, `service` e `environment` na saida.
+- Ajuste operacional observado: a stack do `sales-event-project` deve ser
+  encerrada antes da plataforma quando ambas forem usadas isoladamente, pois os
+  dois projetos publicam PostgreSQL em `5432`.
+- Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p0.2-main-demo-runbook-2026-09-21`.

@@ -42,7 +42,7 @@ ja auditado entre sessoes.
 | Item | Estado | Evidencia atual | Proximo cuidado |
 | --- | --- | --- | --- |
 | P0.1 Convencoes compartilhadas de correlacao | Concluido | `docs/portfolio-correlation-conventions.md` define IDs, HTTP, RabbitMQ, logs, traces, metricas, eventos e jornadas. Os READMEs dos tres projetos apontam para esse contrato. | Manter o documento como fonte de verdade quando novos fluxos surgirem. |
-| P0.2 Roteiro principal da narrativa | Documentado, pendente ensaio | `docs/portfolio-demo-runbook.md` define a narrativa executavel, comandos, fluxos e evidencias esperadas dos tres projetos. | Executar o roteiro completo em ambiente local reiniciado e registrar ajustes. |
+| P0.2 Roteiro principal da narrativa | Concluido | `docs/portfolio-demo-runbook.md` foi ensaiado em 2026-09-21 com pre-check, comandos base dos tres projetos e evidencia local. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p0.2-main-demo-runbook-2026-09-21`. | Manter o roteiro alinhado quando novas etapas de demo forem adicionadas. |
 | P1.2 Correlacao da jornada de venda | Concluido | `sales-event-project` gera/preserva `X-Request-ID`, `X-Correlation-ID` e `X-Transaction-ID` no `POST /sales`, propaga metadata por pagamento, outbox, ticket, email e check-in, e registra campos em logs estruturados. PR #6 merged. Validado com `make test`, `make test-integration` e `make lint` em 2026-09-16. | Manter os identificadores alinhados ao contrato compartilhado quando novos fluxos surgirem. |
 | P1.3 Contexto por RabbitMQ | Concluido | `sales-event-project` injeta headers AMQP de correlacao, contexto W3C de trace e preserva metadados de negocio no consumo e em eventos derivados. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.3-rabbitmq-context-2026-09-11`. | Usar este contrato como base para a instrumentacao OpenTelemetry da P1.4. |
 | P1.4 OpenTelemetry no `sales-event-project` | Concluido | API e worker exportam traces OTLP opcionais, propagam contexto por HTTP/RabbitMQ/outbox e possuem spans de negocio para venda, pagamento, outbox, ticket, email e check-in. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p1.4-opentelemetry-sales-2026-09-11`. | Usar os traces como base para P1.5/P1.7 e para a integracao P4.1 com dashboards da plataforma. |
@@ -51,10 +51,11 @@ ja auditado entre sessoes.
 | P1.7 Dashboard da jornada de negocio | Concluido | `sales-event-project` provisiona o dashboard Grafana `Sales Business Journey`, adiciona metricas para pagamento duplicado e check-in, e documenta o smoke em `docs/business-journey-dashboard.md`. Verificacao: dashboard encontrado no Grafana local; smoke com venda aprovada, pagamento duplicado, falha de outbox e check-in em 2026-09-12; `make test`; `make lint`. | Usar esta visao local como base para o dashboard consolidado da plataforma em P4.2. |
 | P2.1 PostgreSQL na plataforma operacional | Concluido | `operational-observability-platform` tem migrations, runner, camada PostgreSQL, `.env.example`, health com banco real e e2e. PR #6 merged. Validado com `npm run check` em 2026-09-16. | Usar a base de persistencia para SLOs, incidentes e historico operacional. |
 | P2.2 IDs e logs na plataforma operacional | Concluido | Fastify gera/preserva IDs, devolve headers, adiciona `request_id`, `correlation_id`, `transaction_id` e `trace_id` aos logs, com testes unitarios/e2e. PR #7 merged. Validado com `npm run check` em 2026-09-16. | Manter os campos compativeis com Loki, Tempo e o contrato compartilhado. |
-| P3 OptiFlow deterministico | Em andamento avancado | Heuristica, metricas, cenario pequeno, metadata de execucao, testes e formulacao matematica inicial existem. | Iniciar benchmarks deterministicos e preparar comparacao com solver. |
+| P3 OptiFlow deterministico | Concluido | P3.1 a P3.12 estao concluidas: formulacao, benchmarks, solver, comparacao, restricoes, historico, API, fila local, simulacao, risco, interface, Docker e CI. | Evoluir somente como novas melhorias fora do escopo original da P3. |
 | P5.1 Documentacao final de execucao local | Concluido | `docs/portfolio-local-execution.md` consolida setup por projeto, demonstracao integrada, portas, variaveis, tempos esperados e problemas conhecidos. Validado em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.1-local-execution-2026-09-21`. | Usar os achados da carga validada para limpar dados historicos incompletos quando necessario. |
 | P5.2 Diagramas finais | Concluido | `docs/portfolio-architecture-diagrams.md` contem diagramas Mermaid de arquitetura, jornada observavel, dados entre projetos e fluxo do OptiFlow. Renderizado localmente em SVG e PNG em 2026-09-21. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.2-architecture-diagrams-2026-09-21`. | Usar os SVGs quando precisar revisar diagramas largos com zoom. |
 | P5.3 Roteiro de demo gravavel | Concluido | Ensaio tecnico completo em 2026-09-21 com venda bem-sucedida, replay de webhook, dashboards/Prometheus, export Sales -> OptiFlow e execucao HTTP do OptiFlow. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.3-recordable-demo-rehearsal-2026-09-21`. | Na gravacao final, usar `OPTIFLOW_API_PORT=3300` se a porta `3000` estiver ocupada e ajustar o target temporario do Prometheus. |
+| P5.4 CI e badges consistentes | Concluido | Ultimas execucoes verdes nos tres repositorios em 2026-09-21: Sales run `35647856838`, plataforma run `35648584673`, OptiFlow run `35613643489`. Evidencia: `/Users/varnerdamasceno/github-varner/evidence/p5.4-ci-badges-2026-09-21`. | Manter badges apontando apenas para workflows reais. |
 
 ## Prioridade P0: contrato comum do portfolio
 
@@ -99,14 +100,14 @@ Criterio de aceite:
 
 Verificacao:
 
-- Executar o roteiro em maquina limpa ou ambiente local reiniciado.
-- Registrar os comandos e resultados esperados no documento.
+- [x] Executar o roteiro em maquina limpa ou ambiente local reiniciado.
+- [x] Registrar os comandos e resultados esperados no documento.
 
 Status:
 
-- Documentado, pendente ensaio. O roteiro executavel existe em
-  [portfolio-demo-runbook.md](portfolio-demo-runbook.md), mas ainda falta
-  executar a demonstracao completa em ambiente local reiniciado.
+- Concluido com ensaio local em 2026-09-21. O roteiro executavel existe em
+  [portfolio-demo-runbook.md](portfolio-demo-runbook.md), e a evidencia esta em
+  `/Users/varnerdamasceno/github-varner/evidence/p0.2-main-demo-runbook-2026-09-21`.
 
 ## Prioridade P1: consolidar o `sales-event-project`
 
@@ -1035,15 +1036,18 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Ultima execucao verde nos tres repositorios.
+- [x] Ultima execucao verde nos tres repositorios.
 - [x] Links dos workflows nos READMEs ou na pagina do repositorio.
 
 Status:
 
-- Documentado e configurado, pendente execucao verde no GitHub Actions. O
-  `sales-event-project` passa a ter workflow de CI com `make test`,
-  `make lint`, `make test-integration` e `make build`. Os READMEs dos tres
-  repositorios apontam para workflows reais e badges correspondentes.
+- Concluido em 2026-09-21. O `sales-event-project` passou a ter workflow de CI
+  com `make test`, `make lint`, `make test-integration` e `make build`, alem de
+  badge real no README. A `operational-observability-platform` recebeu badge
+  real no README. As ultimas execucoes verdes verificadas foram:
+  `sales-event-project` run `35647856838`, `operational-observability-platform`
+  run `35648584673` e `OptiFlow` run `35613643489`. Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p5.4-ci-badges-2026-09-21`.
 
 ## Ordem recomendada de ataque
 
