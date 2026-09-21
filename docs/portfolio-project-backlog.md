@@ -958,13 +958,17 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Execucao do guia em ambiente local reiniciado.
-- [ ] Comandos base dos tres projetos passando.
+- [x] Execucao do guia em ambiente local reiniciado.
+- [x] Comandos base dos tres projetos passando.
 
 Status:
 
-- Documentado, pendente ensaio final. O guia consolidado esta em
-  [portfolio-local-execution.md](portfolio-local-execution.md).
+- Concluido com validacao local em 2026-09-21. O guia consolidado esta em
+  [portfolio-local-execution.md](portfolio-local-execution.md). Evidencia:
+  `/Users/varnerdamasceno/github-varner/evidence/p5.1-local-execution-2026-09-21`.
+  A validacao com carga encontrou 11 vendas historicas `COMPLETED` sem itens no
+  export bruto; o importador do `OptiFlow` rejeitou esses registros e a
+  execucao de volume continuou com o subconjunto valido.
 
 ### P5.2 Criar diagramas finais
 
