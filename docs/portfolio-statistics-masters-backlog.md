@@ -187,12 +187,19 @@ Objetivo: fazer do Sales a fonte de dados observacionais do portfolio.
 
 Projeto: `sales-event-project`.
 
-- [ ] Criar `cmd/analytics-export` ou evoluir o export atual.
-- [ ] Exportar eventos individuais com timestamps normalizados.
-- [ ] Exportar agregados por janela: 1 min, 5 min, 1 h e 1 dia.
-- [ ] Incluir contagens por status de venda, pagamento, outbox, email e
+- [x] Criar `cmd/analytics-export` ou evoluir o export atual.
+- [x] Exportar eventos individuais com timestamps normalizados.
+- [x] Exportar agregados por janela: 1 min, 5 min, 1 h e 1 dia.
+- [x] Incluir contagens por status de venda, pagamento, outbox, email e
   check-in.
-- [ ] Versionar schema `sales-analytics-export.v1`.
+- [x] Versionar schema `sales-analytics-export.v1`.
+
+Artefatos de referencia no `sales-event-project`:
+
+- `cmd/analytics-export`
+- `internal/analytics`
+- `docs/analytics-export.md`
+- `tests/fixtures/sales-analytics-export.v1.json`
 
 Pergunta estatistica:
 
@@ -205,8 +212,8 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste com banco pequeno e contagens esperadas.
-- [ ] Fixture JSON com duas ou mais janelas.
+- [x] Teste com banco pequeno e contagens esperadas.
+- [x] Fixture JSON com duas ou mais janelas.
 
 ### S1.2 Modelar funil de conversao com incerteza
 
