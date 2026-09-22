@@ -30,6 +30,9 @@ diagramas finais estao em
 [docs/portfolio-architecture-diagrams.md](docs/portfolio-architecture-diagrams.md).
 O roteiro gravavel de 5 a 10 minutos esta em
 [docs/portfolio-recordable-demo-script.md](docs/portfolio-recordable-demo-script.md).
+O backlog da proxima fase, focado em preparacao para mestrado em Estatistica
+aplicada nos tres projetos, esta em
+[docs/portfolio-statistics-masters-backlog.md](docs/portfolio-statistics-masters-backlog.md).
 
 ## Direcao Recomendada do MVP
 
