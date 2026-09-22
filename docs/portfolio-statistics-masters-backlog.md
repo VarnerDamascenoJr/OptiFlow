@@ -249,11 +249,18 @@ Verificacao:
 
 Projeto: `sales-event-project`.
 
-- [ ] Calcular tempo ate pagamento.
-- [ ] Calcular tempo ate email enviado.
-- [ ] Calcular tempo ate check-in.
-- [ ] Tratar vendas ainda nao concluidas como observacoes censuradas.
-- [ ] Produzir curva simples de sobrevivencia ou tabela de hazard por faixa.
+- [x] Calcular tempo ate pagamento.
+- [x] Calcular tempo ate email enviado.
+- [x] Calcular tempo ate check-in.
+- [x] Tratar vendas ainda nao concluidas como observacoes censuradas.
+- [x] Produzir curva simples de sobrevivencia ou tabela de hazard por faixa.
+
+Artefatos de referencia no `sales-event-project`:
+
+- `internal/analytics/survival.go`
+- `internal/analytics/survival_test.go`
+- `docs/survival-analysis.md`
+- campo `survivalAnalyses` no export `sales-analytics-export.v1`
 
 Pergunta estatistica:
 
@@ -265,8 +272,8 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste com observacoes completas e censuradas.
-- [ ] Relatorio com mediana ou percentis de tempo ate evento.
+- [x] Teste com observacoes completas e censuradas.
+- [x] Relatorio com mediana ou percentis de tempo ate evento.
 
 ### S1.4 Prever demanda por janela e tipo de ticket
 
