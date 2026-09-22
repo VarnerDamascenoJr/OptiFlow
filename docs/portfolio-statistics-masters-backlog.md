@@ -136,12 +136,16 @@ Verificacao:
 
 Projetos: todos.
 
-- [ ] Definir unidades: tempo, dinheiro, distancia, demanda, capacidade,
+- [x] Definir unidades: tempo, dinheiro, distancia, demanda, capacidade,
   probabilidade, taxa, quantil e custo.
-- [ ] Padronizar termos: evento, janela, coorte, amostra, censura, funil,
+- [x] Padronizar termos: evento, janela, coorte, amostra, censura, funil,
   atraso, falha, SLO, burn rate, risco e perda.
-- [ ] Definir regras de arredondamento e precisao numerica.
-- [ ] Separar labels de baixa cardinalidade de dimensoes analiticas.
+- [x] Definir regras de arredondamento e precisao numerica.
+- [x] Separar labels de baixa cardinalidade de dimensoes analiticas.
+
+Documento de referencia:
+
+- [Dicionario Estatistico Compartilhado](portfolio-statistical-dictionary.md).
 
 Criterio de aceite:
 
@@ -149,7 +153,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Documento versionado com exemplos e pelo menos uma fixture compartilhada.
+- [x] Documento versionado com exemplos e pelo menos uma fixture compartilhada.
 
 ### S0.3 Criar formato de estudo reprodutivel
 
