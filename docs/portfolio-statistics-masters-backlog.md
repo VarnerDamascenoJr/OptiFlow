@@ -159,11 +159,17 @@ Verificacao:
 
 Projetos: todos, centralizado no `OptiFlow`.
 
-- [ ] Definir arquivo de estudo com: pergunta, dataset, periodo, filtros,
+- [x] Definir arquivo de estudo com: pergunta, dataset, periodo, filtros,
   modelo, parametros, seed, resultado e conclusao.
-- [ ] Registrar `git sha` dos tres repositorios usados.
-- [ ] Guardar evidencias em diretorios versionados por data.
-- [ ] Incluir template para relatorio curto de analise.
+- [x] Registrar `git sha` dos tres repositorios usados.
+- [x] Guardar evidencias em diretorios versionados por data.
+- [x] Incluir template para relatorio curto de analise.
+
+Documentos de referencia:
+
+- [Formato de Estudo Estatistico Reprodutivel](portfolio-reproducible-study-format.md).
+- [Template de Estudo Estatistico](templates/statistical-study-template.md).
+- [Primeiro estudo reprodutivel](../studies/statistics/2026-09-22-foundation-fixture/study.md).
 
 Criterio de aceite:
 
@@ -171,7 +177,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Primeiro estudo pequeno com dataset fixture e resultado reproduzivel.
+- [x] Primeiro estudo pequeno com dataset fixture e resultado reproduzivel.
 
 ## S1: Dados Estatisticos no `sales-event-project`
 

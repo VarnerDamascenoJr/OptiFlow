@@ -1,0 +1,17 @@
+{
+  "schema_version": "portfolio-statistical-fixture.v1",
+  "record_count": 3,
+  "question_ids": [
+    "RQ1",
+    "RQ5",
+    "RQ7"
+  ],
+  "projects": [
+    "sales-event-project",
+    "operational-observability-platform",
+    "OptiFlow"
+  ],
+  "sales_conversion_probability": 0.8,
+  "observability_success_probability": 0.9935,
+  "optiflow_candidate_cvar_delta_cents": -30000
+}
