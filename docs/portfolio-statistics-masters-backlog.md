@@ -219,11 +219,18 @@ Verificacao:
 
 Projeto: `sales-event-project`.
 
-- [ ] Calcular conversoes condicionais:
+- [x] Calcular conversoes condicionais:
   aceita -> pendente -> paga -> ticket emitido -> check-in.
-- [ ] Calcular intervalo de confianca para proporcoes.
-- [ ] Implementar alternativa Bayesiana simples com prior Beta.
-- [ ] Separar resultado por evento, ticket, provider e janela.
+- [x] Calcular intervalo de confianca para proporcoes.
+- [x] Implementar alternativa Bayesiana simples com prior Beta.
+- [x] Separar resultado por evento, ticket, provider e janela.
+
+Artefatos de referencia no `sales-event-project`:
+
+- `internal/analytics/funnel.go`
+- `internal/analytics/funnel_test.go`
+- `docs/funnel-conversion.md`
+- campo `funnels` no export `sales-analytics-export.v1`
 
 Pergunta estatistica:
 
@@ -235,8 +242,8 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Testes com contagens pequenas, incluindo zero eventos.
-- [ ] Documento explicando binomial/Beta-Binomial em linguagem simples.
+- [x] Testes com contagens pequenas, incluindo zero eventos.
+- [x] Documento explicando binomial/Beta-Binomial em linguagem simples.
 
 ### S1.3 Medir tempo ate eventos com analise de sobrevivencia
 
