@@ -168,7 +168,22 @@ export function summarizeSamples(samples) {
     }),
     unassignedProbability: probability(samples, function hasUnassignedOrders(sample) {
       return sample.metrics.unassignedOrders > 0;
-    })
+    }),
+    monteCarlo: summarizeMonteCarloDiagnostics(totalCosts)
+  };
+}
+
+export function summarizeMonteCarloDiagnostics(values) {
+  const sampleSize = values.length;
+  const expectedCost = summarizeExpectedValue(values);
+  const quantileStability = summarizeQuantileStability(values);
+  const warnings = createMonteCarloWarnings(sampleSize, quantileStability);
+
+  return {
+    sampleSize: sampleSize,
+    expectedCost: expectedCost,
+    quantileStability: quantileStability,
+    warnings: warnings
   };
 }
 
@@ -229,6 +244,115 @@ function summarizeNumericSeries(values) {
     p95: round(percentile(sorted, 0.95), 4),
     worstCase: round(sorted[sorted.length - 1] || 0, 4)
   };
+}
+
+function summarizeExpectedValue(values) {
+  const sampleSize = values.length;
+  const average = mean(values);
+  const standardDeviation = sampleStandardDeviation(values, average);
+  const standardError = sampleSize > 0 ? standardDeviation / Math.sqrt(sampleSize) : 0;
+  const marginOfError = 1.96 * standardError;
+
+  return {
+    mean: round(average, 4),
+    standardDeviation: round(standardDeviation, 4),
+    standardError: round(standardError, 4),
+    confidenceInterval95: {
+      lower: round(average - marginOfError, 4),
+      upper: round(average + marginOfError, 4)
+    }
+  };
+}
+
+function summarizeQuantileStability(values) {
+  const sampleSize = values.length;
+  const finalSummary = summarizeNumericSeries(values);
+  const checkpoints = createCheckpointSizes(sampleSize).map(function mapCheckpoint(size) {
+    const sortedPrefix = values.slice(0, size).sort(function sortNumbers(left, right) {
+      return left - right;
+    });
+
+    return {
+      iterations: size,
+      p90: round(percentile(sortedPrefix, 0.9), 4),
+      p95: round(percentile(sortedPrefix, 0.95), 4)
+    };
+  });
+  const p90MaxRelativeDelta = maxRelativeDelta(checkpoints, "p90", finalSummary.p90);
+  const p95MaxRelativeDelta = maxRelativeDelta(checkpoints, "p95", finalSummary.p95);
+
+  return {
+    metric: "totalCost",
+    checkpoints: checkpoints,
+    finalP90: finalSummary.p90,
+    finalP95: finalSummary.p95,
+    p90MaxRelativeDelta: round(p90MaxRelativeDelta, 4),
+    p95MaxRelativeDelta: round(p95MaxRelativeDelta, 4),
+    stable: sampleSize >= 100 && p90MaxRelativeDelta <= 0.05 && p95MaxRelativeDelta <= 0.05
+  };
+}
+
+function sampleStandardDeviation(values, average) {
+  if (values.length < 2) {
+    return 0;
+  }
+
+  const sumSquaredDistance = values.reduce(function sumDistance(total, value) {
+    return total + Math.pow(value - average, 2);
+  }, 0);
+
+  return Math.sqrt(sumSquaredDistance / (values.length - 1));
+}
+
+function createCheckpointSizes(sampleSize) {
+  if (sampleSize === 0) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      [0.25, 0.5, 0.75, 1].map(function mapFraction(fraction) {
+        return Math.max(1, Math.round(sampleSize * fraction));
+      })
+    )
+  );
+}
+
+function maxRelativeDelta(checkpoints, metricName, finalValue) {
+  if (checkpoints.length === 0) {
+    return 0;
+  }
+
+  const denominator = Math.max(Math.abs(finalValue), 1);
+
+  return checkpoints.reduce(function reduceMaxDelta(currentMax, checkpoint) {
+    return Math.max(currentMax, Math.abs(checkpoint[metricName] - finalValue) / denominator);
+  }, 0);
+}
+
+function createMonteCarloWarnings(sampleSize, quantileStability) {
+  const warnings = [];
+
+  if (sampleSize < 30) {
+    warnings.push({
+      code: "mean_sample_size_below_30",
+      message: "Expected cost confidence interval is based on fewer than 30 Monte Carlo samples."
+    });
+  }
+
+  if (sampleSize < 100) {
+    warnings.push({
+      code: "tail_quantile_sample_size_below_100",
+      message: "Tail quantile stability should be treated as provisional below 100 Monte Carlo samples."
+    });
+  } else if (!quantileStability.stable) {
+    warnings.push({
+      code: "tail_quantiles_not_stable",
+      message: "P90 or P95 changed by more than 5% across Monte Carlo checkpoints."
+    });
+  }
+
+  return warnings;
 }
 
 function percentile(sortedValues, quantile) {

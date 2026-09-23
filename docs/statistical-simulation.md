@@ -74,6 +74,14 @@ A saida preserva as premissas e resume:
 O campo `calibration` indica se a simulacao usou modo `synthetic` ou
 `sales-event-priors`, alem de registrar origem, periodo e tamanho da amostra.
 Cada serie numerica inclui media, mediana, P90, P95 e pior caso observado.
+O bloco `summary.monteCarlo` adiciona rigor para decisao sob incerteza:
+
+- erro padrao da media de custo esperado;
+- intervalo de confianca de 95% para o custo esperado;
+- estabilidade de P90/P95 em checkpoints de 25%, 50%, 75% e 100% das
+  iteracoes;
+- avisos quando a amostra e pequena demais para conclusoes fortes.
+
 A lista completa de amostras pode ser incluida com
 `OPTIFLOW_SIMULATION_INCLUDE_SAMPLES=true`.
 

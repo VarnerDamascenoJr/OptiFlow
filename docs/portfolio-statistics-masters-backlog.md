@@ -529,10 +529,10 @@ Verificacao:
 
 Projeto: `OptiFlow`.
 
-- [ ] Reportar erro padrao da media simulada.
-- [ ] Reportar intervalo de confianca para custo esperado.
-- [ ] Medir estabilidade de quantis conforme numero de iteracoes.
-- [ ] Avisar quando amostra for insuficiente para conclusao.
+- [x] Reportar erro padrao da media simulada.
+- [x] Reportar intervalo de confianca para custo esperado.
+- [x] Medir estabilidade de quantis conforme numero de iteracoes.
+- [x] Avisar quando amostra for insuficiente para conclusao.
 
 Pergunta estatistica:
 
@@ -544,7 +544,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Testes com seed fixa e valores esperados.
+- [x] Testes com seed fixa e valores esperados.
 
 ### S3.3 Comparar estrategias com inferencia
 
