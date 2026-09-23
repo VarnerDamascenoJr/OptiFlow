@@ -507,11 +507,11 @@ apenas motor de rota.
 
 Projetos: `sales-event-project`, `OptiFlow`.
 
-- [ ] Importar priors de conversao, demanda e cancelamento.
-- [ ] Substituir parametros sinteticos por parametros estimados quando
+- [x] Importar priors de conversao, demanda e cancelamento.
+- [x] Substituir parametros sinteticos por parametros estimados quando
   disponiveis.
-- [ ] Registrar origem, periodo e tamanho da amostra.
-- [ ] Manter modo sintetico para demo sem historico.
+- [x] Registrar origem, periodo e tamanho da amostra.
+- [x] Manter modo sintetico para demo sem historico.
 
 Pergunta estatistica:
 
@@ -523,7 +523,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Fixture com priors e resultado reproduzivel.
+- [x] Fixture com priors e resultado reproduzivel.
 
 ### S3.2 Medir erro Monte Carlo e convergencia
 

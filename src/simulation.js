@@ -1,4 +1,5 @@
 import evaluatePlan from "./metrics.js";
+import { createSalesEventCalibration } from "./sales-event-priors.js";
 import { mean, readPositiveInteger, round } from "./shared/numbers.js";
 import { createPlanForStrategy } from "./shared/plan-factory.js";
 import validateScenario from "./validate-scenario.js";
@@ -40,6 +41,7 @@ export function simulateFixedPlan(scenario, options = {}) {
     seed: simulationOptions.seed,
     iterations: simulationOptions.iterations,
     uncertainty: simulationOptions.uncertainty,
+    calibration: simulationOptions.calibration,
     baseMetrics: baseResult.metrics,
     summary: summarizeSamples(samples),
     samples: samples
@@ -267,9 +269,11 @@ function indexById(items) {
 }
 
 function normalizeSimulationOptions(options) {
+  const calibration = createSalesEventCalibration(options.salesEventPriors);
   const uncertainty = {
     ...DEFAULT_SIMULATION_OPTIONS.uncertainty,
-    ...options.uncertainty
+    ...calibration.appliedUncertainty,
+    ...pickDefinedUncertainty(options.uncertainty)
   };
 
   return {
@@ -293,8 +297,21 @@ function normalizeSimulationOptions(options) {
         uncertainty.travelTimeVariationRate,
         DEFAULT_SIMULATION_OPTIONS.uncertainty.travelTimeVariationRate
       )
-    }
+    },
+    calibration: calibration
   };
+}
+
+function pickDefinedUncertainty(uncertainty) {
+  if (!uncertainty || typeof uncertainty !== "object") {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(uncertainty).filter(function filterDefined(entry) {
+      return entry[1] !== undefined;
+    })
+  );
 }
 
 function createSeededRandom(seed) {

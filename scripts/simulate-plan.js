@@ -11,10 +11,12 @@ if (!scenarioPath) {
 
 const absoluteScenarioPath = path.resolve(process.cwd(), scenarioPath);
 const scenario = JSON.parse(fs.readFileSync(absoluteScenarioPath, "utf8"));
+const salesEventPriors = readOptionalJsonFile(process.env.OPTIFLOW_SALES_PRIORS_PATH);
 const result = simulateFixedPlan(scenario, {
   iterations: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_ITERATIONS),
   seed: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_SEED),
   strategy: process.env.OPTIFLOW_STRATEGY,
+  salesEventPriors: salesEventPriors,
   uncertainty: {
     cancellationProbability: readOptionalNumber(process.env.OPTIFLOW_CANCELLATION_PROBABILITY),
     demandVariationProbability: readOptionalNumber(process.env.OPTIFLOW_DEMAND_VARIATION_PROBABILITY),
@@ -30,6 +32,7 @@ const output = process.env.OPTIFLOW_SIMULATION_INCLUDE_SAMPLES === "true"
       seed: result.seed,
       iterations: result.iterations,
       uncertainty: result.uncertainty,
+      calibration: result.calibration,
       baseMetrics: result.baseMetrics,
       summary: result.summary
     };
@@ -50,4 +53,13 @@ function readOptionalNumber(value) {
   }
 
   return Number(value);
+}
+
+function readOptionalJsonFile(filePath) {
+  if (!filePath) {
+    return undefined;
+  }
+
+  const absolutePath = path.resolve(process.cwd(), filePath);
+  return JSON.parse(fs.readFileSync(absolutePath, "utf8"));
 }
