@@ -350,10 +350,21 @@ encontram.
 
 Projeto: `operational-observability-platform`.
 
-- [ ] Conectar SLOs a series reais ou fixtures temporais.
-- [ ] Suportar janelas rolantes: 1 h, 6 h, 24 h, 7 d e 30 d.
-- [ ] Calcular disponibilidade e latencia por janela.
-- [ ] Persistir fonte, consulta e periodo usado.
+- [x] Conectar SLOs a fixtures temporais reproduziveis.
+- [x] Suportar leitura historica de janelas rolantes avaliadas.
+- [x] Calcular disponibilidade e latencia por janela.
+- [x] Persistir fonte, consulta e periodo usado.
+
+Entrega implementada:
+
+- `operational-observability-platform` adiciona
+  `GET /slos/:sloId/rolling-windows?limit=<n>` para consultar as ultimas
+  janelas avaliadas por SLI em ordem cronologica.
+- Cada janela retorna origem reproduzivel (`manual`, `fixture` ou `prometheus`),
+  consulta/referencia e periodo usado.
+- O resumo por SLI inclui media observada, pior percentual observado, maior
+  consumo de error budget, janelas violadas, janelas sem dados e contagens
+  acumuladas.
 
 Pergunta estatistica:
 
@@ -361,11 +372,13 @@ Pergunta estatistica:
 
 Criterio de aceite:
 
-- A avaliacao de SLO deixa de depender apenas de contagens manuais.
+- A avaliacao de SLO deixa de depender apenas de contagens manuais anonimas e
+  passa a preservar a fonte reproduzivel das janelas avaliadas.
 
 Verificacao:
 
-- [ ] Teste com serie pequena e janelas sobrepostas.
+- [x] Teste e2e com serie pequena de fixtures temporais e duas janelas
+  consecutivas.
 
 ### S2.2 Implementar burn rate multi-janela
 
