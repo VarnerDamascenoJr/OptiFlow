@@ -384,10 +384,22 @@ Verificacao:
 
 Projeto: `operational-observability-platform`.
 
-- [ ] Calcular burn rate curto e longo.
-- [ ] Definir severidade por combinacao de janelas.
-- [ ] Documentar interpretacao estatistica do alerta.
-- [ ] Atualizar dashboard e regra Prometheus ou avaliacao interna.
+- [x] Calcular burn rate curto e longo.
+- [x] Definir severidade por combinacao de janelas.
+- [x] Documentar interpretacao estatistica do alerta.
+- [x] Atualizar regra Prometheus e avaliacao interna.
+
+Entrega implementada:
+
+- `operational-observability-platform` adiciona
+  `GET /slos/:sloId/burn-rate?shortWindows=<n>&longWindows=<n>` para comparar
+  consumo curto e longo do error budget.
+- A API calcula burn rate como consumo observado dividido pelo consumo esperado
+  para a fracao do horizonte do SLO coberta pelas janelas avaliadas.
+- A severidade diferencia `watch`, `warning` e `page`; `page` exige janela curta
+  e longa acima do limiar, reduzindo alertas por picos isolados.
+- A metrica Prometheus `slo_error_budget_burn_rate` passa a alimentar o alerta
+  `OOPSloErrorBudgetBurn`.
 
 Pergunta estatistica:
 
@@ -395,12 +407,12 @@ Pergunta estatistica:
 
 Criterio de aceite:
 
-- Alerta passa a representar velocidade de degradacao, nao apenas violacao
-  acumulada.
+- Alerta passa a representar velocidade de degradacao por par curto/longo, nao
+  apenas violacao acumulada da ultima janela.
 
 Verificacao:
 
-- [ ] Testes com degradacao curta, lenta e sustentada.
+- [x] Testes com degradacao curta, lenta e sustentada.
 
 ### S2.3 Modelar latencia como distribuicao
 
