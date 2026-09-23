@@ -67,5 +67,5 @@ export {
   normalizeSalesEventPriors
 } from "./sales-event-priors.js";
 export { importSalesEventScenario } from "./sales-event-scenario-importer.js";
-export { simulateFixedPlan, summarizeSamples } from "./simulation.js";
+export { simulateFixedPlan, summarizeMonteCarloDiagnostics, summarizeSamples } from "./simulation.js";
 export { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
