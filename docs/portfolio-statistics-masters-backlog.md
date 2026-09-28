@@ -439,10 +439,21 @@ Verificacao:
 
 Projeto: `operational-observability-platform`.
 
-- [ ] Migrar metricas de duracao para histogramas Prometheus.
-- [ ] Calcular p50, p90, p95 e p99.
-- [ ] Comparar media versus quantis.
-- [ ] Atualizar dashboards de latencia.
+- [x] Migrar metricas de duracao para histogramas Prometheus.
+- [x] Calcular p50, p90, p95 e p99.
+- [x] Comparar media versus quantis.
+- [x] Atualizar dashboards de latencia.
+
+Entrega implementada:
+
+- `operational-observability-platform` exporta
+  `http_request_duration_seconds` e `demo_transaction_duration_seconds` como
+  histogramas Prometheus, mantendo `_sum` e `_count` para consultas existentes.
+- A API adiciona `GET /metrics/latency-distribution` com media,
+  p50, p90, p95, p99 e razao p95/media por serie de latencia.
+- O alerta `OOPHighHttpLatency` passa a usar p95 via `histogram_quantile`.
+- Os dashboards tecnico e de negocio exibem p95 para evidenciar cauda de
+  latencia.
 
 Pergunta estatistica:
 
@@ -454,7 +465,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Smoke com trafego lento afetando p95.
+- [x] Smoke com trafego lento afetando p95.
 
 ### S2.4 Adicionar controle estatistico de processo
 
