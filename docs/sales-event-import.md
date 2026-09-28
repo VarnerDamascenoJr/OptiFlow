@@ -34,6 +34,19 @@ npm run sales-event:import
 npm run scenario:sales-event
 ```
 
+Para calibrar a simulacao com priors estimados pelo export analitico do Sales:
+
+```bash
+OPTIFLOW_SALES_PRIORS_PATH=data/sales-event-exports/sales-analytics-priors.example.json \
+  npm run scenario:small:simulate
+```
+
+Atalho equivalente:
+
+```bash
+npm run scenario:small:simulate:sales-priors
+```
+
 ## Mapeamento
 
 | Export do sales | Scenario do OptiFlow |
@@ -48,6 +61,22 @@ npm run scenario:sales-event
 Como o sales ainda nao persiste endereco, o importador gera coordenadas
 sinteticas deterministicas com base no `saleId` e monta a `distanceMatrix`.
 Assim, o mesmo export sempre gera o mesmo cenario.
+
+## Priors Estatisticos
+
+O `OptiFlow` aceita priors em tres formatos:
+
+- `optiflow-sales-priors.v1`: documento de priors direto;
+- `sales-event-optiflow-export.v1`: historico operacional antigo, do qual os
+  priors sao derivados localmente;
+- `sales-analytics-export.v1`: export analitico novo, desde que contenha
+  `simulationPriors`.
+
+Quando `simulationPriors` existe, a simulacao usa os parametros estimados no
+Sales para preencher `cancellationProbability`, `demandVariationProbability` e
+`demandVariationRate`. Campos adicionais como `conversionStages`,
+`operationalTiming` e `stockoutRisks` ficam preservados para relatorios e
+analises posteriores.
 
 ## Falhas Esperadas
 
