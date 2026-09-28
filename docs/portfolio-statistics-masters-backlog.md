@@ -279,10 +279,16 @@ Verificacao:
 
 Projeto: `sales-event-project`.
 
-- [ ] Criar serie temporal de vendas por ticket.
-- [ ] Implementar baseline ingenuo: media movel ou sazonal simples.
-- [ ] Medir erro com MAE e RMSE.
-- [ ] Separar treino/teste por tempo, sem embaralhar.
+- [x] Criar serie temporal de vendas por ticket.
+- [x] Implementar baseline ingenuo: media movel ou sazonal simples.
+- [x] Medir erro com MAE e RMSE.
+- [x] Separar treino/teste por tempo, sem embaralhar.
+
+Artefatos de referencia no `sales-event-project`:
+
+- `internal/analytics/demand_forecast.go`
+- `internal/analytics/demand_forecast_test.go`
+- campo `demandForecasts` no export `sales-analytics-export.v1`
 
 Pergunta estatistica:
 
@@ -294,17 +300,23 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste com serie sintetica conhecida.
-- [ ] Comando gerando previsao e metricas de erro.
+- [x] Teste com serie sintetica conhecida.
+- [x] Comando gerando previsao e metricas de erro.
 
 ### S1.5 Estimar risco de esgotamento de estoque
 
 Projeto: `sales-event-project`.
 
-- [ ] Combinar estoque atual, taxa de venda e incerteza da demanda.
-- [ ] Calcular probabilidade de esgotar antes de um horizonte.
-- [ ] Reportar intervalo ou distribuicao de tempo ate esgotamento.
-- [ ] Expor JSON ou metrica para dashboard.
+- [x] Combinar estoque atual, taxa de venda e incerteza da demanda.
+- [x] Calcular probabilidade de esgotar antes de um horizonte.
+- [x] Reportar intervalo ou distribuicao de tempo ate esgotamento.
+- [x] Expor JSON ou metrica para dashboard.
+
+Artefatos de referencia no `sales-event-project`:
+
+- `internal/analytics/stockout_risk.go`
+- `internal/analytics/stockout_risk_test.go`
+- campo `stockoutRisks` no export `sales-analytics-export.v1`
 
 Pergunta estatistica:
 
@@ -316,17 +328,26 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste com consumo constante e com consumo variavel.
-- [ ] Roteiro local mostrando mudanca de risco apos novas vendas.
+- [x] Teste com consumo constante e sem demanda observada.
+- [x] Roteiro local via `GET /analytics/export` ou `cmd/analytics-export`
+  mostrando `stockoutRisks` apos novas vendas.
 
 ### S1.6 Exportar priors para simulacao do `OptiFlow`
 
 Projetos: `sales-event-project`, `OptiFlow`.
 
-- [ ] Exportar probabilidade de conversao por etapa.
-- [ ] Exportar distribuicao empirica ou parametros de demanda por janela.
-- [ ] Exportar incerteza de tempo operacional quando disponivel.
-- [ ] Criar fixture consumida pelo `OptiFlow`.
+- [x] Exportar probabilidade de conversao por etapa.
+- [x] Exportar distribuicao empirica ou parametros de demanda por janela.
+- [x] Exportar incerteza de tempo operacional quando disponivel.
+- [x] Criar fixture consumida pelo `OptiFlow`.
+
+Artefatos de referencia:
+
+- `sales-event-project/internal/analytics/simulation_priors.go`
+- `sales-event-project/tests/fixtures/sales-analytics-export.v1.json`
+- `OptiFlow/src/sales-event-priors.js`
+- `OptiFlow/data/sales-event-exports/sales-analytics-priors.example.json`
+- script `npm run scenario:small:simulate:sales-priors`
 
 Pergunta estatistica:
 
@@ -339,7 +360,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste de compatibilidade Sales -> OptiFlow.
+- [x] Teste de compatibilidade Sales -> OptiFlow.
 
 ## S2: Confiabilidade Estatistica na Plataforma
 

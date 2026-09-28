@@ -2,6 +2,7 @@ import { mean, round } from "./shared/numbers.js";
 import { assertArray, assertObject } from "./shared/validation.js";
 
 const salesEventExportSchemaVersion = "sales-event-optiflow-export.v1";
+const salesAnalyticsExportSchemaVersion = "sales-analytics-export.v1";
 const salesEventPriorsSchemaVersion = "optiflow-sales-priors.v1";
 const completedStatuses = new Set(["COMPLETED"]);
 
@@ -81,12 +82,19 @@ export function normalizeSalesEventPriors(document) {
     return deriveSalesEventPriors(document);
   }
 
+  if (document.schemaVersion === salesAnalyticsExportSchemaVersion) {
+    assertObject(document.simulationPriors, "salesAnalyticsExport.simulationPriors");
+    return normalizeSalesEventPriors(document.simulationPriors);
+  }
+
   if (document.schemaVersion !== salesEventPriorsSchemaVersion) {
     throw new Error(
       "salesEventPriors.schemaVersion must be " +
         salesEventPriorsSchemaVersion +
         " or " +
-        salesEventExportSchemaVersion
+        salesEventExportSchemaVersion +
+        " or " +
+        salesAnalyticsExportSchemaVersion
     );
   }
 

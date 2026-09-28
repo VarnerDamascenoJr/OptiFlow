@@ -13,10 +13,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootPath = path.join(__dirname, "..");
 const salesExportPath = path.join(rootPath, "data", "sales-event-exports", "optiflow-sales-history.example.json");
 const salesPriorsPath = path.join(rootPath, "data", "sales-event-exports", "optiflow-sales-priors.example.json");
+const salesAnalyticsPriorsPath = path.join(rootPath, "data", "sales-event-exports", "sales-analytics-priors.example.json");
 const scenarioPath = path.join(rootPath, "data", "scenarios", "small-delivery.json");
 
 const salesExport = JSON.parse(fs.readFileSync(salesExportPath, "utf8"));
 const salesPriors = JSON.parse(fs.readFileSync(salesPriorsPath, "utf8"));
+const salesAnalyticsPriors = JSON.parse(fs.readFileSync(salesAnalyticsPriorsPath, "utf8"));
 const scenario = JSON.parse(fs.readFileSync(scenarioPath, "utf8"));
 
 test("derives sales-event priors from the observed export", function testDeriveSalesEventPriors() {
@@ -28,6 +30,13 @@ test("derives sales-event priors from the observed export", function testDeriveS
 test("accepts either a prior fixture or a raw sales export", function testNormalizeSalesEventPriors() {
   assert.deepStrictEqual(normalizeSalesEventPriors(salesPriors), salesPriors);
   assert.deepStrictEqual(normalizeSalesEventPriors(salesExport), salesPriors);
+});
+
+test("accepts priors embedded in the sales analytics export", function testNormalizeSalesAnalyticsPriors() {
+  assert.deepStrictEqual(
+    normalizeSalesEventPriors(salesAnalyticsPriors),
+    salesAnalyticsPriors.simulationPriors
+  );
 });
 
 test("calibrates simulation uncertainty from sales-event priors", function testSalesEventCalibration() {
@@ -52,6 +61,28 @@ test("calibrates simulation uncertainty from sales-event priors", function testS
   });
   assert.strictEqual(result.samples.length, 5);
   assert.ok(result.summary.totalCost.mean > 0);
+});
+
+test("calibrates simulation from sales analytics priors", function testSalesAnalyticsCalibration() {
+  const result = simulateFixedPlan(scenario, {
+    iterations: 3,
+    seed: 123,
+    salesEventPriors: salesAnalyticsPriors,
+    uncertainty: {
+      travelTimeVariationRate: 0
+    }
+  });
+
+  assert.strictEqual(result.calibration.mode, "sales-event-priors");
+  assert.deepStrictEqual(result.calibration.sampleSize, salesAnalyticsPriors.simulationPriors.sampleSize);
+  assert.deepStrictEqual(result.calibration.appliedUncertainty, salesAnalyticsPriors.simulationPriors.uncertainty);
+  assert.deepStrictEqual(result.uncertainty, {
+    cancellationProbability: 0,
+    demandVariationProbability: 0,
+    demandVariationRate: 0,
+    travelTimeVariationRate: 0
+  });
+  assert.strictEqual(result.samples.length, 3);
 });
 
 test("preserves synthetic mode when priors are not provided", function testSyntheticMode() {
