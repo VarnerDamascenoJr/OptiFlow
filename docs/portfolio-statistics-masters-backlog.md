@@ -582,10 +582,20 @@ Verificacao:
 
 Projeto: `OptiFlow`.
 
-- [ ] Usar amostras pareadas para comparar estrategias sob os mesmos cenarios.
-- [ ] Calcular intervalo de confianca para delta de custo.
-- [ ] Aplicar bootstrap para CVaR ou quantis.
-- [ ] Reportar tamanho de efeito.
+- [x] Usar amostras pareadas para comparar estrategias sob os mesmos cenarios.
+- [x] Calcular intervalo de confianca para delta de custo.
+- [x] Aplicar bootstrap para CVaR ou quantis.
+- [x] Reportar tamanho de efeito.
+
+Entrega implementada:
+
+- `compareStrategiesWithInference` compara base e candidata com a mesma semente
+  e iteracoes pareadas.
+- O relatorio `scenario:compare:inference` mostra delta medio de custo, erro
+  padrao, intervalo de 95%, probabilidade da candidata ser melhor, tamanho de
+  efeito e delta de CVaR com intervalo bootstrap.
+- A conclusao e cautelosa: candidata melhor, base melhor ou inconclusiva
+  conforme o intervalo de confianca do delta.
 
 Pergunta estatistica:
 
@@ -597,7 +607,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Relatorio `scenario:compare:inference` com delta, intervalo e conclusao.
+- [x] Relatorio `scenario:compare:inference` com delta, intervalo e conclusao.
 
 ### S3.4 Formalizar funcao de perda de decisao
 

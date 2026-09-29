@@ -87,3 +87,16 @@ A lista completa de amostras pode ser incluida com
 
 Esta etapa prepara a P3.10, que vai comparar decisoes por custo esperado e risco
 usando metricas como VaR e CVaR.
+
+## Comparacao Inferencial de Estrategias
+
+Quando a pergunta envolve duas estrategias, o comando
+`npm run scenario:compare:inference` usa amostras pareadas: a base e a candidata
+sao avaliadas sob a mesma sequencia de cenarios amostrados. Isso reduz ruido na
+estimativa do delta porque cada iteracao compara alternativas sob a mesma
+realizacao de demanda, cancelamento e tempo de viagem.
+
+O relatorio considera o delta `candidato - base`. Valores negativos indicam que
+a candidata teve custo menor. Alem do delta medio, a saida inclui erro padrao,
+intervalo de confianca de 95%, probabilidade da candidata ser melhor, tamanho de
+efeito e bootstrap para o delta de CVaR.
