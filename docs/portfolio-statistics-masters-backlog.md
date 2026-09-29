@@ -647,10 +647,21 @@ Verificacao:
 
 Projeto: `OptiFlow`.
 
-- [ ] Separar periodos de treino e teste em datasets historicos.
-- [ ] Gerar plano com informacao disponivel ate `t`.
-- [ ] Avaliar resultado contra eventos posteriores.
-- [ ] Medir erro de previsao e arrependimento de decisao.
+- [x] Separar periodos de treino e teste em datasets historicos.
+- [x] Gerar plano com informacao disponivel ate `t`.
+- [x] Avaliar resultado contra eventos posteriores.
+- [x] Medir erro de previsao e arrependimento de decisao.
+
+Entrega implementada:
+
+- `runDecisionBacktest` separa export historico de treino e teste, deriva
+  priors do periodo de treino e compara estrategias no cenario disponivel antes
+  do corte.
+- O periodo posterior avalia as mesmas estrategias em um cenario realizado e
+  mede erro de previsao de demanda/cancelamento.
+- O resultado reporta decisao prevista, perda realizada, melhor alternativa
+  observada e arrependimento por perfil de decisor.
+- O comando `scenario:decision:backtest` executa a fixture temporal versionada.
 
 Pergunta estatistica:
 
@@ -662,7 +673,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Backtest pequeno com fixture temporal.
+- [x] Backtest pequeno com fixture temporal.
 
 ### S3.6 Sensibilidade e robustez de conclusoes
 
