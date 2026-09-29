@@ -716,10 +716,10 @@ features isoladas.
 
 Projetos: todos.
 
-- [ ] Sales estima funil e demanda.
-- [ ] Plataforma confirma qualidade e completude dos sinais.
-- [ ] OptiFlow usa a distribuicao estimada para simular planos.
-- [ ] Relatorio compara plano deterministico versus plano sob incerteza.
+- [x] Sales estima funil e demanda.
+- [x] Plataforma confirma qualidade e completude dos sinais.
+- [x] OptiFlow usa a distribuicao estimada para simular planos.
+- [x] Relatorio compara plano deterministico versus plano sob incerteza.
 
 Pergunta estatistica:
 
@@ -727,7 +727,12 @@ Pergunta estatistica:
 
 Verificacao:
 
-- [ ] Estudo reproduzivel em `evidence/`.
+- [x] Estudo reproduzivel em `evidence/`.
+
+Implementacao:
+
+- `studies/statistics/2026-09-29-funnel-planning/study.md`
+- `studies/statistics/2026-09-29-funnel-planning/evidence/summary.json`
 
 ### S4.2 Estudo de confiabilidade e decisao
 
