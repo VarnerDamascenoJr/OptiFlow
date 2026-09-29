@@ -73,6 +73,7 @@ export {
   renderDecisionLossReport
 } from "./decision-loss.js";
 export { runDecisionBacktest, renderDecisionBacktestReport } from "./decision-backtest.js";
+export { analyzeDecisionSensitivity, renderSensitivityReport } from "./sensitivity-analysis.js";
 export { simulateFixedPlan, summarizeMonteCarloDiagnostics, summarizeSamples } from "./simulation.js";
 export { compareStrategiesWithInference, renderInferenceReport } from "./strategy-inference.js";
 export { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";

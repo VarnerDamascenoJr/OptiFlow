@@ -126,3 +126,13 @@ decisao.
 
 Essa etapa responde se a decisao que parecia melhor em `t` teria sido boa depois
 que os eventos posteriores ficaram observaveis.
+
+## Sensibilidade de Decisao
+
+O comando `npm run scenario:decision:sensitivity` varia priors, penalidades e
+parametros de distribuicao um por vez. A saida ordena os fatores por influencia
+no delta de perda esperada e marca quando a recomendacao muda.
+
+Isso transforma a conclusao de decisao em uma afirmacao auditavel: robusta
+quando pequenas variacoes nao mudam a escolha, fragil quando uma premissa
+altera a recomendacao.
