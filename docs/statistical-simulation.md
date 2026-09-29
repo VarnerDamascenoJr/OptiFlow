@@ -100,3 +100,18 @@ O relatorio considera o delta `candidato - base`. Valores negativos indicam que
 a candidata teve custo menor. Alem do delta medio, a saida inclui erro padrao,
 intervalo de confianca de 95%, probabilidade da candidata ser melhor, tamanho de
 efeito e bootstrap para o delta de CVaR.
+
+## Perda de Decisao
+
+A etapa seguinte explicita a funcao de perda usada para tomar uma decisao:
+
+```bash
+npm run scenario:compare:loss
+```
+
+Esse comando reaproveita a simulacao pareada e calcula, para cada perfil de
+decisor, perda esperada e risco de cauda da perda. A perda nao substitui as
+metricas observadas; ela as consome. Custo, atraso e demanda nao atendida
+continuam reportados como medidas do que aconteceu. A funcao de perda registra
+como um decisor prefere trocar custo medio, atraso, falta de atendimento, risco
+de cauda e violacao de SLO.
