@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "optiflow-integrated-funnel-planning-study.v1",
+  "questionId": "RQ1,RQ3,RQ7",
+  "generatedAt": "2026-09-29T00:00:00.000Z",
+  "datasets": {
+    "salesPriorsSchemaVersion": "optiflow-sales-priors.v1",
+    "salesAnalyticsSchemaVersion": "sales-analytics-export.v1",
+    "sharedFixtureSchemaVersion": "portfolio-statistical-fixture.v1",
+    "scenarioId": "small-delivery-v1"
+  },
+  "sales": {
+    "funnel": {
+      "conversionProbability": 0.75,
+      "cancellationProbability": 0.25,
+      "trainingSaleCount": 4,
+      "completedSaleCount": 3
+    },
+    "demand": {
+      "mean": 2.3333,
+      "standardDeviation": 0.4714,
+      "coefficientOfVariation": 0.202,
+      "deviationProbability": 0.3333
+    },
+    "analyticsExport": {
+      "generatedAt": "2026-09-22T12:00:00Z",
+      "eventCount": 4,
+      "windowCount": 5,
+      "requiredSignals": [
+        {
+          "signal": "sale.created",
+          "present": true,
+          "count": 1
+        },
+        {
+          "signal": "payment.processed",
+          "present": true,
+          "count": 1
+        },
+        {
+          "signal": "email.sent",
+          "present": true,
+          "count": 1
+        },
+        {
+          "signal": "checkin.completed",
+          "present": true,
+          "count": 1
+        }
+      ],
+      "signalCompleteness": 1,
+      "simulationPriorConversionProbability": 1
+    }
+  },
+  "observability": {
+    "sourceProject": "operational-observability-platform",
+    "service": "checkout-api",
+    "endpoint": "POST /payments",
+    "successProbability": 0.9935,
+    "burnRate": 1.3,
+    "uncertaintyMethod": "beta_binomial",
+    "confidenceInterval": {
+      "lower": 0.989,
+      "upper": 0.996
+    },
+    "signalQuality": "sufficient_for_fixture_study"
+  },
+  "optiflow": {
+    "deterministic": {
+      "strategy": "exact-enumeration",
+      "outcome": "improved",
+      "baselineTotalCost": 792,
+      "candidateTotalCost": 744,
+      "totalCostDelta": -48,
+      "totalCostGainPercentage": 6.06
+    },
+    "uncertaintyAware": {
+      "profile": "balanced",
+      "strategy": "exact-enumeration",
+      "expectedLoss": 1097.7195,
+      "expectedLossDelta": -47.6227,
+      "tailLossCvarDelta": -59.9304,
+      "baselineExpectedLoss": 1145.3422,
+      "candidateExpectedLoss": 1097.7195,
+      "baselineSloViolationProbability": 0.73,
+      "candidateSloViolationProbability": 0.73
+    },
+    "sensitivity": {
+      "profile": "balanced",
+      "classification": "robust",
+      "recommendationChangeCount": 0,
+      "mostInfluentialFactor": {
+        "factorId": "prior:cancellationProbability",
+        "influence": 2.0344,
+        "recommendationChanged": false
+      }
+    }
+  },
+  "conclusion": {
+    "decisionChanged": false,
+    "deterministicDecision": "exact-enumeration",
+    "uncertaintyAwareDecision": "exact-enumeration",
+    "interpretation": "Conversion and demand uncertainty did not change the recommended strategy in this fixture, but it quantified expected loss, tail loss and robustness.",
+    "limitation": "Small versioned fixtures are sufficient for reproducibility, not for population-level claims."
+  }
+}
