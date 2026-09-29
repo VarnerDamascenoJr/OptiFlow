@@ -679,10 +679,21 @@ Verificacao:
 
 Projeto: `OptiFlow`.
 
-- [ ] Variar priors, penalidades e distribuicoes.
-- [ ] Medir quando a recomendacao muda.
-- [ ] Identificar parametros mais influentes.
-- [ ] Reportar conclusoes robustas e fragilidades.
+- [x] Variar priors, penalidades e distribuicoes.
+- [x] Medir quando a recomendacao muda.
+- [x] Identificar parametros mais influentes.
+- [x] Reportar conclusoes robustas e fragilidades.
+
+Entrega implementada:
+
+- `analyzeDecisionSensitivity` roda a decisao base e variantes low/high para
+  priors, distribuicoes e penalidades.
+- O resultado identifica mudancas de recomendacao por perfil e classifica a
+  conclusao como `robust` ou `fragile`.
+- A tabela tornado textual ordena fatores por influencia no delta de perda
+  esperada.
+- O comando `scenario:decision:sensitivity` executa a analise com priors do
+  Sales versionados.
 
 Pergunta estatistica:
 
@@ -694,7 +705,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Relatorio com tornado chart textual ou tabela de sensibilidade.
+- [x] Relatorio com tornado chart textual ou tabela de sensibilidade.
 
 ## S4: Estudos Integrados nos Tres Projetos
 
