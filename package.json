@@ -18,6 +18,7 @@
     "scenario:small:risk": "node scripts/compare-risk.js data/scenarios/small-delivery.json",
     "scenario:compare:loss": "node scripts/compare-decision-loss.js data/scenarios/small-delivery.json",
     "scenario:decision:backtest": "node scripts/run-decision-backtest.js data/backtests/sales-decision-backtest.example.json",
+    "scenario:decision:sensitivity": "OPTIFLOW_SALES_PRIORS_PATH=data/sales-event-exports/optiflow-sales-priors.example.json node scripts/run-sensitivity-analysis.js data/scenarios/small-delivery.json",
     "scenario:small:simulate": "node scripts/simulate-plan.js data/scenarios/small-delivery.json",
     "scenario:small:simulate:sales-priors": "OPTIFLOW_SALES_PRIORS_PATH=data/sales-event-exports/sales-analytics-priors.example.json node scripts/simulate-plan.js data/scenarios/small-delivery.json",
     "scenario:sales-event": "node scripts/run-scenario.js data/scenarios/sales-event-fulfillment.json",
