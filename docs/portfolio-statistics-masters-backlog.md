@@ -613,11 +613,22 @@ Verificacao:
 
 Projeto: `OptiFlow`.
 
-- [ ] Definir perda por custo, atraso, demanda nao atendida, risco e violacao
+- [x] Definir perda por custo, atraso, demanda nao atendida, risco e violacao
   de SLO.
-- [ ] Permitir perfis de decisor: conservador, balanceado e agressivo.
-- [ ] Mostrar perda esperada e risco de cauda por estrategia.
-- [ ] Documentar diferenca entre metrica observada e funcao de decisao.
+- [x] Permitir perfis de decisor: conservador, balanceado e agressivo.
+- [x] Mostrar perda esperada e risco de cauda por estrategia.
+- [x] Documentar diferenca entre metrica observada e funcao de decisao.
+
+Entrega implementada:
+
+- `compareStrategiesByDecisionLoss` simula base e candidata com semente
+  compartilhada e calcula perda de decisao por perfil.
+- `evaluateDecisionLoss` separa componentes de custo observado, atraso,
+  demanda nao atendida, downside risk e violacao de SLO.
+- O comando `scenario:compare:loss` reporta perda esperada, CVaR da perda,
+  probabilidade de violacao de SLO e recomendacao por perfil.
+- Os perfis `aggressive`, `balanced` e `conservative` tornam preferencias
+  auditaveis sem alterar a metrica operacional observada.
 
 Pergunta estatistica:
 
@@ -629,7 +640,8 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Cenario onde perfis diferentes escolhem estrategias diferentes.
+- [x] Teste com as mesmas amostras onde perfis diferentes escolhem estrategias
+  diferentes.
 
 ### S3.5 Fazer backtesting de previsoes e decisoes
 

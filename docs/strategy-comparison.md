@@ -109,3 +109,28 @@ A conclusao segue a incerteza do delta medio:
 
 Esse criterio evita transformar uma diferenca pontual pequena em recomendacao
 forte quando a simulacao ainda nao sustenta essa leitura.
+
+## Funcao de Perda de Decisao
+
+O comando abaixo transforma metricas observadas em perda de decisao por perfil
+de risco:
+
+```bash
+npm run scenario:compare:loss
+```
+
+Perfis disponiveis:
+
+- `aggressive`: prioriza custo observado e tolera ruido operacional moderado.
+- `balanced`: combina custo, atraso, demanda nao atendida, risco de cauda e
+  violacao de SLO.
+- `conservative`: aumenta penalidades de atraso, nao atendimento, violacao de
+  SLO e risco de cauda.
+
+O custo total continua sendo uma metrica observada do plano. A perda de decisao
+e outro objeto: ela declara preferencias do decisor e soma componentes de custo,
+atraso, demanda nao atendida, downside risk e violacao de SLO. O relatorio
+mostra, por perfil, perda esperada e CVaR da perda. Assim, duas pessoas podem
+olhar as mesmas simulacoes e escolher estrategias diferentes porque explicitaram
+preferencias diferentes, nao porque a metrica foi escondida dentro de um peso
+sem nome.
