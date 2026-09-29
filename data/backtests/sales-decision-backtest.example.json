@@ -1,0 +1,292 @@
+{
+  "schemaVersion": "optiflow-decision-backtest.v1",
+  "id": "sales-event-s3-5-temporal-fixture",
+  "cutoffAt": "2026-09-17T10:00:00Z",
+  "options": {
+    "baselineStrategy": "nearest-neighbor-capacity",
+    "candidateStrategy": "exact-enumeration",
+    "confidenceLevel": 0.95,
+    "iterations": 10,
+    "profiles": ["aggressive", "conservative"],
+    "seed": 20260917,
+    "uncertainty": {
+      "cancellationProbability": 0,
+      "demandVariationProbability": 0,
+      "demandVariationRate": 0,
+      "travelTimeVariationRate": 0
+    }
+  },
+  "trainingSalesExport": {
+    "schemaVersion": "sales-event-optiflow-export.v1",
+    "generatedAt": "2026-09-17T10:00:00Z",
+    "source": {
+      "service": "sales-event-project",
+      "salesEventId": "11111111-1111-1111-1111-111111111111",
+      "eventName": "Backend Moderno Conference",
+      "eventStartsAt": "2026-10-17T12:00:00Z",
+      "filter": "created_at < 2026-09-17T10:00:00Z"
+    },
+    "sales": [
+      {
+        "saleId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
+        "salesEventId": "11111111-1111-1111-1111-111111111111",
+        "salesEventName": "Backend Moderno Conference",
+        "customerId": "customer-alpha",
+        "customerName": "Ana Lima",
+        "status": "COMPLETED",
+        "totalAmount": 20000,
+        "correlationId": "corr-sales-alpha",
+        "transactionId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
+        "createdAt": "2026-09-17T09:05:00Z",
+        "updatedAt": "2026-09-17T09:08:00Z",
+        "issuedTicketCount": 2,
+        "checkedInTicketCount": 1,
+        "items": [
+          {
+            "ticketId": "22222222-2222-2222-2222-222222222222",
+            "ticketName": "General Admission",
+            "quantity": 2,
+            "unitPrice": 10000
+          }
+        ]
+      },
+      {
+        "saleId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2",
+        "salesEventId": "11111111-1111-1111-1111-111111111111",
+        "salesEventName": "Backend Moderno Conference",
+        "customerId": "customer-bravo",
+        "customerName": "Bruno Rocha",
+        "status": "COMPLETED",
+        "totalAmount": 35000,
+        "correlationId": "corr-sales-bravo",
+        "transactionId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2",
+        "createdAt": "2026-09-17T09:18:00Z",
+        "updatedAt": "2026-09-17T09:22:00Z",
+        "issuedTicketCount": 2,
+        "checkedInTicketCount": 0,
+        "items": [
+          {
+            "ticketId": "22222222-2222-2222-2222-222222222222",
+            "ticketName": "General Admission",
+            "quantity": 1,
+            "unitPrice": 10000
+          },
+          {
+            "ticketId": "33333333-3333-3333-3333-333333333333",
+            "ticketName": "VIP",
+            "quantity": 1,
+            "unitPrice": 25000
+          }
+        ]
+      },
+      {
+        "saleId": "dddddddd-dddd-dddd-dddd-ddddddddddd4",
+        "salesEventId": "11111111-1111-1111-1111-111111111111",
+        "salesEventName": "Backend Moderno Conference",
+        "customerId": "customer-delta",
+        "customerName": "Diego Martins",
+        "status": "FAILED",
+        "totalAmount": 10000,
+        "correlationId": "corr-sales-delta",
+        "transactionId": "dddddddd-dddd-dddd-dddd-ddddddddddd4",
+        "createdAt": "2026-09-17T09:45:00Z",
+        "updatedAt": "2026-09-17T09:49:00Z",
+        "issuedTicketCount": 0,
+        "checkedInTicketCount": 0,
+        "items": [
+          {
+            "ticketId": "22222222-2222-2222-2222-222222222222",
+            "ticketName": "General Admission",
+            "quantity": 1,
+            "unitPrice": 10000
+          }
+        ]
+      }
+    ]
+  },
+  "testSalesExport": {
+    "schemaVersion": "sales-event-optiflow-export.v1",
+    "generatedAt": "2026-09-17T11:00:00Z",
+    "source": {
+      "service": "sales-event-project",
+      "salesEventId": "11111111-1111-1111-1111-111111111111",
+      "eventName": "Backend Moderno Conference",
+      "eventStartsAt": "2026-10-17T12:00:00Z",
+      "filter": "created_at >= 2026-09-17T10:00:00Z"
+    },
+    "sales": [
+      {
+        "saleId": "cccccccc-cccc-cccc-cccc-ccccccccccc3",
+        "salesEventId": "11111111-1111-1111-1111-111111111111",
+        "salesEventName": "Backend Moderno Conference",
+        "customerId": "customer-charlie",
+        "customerName": "Carla Nunes",
+        "status": "COMPLETED",
+        "totalAmount": 30000,
+        "correlationId": "corr-sales-charlie",
+        "transactionId": "cccccccc-cccc-cccc-cccc-ccccccccccc3",
+        "createdAt": "2026-09-17T10:02:00Z",
+        "updatedAt": "2026-09-17T10:05:00Z",
+        "issuedTicketCount": 3,
+        "checkedInTicketCount": 0,
+        "items": [
+          {
+            "ticketId": "22222222-2222-2222-2222-222222222222",
+            "ticketName": "General Admission",
+            "quantity": 3,
+            "unitPrice": 10000
+          }
+        ]
+      },
+      {
+        "saleId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee5",
+        "salesEventId": "11111111-1111-1111-1111-111111111111",
+        "salesEventName": "Backend Moderno Conference",
+        "customerId": "customer-echo",
+        "customerName": "Eva Santos",
+        "status": "COMPLETED",
+        "totalAmount": 25000,
+        "correlationId": "corr-sales-echo",
+        "transactionId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee5",
+        "createdAt": "2026-09-17T10:20:00Z",
+        "updatedAt": "2026-09-17T10:24:00Z",
+        "issuedTicketCount": 2,
+        "checkedInTicketCount": 0,
+        "items": [
+          {
+            "ticketId": "33333333-3333-3333-3333-333333333333",
+            "ticketName": "VIP",
+            "quantity": 2,
+            "unitPrice": 12500
+          }
+        ]
+      }
+    ]
+  },
+  "planningScenario": {
+    "id": "backtest-planning-before-cutoff-v1",
+    "name": "Planning scenario available before cutoff",
+    "operation": {
+      "startTimeMinutes": 0
+    },
+    "costs": {
+      "distanceUnitCost": 1,
+      "lateMinutePenalty": 10,
+      "unassignedOrderPenalty": 100
+    },
+    "locations": [
+      { "id": "depot" },
+      { "id": "near" },
+      { "id": "urgent" }
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle-1",
+        "capacity": 2,
+        "startLocationId": "depot"
+      }
+    ],
+    "orders": [
+      {
+        "id": "near-order",
+        "locationId": "near",
+        "demand": 1,
+        "serviceTimeMinutes": 5,
+        "timeWindow": {
+          "startMinutes": 0,
+          "endMinutes": 100
+        }
+      },
+      {
+        "id": "urgent-order",
+        "locationId": "urgent",
+        "demand": 1,
+        "serviceTimeMinutes": 1,
+        "timeWindow": {
+          "startMinutes": 0,
+          "endMinutes": 4
+        }
+      }
+    ],
+    "distanceMatrix": {
+      "depot": { "depot": 0, "near": 1, "urgent": 3 },
+      "near": { "depot": 1, "near": 0, "urgent": 2 },
+      "urgent": { "depot": 3, "near": 2, "urgent": 0 }
+    }
+  },
+  "realizedScenario": {
+    "id": "backtest-realized-after-cutoff-v1",
+    "name": "Realized scenario after cutoff",
+    "operation": {
+      "startTimeMinutes": 0
+    },
+    "costs": {
+      "distanceUnitCost": 1,
+      "lateMinutePenalty": 0.05,
+      "unassignedOrderPenalty": 1000
+    },
+    "locations": [
+      { "id": "depot" },
+      { "id": "l0" },
+      { "id": "l1" },
+      { "id": "l2" },
+      { "id": "l3" }
+    ],
+    "vehicles": [
+      {
+        "id": "v1",
+        "capacity": 4,
+        "startLocationId": "depot"
+      }
+    ],
+    "orders": [
+      {
+        "id": "o0",
+        "locationId": "l0",
+        "demand": 1,
+        "serviceTimeMinutes": 3,
+        "timeWindow": {
+          "startMinutes": 0,
+          "endMinutes": 32
+        }
+      },
+      {
+        "id": "o1",
+        "locationId": "l1",
+        "demand": 1,
+        "serviceTimeMinutes": 3,
+        "timeWindow": {
+          "startMinutes": 0,
+          "endMinutes": 17
+        }
+      },
+      {
+        "id": "o2",
+        "locationId": "l2",
+        "demand": 1,
+        "serviceTimeMinutes": 2,
+        "timeWindow": {
+          "startMinutes": 0,
+          "endMinutes": 19
+        }
+      },
+      {
+        "id": "o3",
+        "locationId": "l3",
+        "demand": 1,
+        "serviceTimeMinutes": 4,
+        "timeWindow": {
+          "startMinutes": 0,
+          "endMinutes": 21
+        }
+      }
+    ],
+    "distanceMatrix": {
+      "depot": { "depot": 0, "l0": 2, "l1": 10, "l2": 14, "l3": 22 },
+      "l0": { "depot": 24, "l0": 0, "l1": 14, "l2": 11, "l3": 11 },
+      "l1": { "depot": 19, "l0": 15, "l1": 0, "l2": 19, "l3": 22 },
+      "l2": { "depot": 5, "l0": 4, "l1": 17, "l2": 0, "l3": 6 },
+      "l3": { "depot": 4, "l0": 15, "l1": 25, "l2": 11, "l3": 0 }
+    }
+  }
+}

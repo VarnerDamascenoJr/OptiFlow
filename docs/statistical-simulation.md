@@ -115,3 +115,14 @@ metricas observadas; ela as consome. Custo, atraso e demanda nao atendida
 continuam reportados como medidas do que aconteceu. A funcao de perda registra
 como um decisor prefere trocar custo medio, atraso, falta de atendimento, risco
 de cauda e violacao de SLO.
+
+## Backtesting de Decisao
+
+O comando `npm run scenario:decision:backtest` valida a decisao fora da amostra.
+Ele separa vendas historicas antes e depois de um corte temporal: o periodo de
+treino calibra priors e sustenta a decisao prevista; o periodo de teste fornece
+a realizacao observada usada para medir erro de previsao e arrependimento de
+decisao.
+
+Essa etapa responde se a decisao que parecia melhor em `t` teria sido boa depois
+que os eventos posteriores ficaram observaveis.
