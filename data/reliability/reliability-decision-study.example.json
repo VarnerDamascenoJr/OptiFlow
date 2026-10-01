@@ -1,0 +1,92 @@
+{
+  "id": "reliability-decision-study-v1",
+  "question": "Um sinal de confiabilidade deve mudar a decisao de alocacao?",
+  "reliabilitySignal": {
+    "sourceProject": "operational-observability-platform",
+    "source": {
+      "kind": "fixture",
+      "calculator": "calculateObjectiveBurnRate",
+      "document": "../operational-observability-platform/docs/slo-error-budget.md"
+    },
+    "overallSeverity": "page",
+    "objectives": [
+      {
+        "type": "latency",
+        "targetPercentage": 95,
+        "severity": "page",
+        "shortWindow": {
+          "badEvents": 60,
+          "burnRate": 8.4,
+          "errorBudgetConsumedPercentage": 120,
+          "expectedBudgetConsumedPercentage": 14.286,
+          "observedPercentage": 94,
+          "totalEvents": 1000,
+          "windowCount": 1
+        },
+        "longWindow": {
+          "badEvents": 80,
+          "burnRate": 2.8,
+          "errorBudgetConsumedPercentage": 80,
+          "expectedBudgetConsumedPercentage": 28.571,
+          "observedPercentage": 96,
+          "totalEvents": 2000,
+          "windowCount": 2
+        }
+      }
+    ]
+  },
+  "plans": {
+    "previous": {
+      "strategy": "nearest-neighbor-capacity",
+      "samples": [
+        {
+          "metrics": {
+            "totalCost": 100,
+            "totalLateMinutes": 8,
+            "unassignedOrders": 0
+          }
+        },
+        {
+          "metrics": {
+            "totalCost": 105,
+            "totalLateMinutes": 12,
+            "unassignedOrders": 0
+          }
+        },
+        {
+          "metrics": {
+            "totalCost": 110,
+            "totalLateMinutes": 15,
+            "unassignedOrders": 0
+          }
+        }
+      ]
+    },
+    "recommended": {
+      "strategy": "exact-enumeration",
+      "samples": [
+        {
+          "metrics": {
+            "totalCost": 125,
+            "totalLateMinutes": 0,
+            "unassignedOrders": 0
+          }
+        },
+        {
+          "metrics": {
+            "totalCost": 128,
+            "totalLateMinutes": 0,
+            "unassignedOrders": 0
+          }
+        },
+        {
+          "metrics": {
+            "totalCost": 130,
+            "totalLateMinutes": 0,
+            "unassignedOrders": 0
+          }
+        }
+      ]
+    }
+  }
+}

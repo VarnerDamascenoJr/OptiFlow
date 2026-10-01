@@ -738,9 +738,18 @@ Implementacao:
 
 Projetos: `operational-observability-platform`, `OptiFlow`.
 
-- [ ] Plataforma detecta burn rate ou cauda de latencia.
-- [ ] OptiFlow traduz risco em funcao de perda ou restricao.
-- [ ] Comparar plano anterior e plano recomendado.
+- [x] Plataforma detecta burn rate ou cauda de latencia.
+- [x] OptiFlow traduz risco em funcao de perda ou restricao.
+- [x] Comparar plano anterior e plano recomendado.
+
+Entrega implementada:
+
+- `runReliabilityDecisionStudy` consome um sinal de burn rate no formato da
+  plataforma e seleciona perfil de perda conforme severidade.
+- A fixture `data/reliability/reliability-decision-study.example.json`
+  representa uma degradacao `page` com janela curta e longa acima do limiar.
+- O comando `study:reliability-decision` mostra plano anterior, plano
+  recomendado e se a decisao mudou apos o sinal de confiabilidade.
 
 Pergunta estatistica:
 
@@ -748,7 +757,7 @@ Pergunta estatistica:
 
 Verificacao:
 
-- [ ] Demo controlada com SLO degradado e decisao alterada.
+- [x] Demo controlada com SLO degradado e decisao alterada.
 
 ### S4.3 Estudo de estoque e risco
 
