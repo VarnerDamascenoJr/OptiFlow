@@ -2,7 +2,7 @@ import { analyzeDecisionSensitivity } from "./sensitivity-analysis.js";
 import { compareStrategies } from "./strategy-comparison.js";
 import { compareStrategiesByDecisionLoss } from "./decision-loss.js";
 import { normalizeSalesEventPriors } from "./sales-event-priors.js";
-import { round } from "./shared/numbers.js";
+import { readFiniteNumber, readPositiveInteger, round } from "./shared/numbers.js";
 
 const DEFAULT_STUDY_OPTIONS = {
   baselineStrategy: "nearest-neighbor-capacity",
@@ -206,7 +206,7 @@ function normalizeStudyOptions(options) {
     baselineStrategy: options.baselineStrategy || DEFAULT_STUDY_OPTIONS.baselineStrategy,
     candidateStrategy: options.candidateStrategy || DEFAULT_STUDY_OPTIONS.candidateStrategy,
     confidenceLevel:
-      typeof options.confidenceLevel === "number"
+      readFiniteNumber(options.confidenceLevel, null) !== null
         ? Math.max(0, Math.min(1, options.confidenceLevel))
         : DEFAULT_STUDY_OPTIONS.confidenceLevel,
     iterations: readPositiveInteger(options.iterations, DEFAULT_STUDY_OPTIONS.iterations),
@@ -223,8 +223,4 @@ function pickDefinedProperties(values) {
       return entry[1] !== undefined;
     })
   );
-}
-
-function readPositiveInteger(value, fallback) {
-  return Number.isInteger(value) && value > 0 ? value : fallback;
 }

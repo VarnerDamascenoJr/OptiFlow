@@ -1,5 +1,5 @@
 import { evaluateDecisionLoss } from "./decision-loss.js";
-import { round } from "./shared/numbers.js";
+import { readFiniteNumber, round } from "./shared/numbers.js";
 
 const DEFAULT_STEADY_STATE_PROFILE = {
   name: "steady-state-operations",
@@ -250,9 +250,7 @@ function summarizeReliabilitySignal(signal) {
 }
 
 function readBurnRate(window) {
-  return typeof window?.burnRate === "number" && Number.isFinite(window.burnRate)
-    ? window.burnRate
-    : null;
+  return readFiniteNumber(window?.burnRate, null);
 }
 
 function isSeverity(value) {

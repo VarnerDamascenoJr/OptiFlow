@@ -20,6 +20,7 @@
     "scenario:decision:backtest": "node scripts/run-decision-backtest.js data/backtests/sales-decision-backtest.example.json",
     "scenario:decision:sensitivity": "OPTIFLOW_SALES_PRIORS_PATH=data/sales-event-exports/optiflow-sales-priors.example.json node scripts/run-sensitivity-analysis.js data/scenarios/small-delivery.json",
     "study:reliability-decision": "node scripts/run-reliability-decision-study.js data/reliability/reliability-decision-study.example.json",
+    "study:stockout-risk": "node scripts/run-stockout-risk-study.js",
     "study:funnel-planning": "node scripts/run-funnel-planning-study.js",
     "scenario:small:simulate": "node scripts/simulate-plan.js data/scenarios/small-delivery.json",
     "scenario:small:simulate:sales-priors": "OPTIFLOW_SALES_PRIORS_PATH=data/sales-event-exports/sales-analytics-priors.example.json node scripts/simulate-plan.js data/scenarios/small-delivery.json",

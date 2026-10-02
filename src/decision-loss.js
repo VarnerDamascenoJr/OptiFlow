@@ -1,6 +1,12 @@
 import { calculateVarCvar } from "./risk-analysis.js";
 import { simulateFixedPlan } from "./simulation.js";
-import { mean, readPositiveInteger, round } from "./shared/numbers.js";
+import {
+  mean,
+  readFiniteNumber,
+  readNonNegativeNumber,
+  readPositiveInteger,
+  round
+} from "./shared/numbers.js";
 
 const DEFAULT_DECISION_OPTIONS = {
   baselineStrategy: "nearest-neighbor-capacity",
@@ -116,8 +122,7 @@ export function evaluateDecisionLoss(samples, profileInput, options = {}) {
   const totalCosts = metricsSamples.map(function mapCost(metrics) {
     return metrics.totalCost;
   });
-  const riskReferenceCost =
-    typeof options.riskReferenceCost === "number" ? options.riskReferenceCost : mean(totalCosts);
+  const riskReferenceCost = readFiniteNumber(options.riskReferenceCost, mean(totalCosts));
   const componentSamples = metricsSamples.map(function mapComponents(metrics) {
     return calculateLossComponents(metrics, profile, riskReferenceCost);
   });
@@ -125,7 +130,7 @@ export function evaluateDecisionLoss(samples, profileInput, options = {}) {
     return components.totalLoss;
   });
   const confidenceLevel =
-    typeof options.confidenceLevel === "number"
+    readFiniteNumber(options.confidenceLevel, null) !== null
       ? Math.max(0, Math.min(1, options.confidenceLevel))
       : DEFAULT_DECISION_OPTIONS.confidenceLevel;
 
@@ -343,7 +348,7 @@ function normalizeDecisionOptions(options) {
     baselineStrategy: options.baselineStrategy || DEFAULT_DECISION_OPTIONS.baselineStrategy,
     candidateStrategy: options.candidateStrategy || DEFAULT_DECISION_OPTIONS.candidateStrategy,
     confidenceLevel:
-      typeof options.confidenceLevel === "number"
+      readFiniteNumber(options.confidenceLevel, null) !== null
         ? Math.max(0, Math.min(1, options.confidenceLevel))
         : DEFAULT_DECISION_OPTIONS.confidenceLevel,
     iterations: options.iterations,
@@ -402,9 +407,9 @@ function readMetricsSample(sample) {
   const metrics = sample.metrics || sample;
 
   return {
-    totalCost: readNumber(metrics.totalCost, 0),
-    totalLateMinutes: readNumber(metrics.totalLateMinutes, 0),
-    unassignedOrders: readNumber(metrics.unassignedOrders, 0)
+    totalCost: readFiniteNumber(metrics.totalCost, 0),
+    totalLateMinutes: readFiniteNumber(metrics.totalLateMinutes, 0),
+    unassignedOrders: readFiniteNumber(metrics.unassignedOrders, 0)
   };
 }
 
@@ -423,14 +428,6 @@ function roundComponents(components) {
       return [entry[0], round(entry[1], 4)];
     })
   );
-}
-
-function readNumber(value, fallback) {
-  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
-}
-
-function readNonNegativeNumber(value, fallback) {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : fallback;
 }
 
 function formatSignedNumber(value) {

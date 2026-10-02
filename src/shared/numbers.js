@@ -16,3 +16,19 @@ export function mean(values) {
 export function readPositiveInteger(value, fallback) {
   return Number.isInteger(value) && value > 0 ? value : fallback;
 }
+
+export function isFiniteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+export function readFiniteNumber(value, fallback) {
+  return isFiniteNumber(value) ? value : fallback;
+}
+
+export function readNonNegativeNumber(value, fallback) {
+  return isFiniteNumber(value) && value >= 0 ? value : fallback;
+}
+
+export function readProbability(value, fallback) {
+  return isFiniteNumber(value) && value >= 0 && value <= 1 ? value : fallback;
+}

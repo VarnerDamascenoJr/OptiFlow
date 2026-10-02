@@ -1,6 +1,6 @@
 import { compareStrategiesByDecisionLoss } from "./decision-loss.js";
 import { normalizeSalesEventPriors } from "./sales-event-priors.js";
-import { round } from "./shared/numbers.js";
+import { readNonNegativeNumber, readPositiveInteger, round } from "./shared/numbers.js";
 
 const DEFAULT_SENSITIVITY_OPTIONS = {
   baselineStrategy: "nearest-neighbor-capacity",
@@ -371,14 +371,6 @@ function pickDefinedProperties(values) {
       return entry[1] !== undefined;
     })
   );
-}
-
-function readPositiveInteger(value, fallback) {
-  return Number.isInteger(value) && value > 0 ? value : fallback;
-}
-
-function readNonNegativeNumber(value, fallback) {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : fallback;
 }
 
 function formatSignedNumber(value) {
