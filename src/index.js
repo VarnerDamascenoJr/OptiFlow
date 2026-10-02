@@ -80,6 +80,10 @@ export {
   runReliabilityDecisionStudy
 } from "./reliability-decision-study.js";
 export { renderStockoutRiskStudyReport, runStockoutRiskStudy } from "./stockout-risk-study.js";
+export {
+  renderQuasiExperimentalStudyReport,
+  runQuasiExperimentalStudy
+} from "./quasi-experimental-study.js";
 export { simulateFixedPlan, summarizeMonteCarloDiagnostics, summarizeSamples } from "./simulation.js";
 export { compareStrategiesWithInference, renderInferenceReport } from "./strategy-inference.js";
 export { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
