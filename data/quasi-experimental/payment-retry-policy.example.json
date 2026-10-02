@@ -1,0 +1,67 @@
+{
+  "id": "payment-retry-policy-quasi-experiment-v1",
+  "question": "A intervencao parece melhorar a metrica ou apenas coincidiu com outro fator?",
+  "generatedAt": "2026-10-02T00:00:00.000Z",
+  "confidenceLevel": 0.95,
+  "intervention": {
+    "name": "payment-retry-policy-v2",
+    "type": "new_retry_rule",
+    "description": "Retry adicional para falhas transientes do provider principal de pagamento.",
+    "startedAt": "2026-09-15T00:00:00.000Z"
+  },
+  "metric": {
+    "name": "payment_success_rate",
+    "unit": "proportion",
+    "favorableDirection": "increase"
+  },
+  "groups": {
+    "treatment": {
+      "name": "primary-provider",
+      "description": "Pagamentos expostos ao novo retry do provider principal.",
+      "before": {
+        "label": "pre-intervention",
+        "startedAt": "2026-09-01T00:00:00.000Z",
+        "endedAt": "2026-09-14T23:59:59.000Z",
+        "successes": 900,
+        "trials": 1000
+      },
+      "after": {
+        "label": "post-intervention",
+        "startedAt": "2026-09-16T00:00:00.000Z",
+        "endedAt": "2026-09-29T23:59:59.000Z",
+        "successes": 960,
+        "trials": 1000
+      }
+    },
+    "control": {
+      "name": "secondary-provider",
+      "description": "Pagamentos comparaveis nao expostos ao novo retry.",
+      "before": {
+        "label": "pre-intervention",
+        "startedAt": "2026-09-01T00:00:00.000Z",
+        "endedAt": "2026-09-14T23:59:59.000Z",
+        "successes": 880,
+        "trials": 1000
+      },
+      "after": {
+        "label": "post-intervention",
+        "startedAt": "2026-09-16T00:00:00.000Z",
+        "endedAt": "2026-09-29T23:59:59.000Z",
+        "successes": 895,
+        "trials": 1000
+      }
+    }
+  },
+  "assumptions": [
+    "O grupo controle captura mudancas temporais comuns aos providers.",
+    "Nao houve mudanca simultanea de mix de trafego entre os providers.",
+    "A janela de 2026-09-15 foi tratada como washout e ficou fora da analise."
+  ],
+  "validityThreats": [
+    "sazonalidade",
+    "baixa amostra em segmentos menores",
+    "confundidores nao observados",
+    "selecao de trafego por provider",
+    "mudancas simultaneas de checkout"
+  ]
+}
