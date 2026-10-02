@@ -790,12 +790,22 @@ Verificacao:
 
 Projetos: todos.
 
-- [ ] Definir uma intervencao simulada: novo provider, novo retry, nova regra de
+- [x] Definir uma intervencao simulada: novo provider, novo retry, nova regra de
   fila ou nova estrategia do `OptiFlow`.
-- [ ] Comparar antes/depois com controle sintetico ou diferencas simples quando
+- [x] Comparar antes/depois com controle sintetico ou diferencas simples quando
   cabivel.
-- [ ] Documentar ameacas a validade: sazonalidade, baixa amostra, confundidores
+- [x] Documentar ameacas a validade: sazonalidade, baixa amostra, confundidores
   e selecao.
+
+Entrega implementada:
+
+- `runQuasiExperimentalStudy` estima efeito por antes/depois ou
+  diferencas-em-diferencas quando existe grupo controle.
+- A fixture `data/quasi-experimental/payment-retry-policy.example.json`
+  representa uma nova regra de retry de pagamento com grupo tratado, grupo
+  controle e janela de washout.
+- O comando `study:quasi-experimental` gera evidencia com efeito estimado,
+  erro padrao, intervalo de confianca e conclusao cautelosa.
 
 Pergunta estatistica:
 
@@ -803,7 +813,7 @@ Pergunta estatistica:
 
 Verificacao:
 
-- [ ] Relatorio com cautelas, nao apenas conclusao positiva.
+- [x] Relatorio com cautelas, nao apenas conclusao positiva.
 
 ## S5: Comunicacao e Rigor de Mestrado
 
