@@ -763,9 +763,20 @@ Verificacao:
 
 Projetos: `sales-event-project`, `OptiFlow`.
 
-- [ ] Sales estima risco de esgotamento por ticket.
-- [ ] OptiFlow prioriza demandas ou recursos com base nesse risco.
-- [ ] Relatorio mede trade-off entre custo e reducao de risco.
+- [x] Sales estima risco de esgotamento por ticket.
+- [x] OptiFlow prioriza demandas ou recursos com base nesse risco.
+- [x] Relatorio mede trade-off entre custo e reducao de risco.
+
+Entrega implementada:
+
+- `runStockoutRiskStudy` consome riscos de esgotamento por ticket no formato do
+  Sales e avalia politicas de capacidade.
+- A fixture `data/stockout/stockout-risk-study.example.json` compara a
+  alocacao atual com uma politica que protege capacidade para ticket VIP em
+  risco critico.
+- O comando `study:stockout-risk` gera evidencia com delta de risco, custo de
+  intervencao, perda esperada de stockout e custo por ponto percentual de risco
+  reduzido.
 
 Pergunta estatistica:
 
@@ -773,7 +784,7 @@ Pergunta estatistica:
 
 Verificacao:
 
-- [ ] Cenario com delta de risco e delta de custo.
+- [x] Cenario com delta de risco e delta de custo.
 
 ### S4.4 Estudo quase-experimental
 

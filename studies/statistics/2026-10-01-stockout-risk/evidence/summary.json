@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "optiflow-stockout-risk-study.v1",
+  "id": "stockout-risk-study-v1",
+  "question": "Quanto custa reduzir a probabilidade de esgotamento?",
+  "generatedAt": "2026-10-01T00:00:00.000Z",
+  "source": {
+    "service": "sales-event-project",
+    "schemaVersion": "sales-analytics-export.v1"
+  },
+  "stockoutPenaltyPerUnit": 40,
+  "baseline": {
+    "policy": "current-inventory",
+    "description": "Mantem a alocacao atual de estoque por tipo de ticket.",
+    "tickets": [
+      {
+        "ticketId": "vip-ticket",
+        "ticketType": "vip",
+        "riskBand": "critical",
+        "status": "estimated",
+        "availableQuantity": 5,
+        "expectedDemand": 9,
+        "baselineStockoutProbability": 0.8843,
+        "residualStockoutProbability": 0.8843,
+        "stockoutProbabilityReduction": 0,
+        "addedCapacity": 0,
+        "interventionCost": 0,
+        "expectedStockoutLoss": 318.348
+      },
+      {
+        "ticketId": "standard-ticket",
+        "ticketType": "standard",
+        "riskBand": "low",
+        "status": "estimated",
+        "availableQuantity": 42,
+        "expectedDemand": 18,
+        "baselineStockoutProbability": 0.0001,
+        "residualStockoutProbability": 0.0001,
+        "stockoutProbabilityReduction": 0,
+        "addedCapacity": 0,
+        "interventionCost": 0,
+        "expectedStockoutLoss": 0.072
+      }
+    ],
+    "weightedStockoutProbability": 0.2948,
+    "interventionCost": 0,
+    "expectedStockoutLoss": 318.42,
+    "expectedDecisionCost": 318.42
+  },
+  "candidate": {
+    "policy": "vip-risk-buffer",
+    "description": "Adiciona capacidade protegida ao ticket VIP com maior risco de esgotamento.",
+    "tickets": [
+      {
+        "ticketId": "vip-ticket",
+        "ticketType": "vip",
+        "riskBand": "critical",
+        "status": "estimated",
+        "availableQuantity": 5,
+        "expectedDemand": 9,
+        "baselineStockoutProbability": 0.8843,
+        "residualStockoutProbability": 0.197,
+        "stockoutProbabilityReduction": 0.6873,
+        "addedCapacity": 6,
+        "interventionCost": 90,
+        "expectedStockoutLoss": 70.9171
+      },
+      {
+        "ticketId": "standard-ticket",
+        "ticketType": "standard",
+        "riskBand": "low",
+        "status": "estimated",
+        "availableQuantity": 42,
+        "expectedDemand": 18,
+        "baselineStockoutProbability": 0.0001,
+        "residualStockoutProbability": 0.0001,
+        "stockoutProbabilityReduction": 0,
+        "addedCapacity": 0,
+        "interventionCost": 0,
+        "expectedStockoutLoss": 0.072
+      }
+    ],
+    "weightedStockoutProbability": 0.0657,
+    "interventionCost": 90,
+    "expectedStockoutLoss": 70.9891,
+    "expectedDecisionCost": 160.9891
+  },
+  "deltas": {
+    "stockoutProbabilityDelta": -0.2291,
+    "interventionCostDelta": 90,
+    "expectedStockoutLossDelta": -247.4309,
+    "expectedDecisionCostDelta": -157.4309,
+    "costPerProbabilityPointReduced": 3.9284
+  },
+  "recommendation": {
+    "policy": "vip-risk-buffer",
+    "reason": "candidate_reduces_expected_decision_cost"
+  },
+  "conclusion": {
+    "riskReduced": true,
+    "costIncreased": true,
+    "interpretation": "The candidate policy spends additional capacity to reduce stockout probability."
+  }
+}
