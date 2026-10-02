@@ -1,3 +1,5 @@
+import { readFiniteNumber } from "./shared/numbers.js";
+
 export default function renderOptimizationMetrics(result, status = "succeeded") {
   const labels = labelsText({
     service: result.metadata.service,
@@ -45,11 +47,13 @@ export function renderOptimizationRepositoryMetrics(input) {
 
     incrementSample(runCounts, baseLabels, 1);
 
-    if (typeof run.durationMs === "number") {
+    const durationMs = readFiniteNumber(run.durationMs, null);
+
+    if (durationMs !== null) {
       setLatestSample(latestSamples, "optiflow_optimization_run_duration_seconds", {
         ...baseLabels,
         scenario_id: run.scenarioId
-      }, run.durationMs / 1000);
+      }, durationMs / 1000);
     }
 
     if (status === "succeeded") {
@@ -91,13 +95,25 @@ export function renderOptimizationRepositoryMetrics(input) {
     ...renderMetricSamples("optiflow_optimization_plan_unassigned_orders", latestSamples),
     "# HELP optiflow_optimization_queue_depth Optimization runs waiting in the local queue.",
     "# TYPE optiflow_optimization_queue_depth gauge",
-    renderSample("optiflow_optimization_queue_depth", { environment, service }, readNumber(queueStats.queuedCount)),
+    renderSample(
+      "optiflow_optimization_queue_depth",
+      { environment, service },
+      readFiniteNumber(queueStats.queuedCount, 0)
+    ),
     "# HELP optiflow_optimization_active_runs Active optimization runs in the local queue.",
     "# TYPE optiflow_optimization_active_runs gauge",
-    renderSample("optiflow_optimization_active_runs", { environment, service }, readNumber(queueStats.activeCount)),
+    renderSample(
+      "optiflow_optimization_active_runs",
+      { environment, service },
+      readFiniteNumber(queueStats.activeCount, 0)
+    ),
     "# HELP optiflow_optimization_queue_concurrency Configured local optimization queue concurrency.",
     "# TYPE optiflow_optimization_queue_concurrency gauge",
-    renderSample("optiflow_optimization_queue_concurrency", { environment, service }, readNumber(queueStats.concurrency))
+    renderSample(
+      "optiflow_optimization_queue_concurrency",
+      { environment, service },
+      readFiniteNumber(queueStats.concurrency, 0)
+    )
   ].filter(Boolean).join("\n") + "\n";
 }
 
@@ -118,11 +134,7 @@ function escapeLabelValue(value) {
 }
 
 function numberMetric(value) {
-  if (typeof value !== "number" || !Number.isFinite(value)) {
-    return 0;
-  }
-
-  return value;
+  return readFiniteNumber(value, 0);
 }
 
 function incrementSample(samples, labels, value) {
@@ -165,8 +177,4 @@ function renderSample(metricName, labels, value) {
 
 function normalizeStatus(status) {
   return String(status || "unknown").toLowerCase();
-}
-
-function readNumber(value) {
-  return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }

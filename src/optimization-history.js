@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { readPositiveInteger } from "./shared/numbers.js";
+import { readNonNegativeNumber, readPositiveInteger } from "./shared/numbers.js";
 import { readNonEmptyString } from "./shared/strings.js";
 
 const STORE_VERSION = 1;
@@ -390,8 +390,10 @@ function normalizeTimestamp(value) {
 }
 
 function normalizeDurationMs(value, startedAt, finishedAt) {
-  if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
-    return Math.round(value * 1000) / 1000;
+  const durationMs = readNonNegativeNumber(value, null);
+
+  if (durationMs !== null) {
+    return Math.round(durationMs * 1000) / 1000;
   }
 
   return Math.max(0, new Date(finishedAt).getTime() - new Date(startedAt).getTime());

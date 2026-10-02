@@ -2,7 +2,7 @@ import { evaluateDecisionLoss, compareStrategiesByDecisionLoss } from "./decisio
 import { compareStrategies } from "./strategy-comparison.js";
 import { deriveSalesEventPriors } from "./sales-event-priors.js";
 import { importSalesEventScenario } from "./sales-event-scenario-importer.js";
-import { round } from "./shared/numbers.js";
+import { readFiniteNumber, readPositiveInteger, round } from "./shared/numbers.js";
 import { assertObject } from "./shared/validation.js";
 
 const schemaVersion = "optiflow-decision-backtest.v1";
@@ -244,7 +244,10 @@ function normalizeBacktestOptions(backtest, options) {
   return {
     baselineStrategy: mergedOptions.baselineStrategy,
     candidateStrategy: mergedOptions.candidateStrategy,
-    confidenceLevel: readNumber(mergedOptions.confidenceLevel, defaultBacktestOptions.confidenceLevel),
+    confidenceLevel: readFiniteNumber(
+      mergedOptions.confidenceLevel,
+      defaultBacktestOptions.confidenceLevel
+    ),
     iterations: readPositiveInteger(mergedOptions.iterations, defaultBacktestOptions.iterations),
     profiles: mergedOptions.profiles || defaultBacktestOptions.profiles,
     seed: readPositiveInteger(mergedOptions.seed, defaultBacktestOptions.seed),
@@ -263,14 +266,6 @@ function pickDefinedProperties(values) {
 
 function readString(value, fallback) {
   return typeof value === "string" && value.length > 0 ? value : fallback;
-}
-
-function readNumber(value, fallback) {
-  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
-}
-
-function readPositiveInteger(value, fallback) {
-  return Number.isInteger(value) && value > 0 ? value : fallback;
 }
 
 function formatSignedNumber(value) {

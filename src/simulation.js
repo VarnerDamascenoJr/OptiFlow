@@ -1,6 +1,12 @@
 import evaluatePlan from "./metrics.js";
 import { createSalesEventCalibration } from "./sales-event-priors.js";
-import { mean, readPositiveInteger, round } from "./shared/numbers.js";
+import {
+  mean,
+  readNonNegativeNumber,
+  readPositiveInteger,
+  readProbability,
+  round
+} from "./shared/numbers.js";
 import { createPlanForStrategy } from "./shared/plan-factory.js";
 import validateScenario from "./validate-scenario.js";
 
@@ -445,14 +451,4 @@ function createSeededRandom(seed) {
     state = (1664525 * state + 1013904223) >>> 0;
     return state / 4294967296;
   };
-}
-
-function readNonNegativeNumber(value, fallback) {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : fallback;
-}
-
-function readProbability(value, fallback) {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1
-    ? value
-    : fallback;
 }
