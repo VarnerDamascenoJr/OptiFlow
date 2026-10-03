@@ -2,7 +2,9 @@ import { evaluateDecisionLoss, compareStrategiesByDecisionLoss } from "./decisio
 import { compareStrategies } from "./strategy-comparison.js";
 import { deriveSalesEventPriors } from "./sales-event-priors.js";
 import { importSalesEventScenario } from "./sales-event-scenario-importer.js";
+import { formatSignedNumber } from "./shared/format.js";
 import { readFiniteNumber, readPositiveInteger, round } from "./shared/numbers.js";
+import { readOptionalString } from "./shared/strings.js";
 import { assertObject } from "./shared/validation.js";
 
 const schemaVersion = "optiflow-decision-backtest.v1";
@@ -214,8 +216,8 @@ function normalizeBacktestDocument(backtestDocument) {
   assertObject(backtestDocument.testSalesExport, "decisionBacktest.testSalesExport");
 
   return {
-    id: readString(backtestDocument.id, "decision-backtest"),
-    cutoffAt: readString(backtestDocument.cutoffAt, ""),
+    id: readOptionalString(backtestDocument.id, "decision-backtest"),
+    cutoffAt: readOptionalString(backtestDocument.cutoffAt, ""),
     options: backtestDocument.options || {},
     planningScenario: backtestDocument.planningScenario,
     realizedScenario: backtestDocument.realizedScenario,
@@ -262,16 +264,4 @@ function pickDefinedProperties(values) {
       return entry[1] !== undefined;
     })
   );
-}
-
-function readString(value, fallback) {
-  return typeof value === "string" && value.length > 0 ? value : fallback;
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }

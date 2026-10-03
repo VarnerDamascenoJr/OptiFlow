@@ -1,3 +1,4 @@
+import { formatSignedNumber } from "./shared/format.js";
 import { readFiniteNumber, readPositiveInteger, round } from "./shared/numbers.js";
 
 const DEFAULT_CONFIDENCE_LEVEL = 0.95;
@@ -258,12 +259,4 @@ function renderGroup(label, group) {
     "  before_rate=" + group.before.rate + ", after_rate=" + group.after.rate,
     "  before_after_change=" + formatSignedNumber(group.change)
   ].join("\n");
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }

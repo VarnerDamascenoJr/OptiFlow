@@ -1,5 +1,6 @@
 import { compareStrategiesByDecisionLoss } from "./decision-loss.js";
 import { normalizeSalesEventPriors } from "./sales-event-priors.js";
+import { formatSignedNumber } from "./shared/format.js";
 import { readNonNegativeNumber, readPositiveInteger, round } from "./shared/numbers.js";
 
 const DEFAULT_SENSITIVITY_OPTIONS = {
@@ -371,12 +372,4 @@ function pickDefinedProperties(values) {
       return entry[1] !== undefined;
     })
   );
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }

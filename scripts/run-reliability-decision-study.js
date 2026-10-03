@@ -4,6 +4,7 @@ import {
   renderReliabilityDecisionStudyReport,
   runReliabilityDecisionStudy
 } from "../src/index.js";
+import { readOptionalNumber } from "../src/shared/numbers.js";
 
 const inputPath =
   process.argv[2] || "data/reliability/reliability-decision-study.example.json";
@@ -17,12 +18,4 @@ if (process.env.OPTIFLOW_OUTPUT_FORMAT === "json") {
   console.log(JSON.stringify(result, null, 2));
 } else {
   process.stdout.write(renderReliabilityDecisionStudyReport(result));
-}
-
-function readOptionalNumber(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }

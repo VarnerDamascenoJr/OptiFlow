@@ -1,3 +1,4 @@
+import { formatNullableNumber, formatSignedNumber } from "./shared/format.js";
 import { readNonNegativeNumber, readProbability, round } from "./shared/numbers.js";
 
 const DEFAULT_STOCKOUT_PENALTY_PER_UNIT = 40;
@@ -272,16 +273,4 @@ function sum(values) {
   return values.reduce(function reduceValues(total, value) {
     return total + value;
   }, 0);
-}
-
-function formatNullableNumber(value) {
-  return value === null ? "n/a" : String(value);
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }

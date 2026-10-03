@@ -1,4 +1,5 @@
 import { evaluateDecisionLoss } from "./decision-loss.js";
+import { formatNullableNumber, formatSignedNumber } from "./shared/format.js";
 import { readFiniteNumber, round } from "./shared/numbers.js";
 
 const DEFAULT_STEADY_STATE_PROFILE = {
@@ -288,16 +289,4 @@ function cloneProfile(profile) {
     weights: { ...profile.weights },
     slo: { ...profile.slo }
   };
-}
-
-function formatNullableNumber(value) {
-  return value === null ? "n/a" : String(value);
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }

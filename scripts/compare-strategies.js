@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { compareStrategies, renderComparisonReport } from "../src/index.js";
+import { readOptionalInteger } from "../src/shared/numbers.js";
 
 const scenarioPaths = process.argv.slice(2);
 const selectedPaths =
@@ -36,12 +37,4 @@ function listScenarioPaths(directory) {
     .map(function mapScenarioPath(fileName) {
       return path.join(directory, fileName);
     });
-}
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }

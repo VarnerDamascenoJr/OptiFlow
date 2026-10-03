@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { compareRiskAdjustedStrategies } from "../src/index.js";
+import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
 
 const scenarioPath = process.argv[2];
 
@@ -50,20 +51,4 @@ function renderStrategy(entry) {
     lateProbability: entry.simulation.summary.lateProbability,
     unassignedProbability: entry.simulation.summary.unassignedProbability
   };
-}
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
-}
-
-function readOptionalNumber(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }

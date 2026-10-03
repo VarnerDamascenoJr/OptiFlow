@@ -1,5 +1,6 @@
 import { calculateVarCvar } from "./risk-analysis.js";
 import { simulateFixedPlan } from "./simulation.js";
+import { formatNullableNumber, formatSignedNumber } from "./shared/format.js";
 import { mean, readPositiveInteger, round } from "./shared/numbers.js";
 
 const DEFAULT_INFERENCE_OPTIONS = {
@@ -77,7 +78,7 @@ export function renderInferenceReport(comparison) {
     "  probability_candidate_better=" +
       delta.probabilityCandidateBetter +
       ", standardized_effect=" +
-      formatNullableNumber(delta.effectSize.standardizedMeanDelta) +
+      formatNullableNumber(delta.effectSize.standardizedMeanDelta, "not_available") +
       ", relative_delta=" +
       formatSignedNumber(delta.effectSize.relativeMeanDeltaPercentage) +
       "%",
@@ -362,16 +363,4 @@ function createSeededRandom(seed) {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
-}
-
-function formatNullableNumber(value) {
-  return value === null ? "not_available" : String(value);
 }
