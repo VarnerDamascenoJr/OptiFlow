@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { simulateFixedPlan } from "../src/index.js";
+import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
 
 const scenarioPath = process.argv[2];
 
@@ -38,22 +39,6 @@ const output = process.env.OPTIFLOW_SIMULATION_INCLUDE_SAMPLES === "true"
     };
 
 console.log(JSON.stringify(output, null, 2));
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
-}
-
-function readOptionalNumber(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
-}
 
 function readOptionalJsonFile(filePath) {
   if (!filePath) {

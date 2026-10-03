@@ -1,6 +1,7 @@
 import { createOptiFlowApiServer } from "../src/api-server.js";
+import { readOptionalPositiveInteger, readTcpPort } from "../src/shared/numbers.js";
 
-const port = readPort(process.env.OPTIFLOW_API_PORT || process.env.PORT || "3000");
+const port = readTcpPort(process.env.OPTIFLOW_API_PORT || process.env.PORT || "3000", "OPTIFLOW_API_PORT");
 const host = process.env.OPTIFLOW_API_HOST || "127.0.0.1";
 const server = createOptiFlowApiServer({
   defaultMaxAttempts: readOptionalPositiveInteger(process.env.OPTIFLOW_RUN_MAX_ATTEMPTS),
@@ -24,22 +25,3 @@ server.listen(port, host, function onListening() {
     )
   );
 });
-
-function readPort(value) {
-  const port = Number(value);
-
-  if (!Number.isInteger(port) || port <= 0 || port > 65535) {
-    throw new Error("OPTIFLOW_API_PORT must be a valid TCP port");
-  }
-
-  return port;
-}
-
-function readOptionalPositiveInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  const number = Number(value);
-  return Number.isInteger(number) && number > 0 ? number : undefined;
-}

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { runFunnelPlanningStudy } from "../src/index.js";
+import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
 
 const defaultOutputPath = "studies/statistics/2026-09-29-funnel-planning/evidence/summary.json";
 const outputPath = process.argv[2] || defaultOutputPath;
@@ -29,22 +30,6 @@ console.log(absoluteOutputPath);
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.resolve(rootPath, relativePath), "utf8"));
-}
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
-}
-
-function readOptionalNumber(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }
 
 function readOptionalProfiles(value) {

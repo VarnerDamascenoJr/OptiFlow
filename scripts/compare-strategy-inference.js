@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { compareStrategiesWithInference, renderInferenceReport } from "../src/index.js";
+import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
 
 const scenarioPath = process.argv[2];
 
@@ -38,22 +39,6 @@ if (process.env.OPTIFLOW_OUTPUT_FORMAT === "json") {
   console.log(JSON.stringify(result, null, 2));
 } else {
   process.stdout.write(renderInferenceReport(result));
-}
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
-}
-
-function readOptionalNumber(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }
 
 function readOptionalJsonFile(filePath) {

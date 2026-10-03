@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { runStockoutRiskStudy } from "../src/index.js";
+import { readOptionalNumber } from "../src/shared/numbers.js";
 
 const defaultOutputPath = "studies/statistics/2026-10-01-stockout-risk/evidence/summary.json";
 const outputPath = process.argv[2] || defaultOutputPath;
@@ -16,12 +17,4 @@ console.log(absoluteOutputPath);
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.resolve(rootPath, relativePath), "utf8"));
-}
-
-function readOptionalNumber(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }

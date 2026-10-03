@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { renderOptimizationMetrics, solveScenario } from "../src/index.js";
+import { readOptionalInteger } from "../src/shared/numbers.js";
 
 const scenarioPath = process.argv[2];
 
@@ -31,12 +32,4 @@ if (process.env.OPTIFLOW_OUTPUT_FORMAT === "prometheus") {
   process.stdout.write(renderOptimizationMetrics(result));
 } else {
   console.log(JSON.stringify(result, null, 2));
-}
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }

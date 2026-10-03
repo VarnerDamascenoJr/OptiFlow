@@ -6,6 +6,7 @@ import {
   createOptimizationHistoryRepository,
   solveScenario
 } from "../src/index.js";
+import { readOptionalInteger } from "../src/shared/numbers.js";
 
 const scenarioPath = process.argv[2];
 
@@ -85,12 +86,4 @@ function buildSummary(historyFilePath, persisted) {
       routeCount: routePlan ? routePlan.routes.length : 0
     }
   };
-}
-
-function readOptionalInteger(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return Number(value);
 }

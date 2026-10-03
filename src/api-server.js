@@ -6,6 +6,7 @@ import { createOptimizationHistoryRepository } from "./optimization-history.js";
 import { createOptimizationRunQueue } from "./optimization-run-queue.js";
 import { renderOptimizationRepositoryMetrics } from "./observability-metrics.js";
 import { solveScenario } from "./index.js";
+import { readOptionalPositiveInteger } from "./shared/numbers.js";
 import { readNonEmptyString } from "./shared/strings.js";
 import validateScenario from "./validate-scenario.js";
 
@@ -328,14 +329,6 @@ function createHttpError(statusCode, code, message) {
   error.statusCode = statusCode;
   error.code = code;
   return error;
-}
-
-function readOptionalPositiveInteger(value) {
-  if (value === undefined || value === null) {
-    return undefined;
-  }
-
-  return Number.isInteger(value) && value > 0 ? value : undefined;
 }
 
 function createJsonLogger(defaultFields) {
