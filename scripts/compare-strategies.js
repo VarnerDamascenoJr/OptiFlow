@@ -1,23 +1,22 @@
-import fs from "node:fs";
-import path from "node:path";
 import { compareStrategies, renderComparisonReport } from "../src/index.js";
-import { readOptionalInteger } from "../src/shared/numbers.js";
+import {
+  listJsonFiles,
+  readJsonFile,
+  readSolverOptionsFromEnv,
+  resolvePath
+} from "./shared-cli.js";
 
 const scenarioPaths = process.argv.slice(2);
 const selectedPaths =
-  scenarioPaths.length > 0 ? scenarioPaths : listScenarioPaths(path.resolve(process.cwd(), "data", "scenarios"));
+  scenarioPaths.length > 0 ? scenarioPaths : listScenarioPaths(resolvePath("data/scenarios"));
 
 const comparisons = selectedPaths.map(function compareScenario(scenarioPath) {
-  const absolutePath = path.resolve(process.cwd(), scenarioPath);
-  const scenario = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
+  const scenario = readJsonFile(scenarioPath);
 
   return compareStrategies(scenario, {
     baselineStrategy: process.env.OPTIFLOW_BASELINE_STRATEGY,
     candidateStrategy: process.env.OPTIFLOW_CANDIDATE_STRATEGY,
-    solver: {
-      maxOrders: readOptionalInteger(process.env.OPTIFLOW_SOLVER_MAX_ORDERS),
-      timeoutMs: readOptionalInteger(process.env.OPTIFLOW_SOLVER_TIMEOUT_MS)
-    }
+    solver: readSolverOptionsFromEnv()
   });
 });
 
@@ -28,13 +27,5 @@ if (process.env.OPTIFLOW_OUTPUT_FORMAT === "json") {
 }
 
 function listScenarioPaths(directory) {
-  return fs
-    .readdirSync(directory)
-    .filter(function filterJson(fileName) {
-      return fileName.endsWith(".json");
-    })
-    .sort()
-    .map(function mapScenarioPath(fileName) {
-      return path.join(directory, fileName);
-    });
+  return listJsonFiles(directory);
 }

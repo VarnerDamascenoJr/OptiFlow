@@ -1,33 +1,23 @@
-import fs from "node:fs";
-import path from "node:path";
 import { compareRiskAdjustedStrategies } from "../src/index.js";
-import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
+import { readOptionalNumber } from "../src/shared/numbers.js";
+import {
+  readRequiredJsonArgument,
+  readSimulationOptionsFromEnv,
+  readSolverOptionsFromEnv,
+  readUncertaintyOptionsFromEnv
+} from "./shared-cli.js";
 
-const scenarioPath = process.argv[2];
-
-if (!scenarioPath) {
-  console.error("Usage: node scripts/compare-risk.js <scenario.json>");
-  process.exit(1);
-}
-
-const absoluteScenarioPath = path.resolve(process.cwd(), scenarioPath);
-const scenario = JSON.parse(fs.readFileSync(absoluteScenarioPath, "utf8"));
+const scenario = readRequiredJsonArgument(
+  process.argv[2],
+  "Usage: node scripts/compare-risk.js <scenario.json>"
+).document;
 const result = compareRiskAdjustedStrategies(scenario, {
   baselineStrategy: process.env.OPTIFLOW_BASELINE_STRATEGY,
   candidateStrategy: process.env.OPTIFLOW_CANDIDATE_STRATEGY,
   confidenceLevel: readOptionalNumber(process.env.OPTIFLOW_RISK_CONFIDENCE_LEVEL),
-  iterations: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_ITERATIONS),
-  seed: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_SEED),
-  solver: {
-    maxOrders: readOptionalInteger(process.env.OPTIFLOW_SOLVER_MAX_ORDERS),
-    timeoutMs: readOptionalInteger(process.env.OPTIFLOW_SOLVER_TIMEOUT_MS)
-  },
-  uncertainty: {
-    cancellationProbability: readOptionalNumber(process.env.OPTIFLOW_CANCELLATION_PROBABILITY),
-    demandVariationProbability: readOptionalNumber(process.env.OPTIFLOW_DEMAND_VARIATION_PROBABILITY),
-    demandVariationRate: readOptionalNumber(process.env.OPTIFLOW_DEMAND_VARIATION_RATE),
-    travelTimeVariationRate: readOptionalNumber(process.env.OPTIFLOW_TRAVEL_TIME_VARIATION_RATE)
-  }
+  ...readSimulationOptionsFromEnv(),
+  solver: readSolverOptionsFromEnv(),
+  uncertainty: readUncertaintyOptionsFromEnv()
 });
 
 console.log(JSON.stringify(renderRiskComparison(result), null, 2));

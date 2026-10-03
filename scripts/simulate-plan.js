@@ -1,29 +1,21 @@
-import fs from "node:fs";
-import path from "node:path";
 import { simulateFixedPlan } from "../src/index.js";
-import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
+import {
+  readOptionalJsonFile,
+  readRequiredJsonArgument,
+  readSimulationOptionsFromEnv,
+  readUncertaintyOptionsFromEnv
+} from "./shared-cli.js";
 
-const scenarioPath = process.argv[2];
-
-if (!scenarioPath) {
-  console.error("Usage: node scripts/simulate-plan.js <scenario.json>");
-  process.exit(1);
-}
-
-const absoluteScenarioPath = path.resolve(process.cwd(), scenarioPath);
-const scenario = JSON.parse(fs.readFileSync(absoluteScenarioPath, "utf8"));
+const scenario = readRequiredJsonArgument(
+  process.argv[2],
+  "Usage: node scripts/simulate-plan.js <scenario.json>"
+).document;
 const salesEventPriors = readOptionalJsonFile(process.env.OPTIFLOW_SALES_PRIORS_PATH);
 const result = simulateFixedPlan(scenario, {
-  iterations: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_ITERATIONS),
-  seed: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_SEED),
+  ...readSimulationOptionsFromEnv(),
   strategy: process.env.OPTIFLOW_STRATEGY,
   salesEventPriors: salesEventPriors,
-  uncertainty: {
-    cancellationProbability: readOptionalNumber(process.env.OPTIFLOW_CANCELLATION_PROBABILITY),
-    demandVariationProbability: readOptionalNumber(process.env.OPTIFLOW_DEMAND_VARIATION_PROBABILITY),
-    demandVariationRate: readOptionalNumber(process.env.OPTIFLOW_DEMAND_VARIATION_RATE),
-    travelTimeVariationRate: readOptionalNumber(process.env.OPTIFLOW_TRAVEL_TIME_VARIATION_RATE)
-  }
+  uncertainty: readUncertaintyOptionsFromEnv()
 });
 const output = process.env.OPTIFLOW_SIMULATION_INCLUDE_SAMPLES === "true"
   ? result
@@ -39,12 +31,3 @@ const output = process.env.OPTIFLOW_SIMULATION_INCLUDE_SAMPLES === "true"
     };
 
 console.log(JSON.stringify(output, null, 2));
-
-function readOptionalJsonFile(filePath) {
-  if (!filePath) {
-    return undefined;
-  }
-
-  const absolutePath = path.resolve(process.cwd(), filePath);
-  return JSON.parse(fs.readFileSync(absolutePath, "utf8"));
-}
