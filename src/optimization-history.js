@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { readNonNegativeNumber, readPositiveInteger } from "./shared/numbers.js";
-import { readNonEmptyString } from "./shared/strings.js";
+import { readNonEmptyString, readOptionalString } from "./shared/strings.js";
 
 const STORE_VERSION = 1;
 const DEFAULT_HISTORY_FILE = ".optiflow/optimization-history.json";
@@ -382,8 +382,10 @@ function normalizeTimestamp(value) {
     return value.toISOString();
   }
 
-  if (typeof value === "string" && value.length > 0) {
-    return new Date(value).toISOString();
+  const timestamp = readOptionalString(value, null);
+
+  if (timestamp !== null) {
+    return new Date(timestamp).toISOString();
   }
 
   return new Date().toISOString();

@@ -1,4 +1,6 @@
 import validateScenario from "./validate-scenario.js";
+import { assertPositiveInteger, readInteger } from "./shared/numbers.js";
+import { readOptionalString } from "./shared/strings.js";
 import { assertArray, assertObject, assertString } from "./shared/validation.js";
 
 const schemaVersion = "sales-event-optiflow-export.v1";
@@ -254,24 +256,4 @@ function assertEquals(value, expected, label) {
   if (value !== expected) {
     throw new Error(label + " must be " + expected);
   }
-}
-
-function assertPositiveInteger(value, label) {
-  if (!Number.isInteger(value) || value <= 0) {
-    throw new Error(label + " must be a positive integer");
-  }
-}
-
-function readInteger(value) {
-  if (Number.isInteger(value)) {
-    return value;
-  }
-  return 0;
-}
-
-function readOptionalString(value, fallback) {
-  if (typeof value === "string" && value.length > 0) {
-    return value;
-  }
-  return fallback;
 }
