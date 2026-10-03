@@ -471,10 +471,23 @@ Verificacao:
 
 Projeto: `operational-observability-platform`.
 
-- [ ] Implementar EWMA ou CUSUM para erro/latencia.
-- [ ] Definir baseline e limites de controle.
-- [ ] Diferenciar pico isolado de mudanca sustentada.
-- [ ] Registrar anomalias como evidencias de incidente.
+- [x] Implementar EWMA ou CUSUM para erro/latencia.
+- [x] Definir baseline e limites de controle.
+- [x] Diferenciar pico isolado de mudanca sustentada.
+- [x] Registrar anomalias como evidencias de incidente.
+
+Entrega implementada:
+
+- `operational-observability-platform` adiciona
+  `GET /slos/:sloId/process-control` para analisar as janelas recentes de SLO
+  com EWMA sobre a taxa de eventos ruins.
+- A API recebe `limit`, `baselineWindows`, `lambda`, `sigmaMultiplier` e
+  `sustainedWindows`, calcula media/desvio padrao historicos e limite superior
+  de controle.
+- O resultado diferencia `normal`, `isolated_spike` e `sustained_shift`, com
+  severidade `watch` ou `warning`.
+- Cada anomalia inclui objeto `evidence` do tipo `note` pronto para ser anexado
+  a um incidente via API de incidentes.
 
 Pergunta estatistica:
 
@@ -486,7 +499,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste com serie normal, spike e mudanca de nivel.
+- [x] Teste com serie normal, spike e mudanca de nivel.
 
 ### S2.5 Atualizar confianca em hipoteses de incidente
 
