@@ -1,4 +1,5 @@
 import evaluatePlan from "./metrics.js";
+import { formatSignedNumber } from "./shared/format.js";
 import { round } from "./shared/numbers.js";
 import { createPlanForStrategy } from "./shared/plan-factory.js";
 import validateScenario from "./validate-scenario.js";
@@ -129,12 +130,4 @@ function averageUtilization(vehicleUtilization) {
   }, 0);
 
   return total / vehicleUtilization.length;
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }

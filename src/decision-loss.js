@@ -1,5 +1,6 @@
 import { calculateVarCvar } from "./risk-analysis.js";
 import { simulateFixedPlan } from "./simulation.js";
+import { formatSignedNumber } from "./shared/format.js";
 import {
   mean,
   readFiniteNumber,
@@ -428,12 +429,4 @@ function roundComponents(components) {
       return [entry[0], round(entry[1], 4)];
     })
   );
-}
-
-function formatSignedNumber(value) {
-  if (value > 0) {
-    return "+" + value;
-  }
-
-  return String(value);
 }
