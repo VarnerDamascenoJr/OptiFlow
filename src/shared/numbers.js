@@ -21,6 +21,21 @@ export function assertPositiveInteger(value, label) {
   assertNumberMatching(value, label, isPositiveInteger, "must be a positive integer");
 }
 
+export function readRequiredProbability(value, label) {
+  assertProbability(value, label);
+  return value;
+}
+
+export function readRequiredNonNegativeNumber(value, label) {
+  assertNonNegativeFiniteNumber(value, label);
+  return value;
+}
+
+export function readRequiredPositiveNumber(value, label) {
+  assertPositiveFiniteNumber(value, label);
+  return value;
+}
+
 export function readInteger(value, fallback = 0) {
   return readNumberMatching(value, fallback, Number.isInteger);
 }
@@ -60,6 +75,24 @@ export function readTcpPort(value, label) {
 
 export function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
+}
+
+export function assertProbability(value, label) {
+  if (!isFiniteNumber(value) || value < 0 || value > 1) {
+    throw new TypeError(label + " must be a number between 0 and 1");
+  }
+}
+
+export function assertNonNegativeFiniteNumber(value, label) {
+  if (!isFiniteNumber(value) || value < 0) {
+    throw new TypeError(label + " must be a non-negative number");
+  }
+}
+
+export function assertPositiveFiniteNumber(value, label) {
+  if (!isFiniteNumber(value) || value <= 0) {
+    throw new TypeError(label + " must be a positive number");
+  }
 }
 
 export function readFiniteNumber(value, fallback) {

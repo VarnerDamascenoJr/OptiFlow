@@ -1,17 +1,10 @@
-import fs from "node:fs";
-import path from "node:path";
 import { renderOptimizationMetrics, solveScenario } from "../src/index.js";
-import { readOptionalInteger } from "../src/shared/numbers.js";
+import { readRequiredJsonArgument, readSolverOptionsFromEnv } from "./shared-cli.js";
 
-const scenarioPath = process.argv[2];
-
-if (!scenarioPath) {
-  console.error("Usage: node scripts/run-scenario.js <scenario.json>");
-  process.exit(1);
-}
-
-const absoluteScenarioPath = path.resolve(process.cwd(), scenarioPath);
-const scenario = JSON.parse(fs.readFileSync(absoluteScenarioPath, "utf8"));
+const scenario = readRequiredJsonArgument(
+  process.argv[2],
+  "Usage: node scripts/run-scenario.js <scenario.json>"
+).document;
 const result = solveScenario(scenario, {
   strategy: process.env.OPTIFLOW_STRATEGY,
   metadata: {
@@ -22,10 +15,7 @@ const result = solveScenario(scenario, {
     service: process.env.OPTIFLOW_SERVICE_NAME,
     environment: process.env.OPTIFLOW_ENVIRONMENT
   },
-  solver: {
-    maxOrders: readOptionalInteger(process.env.OPTIFLOW_SOLVER_MAX_ORDERS),
-    timeoutMs: readOptionalInteger(process.env.OPTIFLOW_SOLVER_TIMEOUT_MS)
-  }
+  solver: readSolverOptionsFromEnv()
 });
 
 if (process.env.OPTIFLOW_OUTPUT_FORMAT === "prometheus") {

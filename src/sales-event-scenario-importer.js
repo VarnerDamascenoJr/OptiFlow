@@ -1,7 +1,13 @@
 import validateScenario from "./validate-scenario.js";
 import { assertPositiveInteger, readInteger } from "./shared/numbers.js";
 import { readOptionalString } from "./shared/strings.js";
-import { assertArray, assertObject, assertString } from "./shared/validation.js";
+import {
+  assertArray,
+  assertEquals,
+  assertNonEmptyArray,
+  assertObject,
+  assertString
+} from "./shared/validation.js";
 
 const schemaVersion = "sales-event-optiflow-export.v1";
 
@@ -123,9 +129,7 @@ function normalizeOptions(options) {
     }
   };
 
-  if (!Array.isArray(merged.completedStatuses) || merged.completedStatuses.length === 0) {
-    throw new Error("options.completedStatuses must contain at least one status");
-  }
+  assertNonEmptyArray(merged.completedStatuses, "options.completedStatuses", "status");
 
   return merged;
 }
@@ -250,10 +254,4 @@ function sanitizeIdentifier(value) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-/, "")
     .replace(/-$/, "");
-}
-
-function assertEquals(value, expected, label) {
-  if (value !== expected) {
-    throw new Error(label + " must be " + expected);
-  }
 }

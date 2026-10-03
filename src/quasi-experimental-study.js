@@ -1,5 +1,6 @@
 import { formatSignedNumber } from "./shared/format.js";
 import { readFiniteNumber, readPositiveInteger, round } from "./shared/numbers.js";
+import { assertRequiredObject } from "./shared/validation.js";
 
 const DEFAULT_CONFIDENCE_LEVEL = 0.95;
 const NORMAL_CRITICAL_VALUE_95 = 1.96;
@@ -174,9 +175,7 @@ function summarizeConclusion(estimate, control) {
 }
 
 function normalizeStudyInput(input) {
-  if (!input || typeof input !== "object") {
-    throw new Error("Quasi-experimental study input must be an object");
-  }
+  assertRequiredObject(input, "Quasi-experimental study input must be an object");
 
   return {
     id: input.id || "quasi-experimental-study",
@@ -195,9 +194,7 @@ function normalizeStudyInput(input) {
 }
 
 function normalizeIntervention(intervention) {
-  if (!intervention || typeof intervention !== "object") {
-    throw new Error("Quasi-experimental study requires an intervention");
-  }
+  assertRequiredObject(intervention, "Quasi-experimental study requires an intervention");
 
   return {
     name: intervention.name || "intervention",
@@ -208,9 +205,7 @@ function normalizeIntervention(intervention) {
 }
 
 function normalizeMetric(metric) {
-  if (!metric || typeof metric !== "object") {
-    throw new Error("Quasi-experimental study requires a metric");
-  }
+  assertRequiredObject(metric, "Quasi-experimental study requires a metric");
 
   return {
     name: metric.name || "success_rate",
@@ -220,9 +215,7 @@ function normalizeMetric(metric) {
 }
 
 function normalizeGroup(group, fallbackName) {
-  if (!group || typeof group !== "object") {
-    throw new Error("Quasi-experimental study requires a " + fallbackName + " group");
-  }
+  assertRequiredObject(group, "Quasi-experimental study requires a " + fallbackName + " group");
 
   return {
     name: group.name || fallbackName,
@@ -233,9 +226,7 @@ function normalizeGroup(group, fallbackName) {
 }
 
 function normalizePeriod(period, label) {
-  if (!period || typeof period !== "object") {
-    throw new Error("Quasi-experimental study requires period " + label);
-  }
+  assertRequiredObject(period, "Quasi-experimental study requires period " + label);
 
   return {
     label: period.label || label,

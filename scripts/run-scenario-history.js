@@ -1,22 +1,16 @@
-import fs from "node:fs";
-import path from "node:path";
 import { performance } from "node:perf_hooks";
 import {
   createExecutionMetadata,
   createOptimizationHistoryRepository,
   solveScenario
 } from "../src/index.js";
-import { readOptionalInteger } from "../src/shared/numbers.js";
+import { readRequiredJsonArgument, readSolverOptionsFromEnv } from "./shared-cli.js";
 
-const scenarioPath = process.argv[2];
-
-if (!scenarioPath) {
-  console.error("Usage: node scripts/run-scenario-history.js <scenario.json>");
-  process.exit(1);
-}
-
-const absoluteScenarioPath = path.resolve(process.cwd(), scenarioPath);
-const scenario = JSON.parse(fs.readFileSync(absoluteScenarioPath, "utf8"));
+const scenarioInput = readRequiredJsonArgument(
+  process.argv[2],
+  "Usage: node scripts/run-scenario-history.js <scenario.json>"
+);
+const scenario = scenarioInput.document;
 const strategy = process.env.OPTIFLOW_STRATEGY || "nearest-neighbor-capacity";
 const historyFile = process.env.OPTIFLOW_HISTORY_FILE || ".optiflow/optimization-history.json";
 const metadata = createExecutionMetadata({
@@ -35,10 +29,7 @@ try {
   const result = solveScenario(scenario, {
     strategy: strategy,
     metadata: metadata,
-    solver: {
-      maxOrders: readOptionalInteger(process.env.OPTIFLOW_SOLVER_MAX_ORDERS),
-      timeoutMs: readOptionalInteger(process.env.OPTIFLOW_SOLVER_TIMEOUT_MS)
-    }
+    solver: readSolverOptionsFromEnv()
   });
   const finishedAt = new Date();
   const persisted = repository.recordCompletedRun({
@@ -47,7 +38,7 @@ try {
     startedAt: startedAt,
     finishedAt: finishedAt,
     durationMs: performance.now() - started,
-    sourcePath: absoluteScenarioPath
+    sourcePath: scenarioInput.absolutePath
   });
 
   console.log(JSON.stringify(buildSummary(repository.filePath, persisted), null, 2));
@@ -61,7 +52,7 @@ try {
     startedAt: startedAt,
     finishedAt: finishedAt,
     durationMs: performance.now() - started,
-    sourcePath: absoluteScenarioPath
+    sourcePath: scenarioInput.absolutePath
   });
 
   console.error(JSON.stringify(buildSummary(repository.filePath, persisted), null, 2));

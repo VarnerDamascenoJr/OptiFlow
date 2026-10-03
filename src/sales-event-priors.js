@@ -1,5 +1,11 @@
-import { mean, round } from "./shared/numbers.js";
-import { assertArray, assertObject } from "./shared/validation.js";
+import {
+  mean,
+  readRequiredNonNegativeNumber,
+  readRequiredPositiveNumber,
+  readRequiredProbability,
+  round
+} from "./shared/numbers.js";
+import { assertArray, assertObject, assertSchemaVersion } from "./shared/validation.js";
 
 const salesEventExportSchemaVersion = "sales-event-optiflow-export.v1";
 const salesAnalyticsExportSchemaVersion = "sales-analytics-export.v1";
@@ -9,9 +15,11 @@ const completedStatuses = new Set(["COMPLETED"]);
 export function deriveSalesEventPriors(exportDocument) {
   assertObject(exportDocument, "salesEventExport");
 
-  if (exportDocument.schemaVersion !== salesEventExportSchemaVersion) {
-    throw new Error("salesEventExport.schemaVersion must be " + salesEventExportSchemaVersion);
-  }
+  assertSchemaVersion(
+    exportDocument.schemaVersion,
+    salesEventExportSchemaVersion,
+    "salesEventExport.schemaVersion"
+  );
 
   assertObject(exportDocument.source, "salesEventExport.source");
   assertArray(exportDocument.sales, "salesEventExport.sales");
@@ -219,25 +227,13 @@ function mode(values) {
 }
 
 function readProbability(value, label) {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1) {
-    throw new TypeError(label + " must be a number between 0 and 1");
-  }
-
-  return value;
+  return readRequiredProbability(value, label);
 }
 
 function readNonNegativeNumber(value, label) {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
-    throw new TypeError(label + " must be a non-negative number");
-  }
-
-  return value;
+  return readRequiredNonNegativeNumber(value, label);
 }
 
 function readPositiveQuantity(value) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new TypeError("salesEventExport.sale.items.quantity must be a positive number");
-  }
-
-  return value;
+  return readRequiredPositiveNumber(value, "salesEventExport.sale.items.quantity");
 }

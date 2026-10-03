@@ -1,5 +1,6 @@
 import { formatNullableNumber, formatSignedNumber } from "./shared/format.js";
 import { readNonNegativeNumber, readProbability, round } from "./shared/numbers.js";
+import { assertRequiredObject } from "./shared/validation.js";
 
 const DEFAULT_STOCKOUT_PENALTY_PER_UNIT = 40;
 
@@ -195,9 +196,7 @@ function poissonTailProbability(lambda, threshold) {
 }
 
 function normalizeStudyInput(input) {
-  if (!input || typeof input !== "object") {
-    throw new Error("Stockout risk study input must be an object");
-  }
+  assertRequiredObject(input, "Stockout risk study input must be an object");
 
   return {
     id: input.id || "stockout-risk-study",
@@ -230,9 +229,7 @@ function readStockoutRisks(input) {
 }
 
 function normalizePolicy(policy, fallbackName) {
-  if (!policy || typeof policy !== "object") {
-    throw new Error("Stockout risk study requires a " + fallbackName + " policy");
-  }
+  assertRequiredObject(policy, "Stockout risk study requires a " + fallbackName + " policy");
 
   return {
     name: policy.name || fallbackName,

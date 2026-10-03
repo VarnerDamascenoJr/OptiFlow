@@ -5,7 +5,7 @@ import { importSalesEventScenario } from "./sales-event-scenario-importer.js";
 import { formatSignedNumber } from "./shared/format.js";
 import { readFiniteNumber, readPositiveInteger, round } from "./shared/numbers.js";
 import { readOptionalString } from "./shared/strings.js";
-import { assertObject } from "./shared/validation.js";
+import { assertObject, assertSchemaVersion } from "./shared/validation.js";
 
 const schemaVersion = "optiflow-decision-backtest.v1";
 
@@ -208,9 +208,7 @@ function summarizeHistoricalSplit(exportDocument, priors) {
 function normalizeBacktestDocument(backtestDocument) {
   assertObject(backtestDocument, "decisionBacktest");
 
-  if (backtestDocument.schemaVersion !== schemaVersion) {
-    throw new Error("decisionBacktest.schemaVersion must be " + schemaVersion);
-  }
+  assertSchemaVersion(backtestDocument.schemaVersion, schemaVersion, "decisionBacktest.schemaVersion");
 
   assertObject(backtestDocument.trainingSalesExport, "decisionBacktest.trainingSalesExport");
   assertObject(backtestDocument.testSalesExport, "decisionBacktest.testSalesExport");

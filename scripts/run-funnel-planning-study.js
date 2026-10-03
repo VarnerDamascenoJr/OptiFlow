@@ -1,17 +1,16 @@
-import fs from "node:fs";
-import path from "node:path";
 import { runFunnelPlanningStudy } from "../src/index.js";
 import { readOptionalInteger, readOptionalNumber } from "../src/shared/numbers.js";
+import { readJsonFile, readOptionalProfiles, writeJsonFile } from "./shared-cli.js";
 
 const defaultOutputPath = "studies/statistics/2026-09-29-funnel-planning/evidence/summary.json";
 const outputPath = process.argv[2] || defaultOutputPath;
 const rootPath = process.cwd();
 const result = runFunnelPlanningStudy(
   {
-    salesPriors: readJson("data/sales-event-exports/optiflow-sales-priors.example.json"),
-    salesAnalyticsExport: readJson("data/sales-event-exports/sales-analytics-priors.example.json"),
-    scenario: readJson("data/scenarios/small-delivery.json"),
-    sharedStatisticalFixture: readJson("data/statistics/shared-statistical-fixture.v1.json")
+    salesPriors: readJsonFile("data/sales-event-exports/optiflow-sales-priors.example.json", rootPath),
+    salesAnalyticsExport: readJsonFile("data/sales-event-exports/sales-analytics-priors.example.json", rootPath),
+    scenario: readJsonFile("data/scenarios/small-delivery.json", rootPath),
+    sharedStatisticalFixture: readJsonFile("data/statistics/shared-statistical-fixture.v1.json", rootPath)
   },
   {
     iterations: readOptionalInteger(process.env.OPTIFLOW_SIMULATION_ITERATIONS),
@@ -23,21 +22,5 @@ const result = runFunnelPlanningStudy(
   }
 );
 
-const absoluteOutputPath = path.resolve(rootPath, outputPath);
-fs.mkdirSync(path.dirname(absoluteOutputPath), { recursive: true });
-fs.writeFileSync(absoluteOutputPath, JSON.stringify(result, null, 2) + "\n");
+const absoluteOutputPath = writeJsonFile(outputPath, result, rootPath);
 console.log(absoluteOutputPath);
-
-function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.resolve(rootPath, relativePath), "utf8"));
-}
-
-function readOptionalProfiles(value) {
-  if (!value) {
-    return undefined;
-  }
-
-  return value.split(",").map(function mapProfile(profile) {
-    return profile.trim();
-  });
-}
