@@ -1,8 +1,8 @@
 import createExecutionMetadata from "../execution-metadata.js";
 import { readOptionalPositiveInteger } from "../shared/numbers.js";
 import { readNonEmptyString } from "../shared/strings.js";
-import validateScenario from "../validate-scenario.js";
 import { createHttpError, readJsonBody, sendError, sendJson } from "./http.js";
+import { validateScenarioForApi } from "./scenario-validation.js";
 
 export async function handleCreateOptimizationRunRoute(requestContext) {
   const body = await readJsonBody(
@@ -11,10 +11,7 @@ export async function handleCreateOptimizationRunRoute(requestContext) {
   );
   const scenario = resolveScenario(body, requestContext.dependencies.repository);
 
-  try {
-    validateScenario(scenario);
-  } catch (error) {
-    sendError(requestContext.response, 422, "validation_failed", error.message);
+  if (!validateScenarioForApi(requestContext.response, scenario)) {
     return;
   }
 
