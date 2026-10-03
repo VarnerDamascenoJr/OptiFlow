@@ -1,4 +1,12 @@
-import { assertArray, assertObject, assertString } from "./shared/validation.js";
+import {
+  assertArray,
+  assertNonNegativeNumber,
+  assertNumber,
+  assertObject,
+  assertOptionalBoolean,
+  assertPositiveNumber,
+  assertString
+} from "./shared/validation.js";
 
 export default function validateScenario(scenario) {
   assertObject(scenario, "scenario");
@@ -105,28 +113,6 @@ function assertKnownLocation(locationIds, locationId, label) {
   }
 }
 
-function assertNumber(value, label) {
-  if (typeof value !== "number" || !Number.isFinite(value)) {
-    throw new TypeError(label + " must be a finite number");
-  }
-}
-
-function assertPositiveNumber(value, label) {
-  assertNumber(value, label);
-
-  if (value <= 0) {
-    throw new Error(label + " must be greater than zero");
-  }
-}
-
-function assertNonNegativeNumber(value, label) {
-  assertNumber(value, label);
-
-  if (value < 0) {
-    throw new Error(label + " must be greater than or equal to zero");
-  }
-}
-
 function validateConstraints(constraints, orderIds, vehicles) {
   if (constraints === undefined) {
     return;
@@ -166,11 +152,5 @@ function validateRequiredOrderIds(requiredOrderIds, orderIds) {
     }
 
     seen[orderId] = true;
-  }
-}
-
-function assertOptionalBoolean(value, label) {
-  if (value !== undefined && typeof value !== "boolean") {
-    throw new TypeError(label + " must be a boolean");
   }
 }

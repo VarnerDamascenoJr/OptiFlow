@@ -1,6 +1,7 @@
 import { evaluateDecisionLoss } from "./decision-loss.js";
 import { formatNullableNumber, formatSignedNumber } from "./shared/format.js";
 import { readFiniteNumber, round } from "./shared/numbers.js";
+import { assertRequiredObject } from "./shared/validation.js";
 
 const DEFAULT_STEADY_STATE_PROFILE = {
   name: "steady-state-operations",
@@ -184,9 +185,7 @@ function comparePlans(plans, profile, options) {
 }
 
 function normalizeStudyInput(input) {
-  if (!input || typeof input !== "object") {
-    throw new Error("Reliability decision study input must be an object");
-  }
+  assertRequiredObject(input, "Reliability decision study input must be an object");
 
   return {
     id: input.id || "reliability-decision-study",
@@ -200,9 +199,7 @@ function normalizeStudyInput(input) {
 }
 
 function normalizeReliabilitySignal(signal) {
-  if (!signal || typeof signal !== "object") {
-    throw new Error("Reliability decision study requires a reliabilitySignal object");
-  }
+  assertRequiredObject(signal, "Reliability decision study requires a reliabilitySignal object");
 
   return {
     ...signal,
@@ -212,9 +209,7 @@ function normalizeReliabilitySignal(signal) {
 }
 
 function normalizePlan(plan, role) {
-  if (!plan || typeof plan !== "object") {
-    throw new Error("Reliability decision study requires a " + role + " plan");
-  }
+  assertRequiredObject(plan, "Reliability decision study requires a " + role + " plan");
 
   if (!Array.isArray(plan.samples) || plan.samples.length === 0) {
     throw new Error("Reliability decision study " + role + " plan requires samples");

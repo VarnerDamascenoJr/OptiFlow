@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 
 import {
   assertPositiveInteger,
+  readRequiredNonNegativeNumber,
+  readRequiredPositiveNumber,
+  readRequiredProbability,
   readFiniteNumber,
   readInteger,
   readNonNegativeNumber,
@@ -55,6 +58,18 @@ describe("shared numeric parsing", function describeSharedNumericParsing() {
         assertPositiveInteger(0, "quantity");
       },
       /quantity must be a positive integer/
+    );
+  });
+
+  it("reads required bounded values for document validation", function testRequiredBoundedValues() {
+    assert.equal(readRequiredProbability(0.5, "probability"), 0.5);
+    assert.equal(readRequiredNonNegativeNumber(0, "cost"), 0);
+    assert.equal(readRequiredPositiveNumber(1, "quantity"), 1);
+    assert.throws(
+      function readInvalidProbability() {
+        readRequiredProbability(2, "probability");
+      },
+      /probability must be a number between 0 and 1/
     );
   });
 
