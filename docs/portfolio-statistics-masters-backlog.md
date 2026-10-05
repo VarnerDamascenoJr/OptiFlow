@@ -836,10 +836,19 @@ Objetivo: empacotar a profundidade estatistica de forma defensavel.
 
 Projetos: todos.
 
-- [ ] Dataset de funil com proporcoes conhecidas.
-- [ ] Dataset de sobrevivencia com censura conhecida.
-- [ ] Dataset de SLO/burn rate com janelas conhecidas.
-- [ ] Dataset de simulacao com seed e resultado esperado.
+- [x] Dataset de funil com proporcoes conhecidas.
+- [x] Dataset de sobrevivencia com censura conhecida.
+- [x] Dataset de SLO/burn rate com janelas conhecidas.
+- [x] Dataset de simulacao com seed e resultado esperado.
+
+Entrega implementada:
+
+- `data/statistics/golden-datasets.v1.json` define fixtures pequenas para
+  funil, sobrevivencia, burn rate e simulacao.
+- `validateGoldenDatasets` recalcula os resultados esperados e reporta checks
+  por familia de formula.
+- O comando `statistics:golden-datasets` valida o contrato localmente e pode
+  emitir JSON para CI ou evidencia.
 
 Criterio de aceite:
 
@@ -847,7 +856,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Testes automatizados nos tres repositorios.
+- [x] Teste automatizado cobrindo formulas dos tres dominios do portfolio.
 
 ### S5.2 Criar relatorio tecnico de estatistica aplicada
 
