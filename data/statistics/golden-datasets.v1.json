@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "portfolio-golden-datasets.v1",
+  "generatedAt": "2026-10-02T00:00:00.000Z",
+  "description": "Golden datasets pequenos para validar formulas estatisticas centrais do portfolio.",
+  "datasets": {
+    "funnel": {
+      "questionId": "RQ1",
+      "method": "binomial_wilson_interval",
+      "confidenceLevel": 0.95,
+      "acceptedCount": 10,
+      "convertedCount": 8,
+      "expected": {
+        "conversionProbability": 0.8,
+        "confidenceInterval95": {
+          "lower": 0.4902,
+          "upper": 0.9433
+        }
+      }
+    },
+    "survival": {
+      "questionId": "RQ2",
+      "method": "kaplan_meier_discrete",
+      "unit": "minutes",
+      "observations": [
+        {
+          "id": "sale-1",
+          "duration": 1,
+          "eventObserved": true
+        },
+        {
+          "id": "sale-2",
+          "duration": 2,
+          "eventObserved": false
+        },
+        {
+          "id": "sale-3",
+          "duration": 3,
+          "eventObserved": true
+        },
+        {
+          "id": "sale-4",
+          "duration": 4,
+          "eventObserved": false
+        }
+      ],
+      "expected": {
+        "survivalTable": [
+          {
+            "time": 1,
+            "atRisk": 4,
+            "events": 1,
+            "censored": 0,
+            "survivalProbability": 0.75
+          },
+          {
+            "time": 3,
+            "atRisk": 2,
+            "events": 1,
+            "censored": 0,
+            "survivalProbability": 0.375
+          }
+        ],
+        "medianSurvivalTime": 3
+      }
+    },
+    "sloBurnRate": {
+      "questionId": "RQ5,RQ6",
+      "method": "multi_window_burn_rate",
+      "targetPercentage": 95,
+      "windowDays": 7,
+      "shortWindow": {
+        "days": 1,
+        "goodEvents": 940,
+        "totalEvents": 1000
+      },
+      "longWindow": {
+        "days": 2,
+        "goodEvents": 1920,
+        "totalEvents": 2000
+      },
+      "expected": {
+        "shortWindow": {
+          "observedPercentage": 94,
+          "errorBudgetConsumedPercentage": 120,
+          "expectedBudgetConsumedPercentage": 14.286,
+          "burnRate": 8.4
+        },
+        "longWindow": {
+          "observedPercentage": 96,
+          "errorBudgetConsumedPercentage": 80,
+          "expectedBudgetConsumedPercentage": 28.571,
+          "burnRate": 2.8
+        },
+        "severity": "page"
+      }
+    },
+    "simulation": {
+      "questionId": "RQ7",
+      "method": "seeded_monte_carlo_without_uncertainty",
+      "scenarioPath": "data/scenarios/small-delivery.json",
+      "strategy": "exact-enumeration",
+      "seed": 4242,
+      "iterations": 3,
+      "uncertainty": {
+        "cancellationProbability": 0,
+        "demandVariationProbability": 0,
+        "demandVariationRate": 0,
+        "travelTimeVariationRate": 0
+      },
+      "expected": {
+        "totalCostMean": 744,
+        "totalLateMinutesMean": 0,
+        "unassignedOrdersMean": 1,
+        "servedOrders": 3,
+        "sampleSize": 3
+      }
+    }
+  }
+}
