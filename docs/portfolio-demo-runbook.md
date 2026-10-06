@@ -31,6 +31,9 @@ Os diagramas finais da arquitetura e dos fluxos estao em
 O roteiro gravavel de 5 a 10 minutos esta em
 [portfolio-recordable-demo-script.md](portfolio-recordable-demo-script.md).
 
+O roteiro gravavel especifico da trilha estatistica esta em
+[portfolio-statistical-demo-script.md](portfolio-statistical-demo-script.md).
+
 ## Pre-check
 
 Execute antes de gravar ou demonstrar:

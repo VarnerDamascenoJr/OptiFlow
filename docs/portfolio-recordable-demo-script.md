@@ -4,6 +4,9 @@ Este roteiro foi pensado para uma gravacao de 5 a 10 minutos. Ele mostra os
 tres projetos como sistemas independentes que se conectam por contratos
 operacionais pequenos: correlacao, telemetria, export de dados e metricas.
 
+Para a defesa curta da trilha estatistica, use tambem
+[portfolio-statistical-demo-script.md](portfolio-statistical-demo-script.md).
+
 ## Objetivo da Gravacao
 
 Mensagem central:
