@@ -505,10 +505,16 @@ Verificacao:
 
 Projeto: `operational-observability-platform`.
 
-- [ ] Adicionar score numerico de confianca para hipoteses.
-- [ ] Definir como evidencia aumenta ou reduz confianca.
-- [ ] Registrar historico de mudanca de confianca.
-- [ ] Exibir hipotese mais provavel e incerteza restante.
+- [x] Adicionar score numerico de confianca para hipoteses.
+- [x] Definir como evidencia aumenta ou reduz confianca.
+- [x] Registrar historico de mudanca de confianca.
+- [x] Exibir hipotese mais provavel e incerteza restante.
+
+Entrega implementada:
+
+- `operational-observability-platform` PR #28 adicionou score persistido de
+  confianca, historico de ajustes, ranking e resumo de incerteza na resposta de
+  incidentes.
 
 Pergunta estatistica:
 
@@ -520,16 +526,22 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Teste com evidencias que mudam o ranking de hipoteses.
+- [x] Teste com evidencias que mudam o ranking de hipoteses.
 
 ### S2.6 Prever risco operacional proximo
 
 Projeto: `operational-observability-platform`.
 
-- [ ] Prever probabilidade de violar SLO na proxima janela.
-- [ ] Usar baseline simples antes de modelo sofisticado.
-- [ ] Medir calibracao: quando o modelo diz 70%, acontece perto disso?
-- [ ] Registrar falsos positivos e falsos negativos.
+- [x] Prever probabilidade de violar SLO na proxima janela.
+- [x] Usar baseline simples antes de modelo sofisticado.
+- [x] Medir calibracao: quando o modelo diz 70%, acontece perto disso?
+- [x] Registrar falsos positivos e falsos negativos.
+
+Entrega implementada:
+
+- `operational-observability-platform` PR #31 adicionou
+  `/slos/:sloId/risk-forecast`, baseline suavizado, backtest walk-forward,
+  Brier score, erro de calibracao, falsos positivos e falsos negativos.
 
 Pergunta estatistica:
 
@@ -541,7 +553,7 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Backtest com historico sintetico e metricas de calibracao.
+- [x] Backtest com historico sintetico e metricas de calibracao.
 
 ## S3: Decisao Estatistica no `OptiFlow`
 
@@ -862,11 +874,17 @@ Verificacao:
 
 Projetos: todos, centralizado no `OptiFlow`.
 
-- [ ] Escrever problema, dados, metodo, resultados, limitacoes e proximos
+- [x] Escrever problema, dados, metodo, resultados, limitacoes e proximos
   passos.
-- [ ] Incluir formulas essenciais.
-- [ ] Incluir interpretacao operacional.
-- [ ] Separar claramente inferencia, previsao e decisao.
+- [x] Incluir formulas essenciais.
+- [x] Incluir interpretacao operacional.
+- [x] Separar claramente inferencia, previsao e decisao.
+
+Entrega implementada:
+
+- `docs/portfolio-statistical-technical-report.md` consolida a trilha
+  estatistica do portfolio com dados, metodos, resultados, formulas,
+  limitacoes, proximos passos, comandos de reproducao, evidencias e CI.
 
 Criterio de aceite:
 
@@ -874,8 +892,8 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Revisao manual do relatorio.
-- [ ] Links para datasets, scripts, evidencia e CI.
+- [x] Revisao manual do relatorio.
+- [x] Links para datasets, scripts, evidencia e CI.
 
 ### S5.3 Criar roteiro gravavel da trilha estatistica
 
