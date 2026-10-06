@@ -899,10 +899,21 @@ Verificacao:
 
 Projetos: todos.
 
-- [ ] Cena 1: Sales gera dataset e funil com incerteza.
-- [ ] Cena 2: Plataforma calcula SLO, burn rate ou anomalia.
-- [ ] Cena 3: OptiFlow simula decisao com priors calibrados.
-- [ ] Cena 4: Resultado mostra intervalo, risco e trade-off.
+- [x] Cena 1: Sales gera dataset e funil com incerteza.
+- [x] Cena 2: Plataforma calcula SLO, burn rate ou anomalia.
+- [x] Cena 3: OptiFlow simula decisao com priors calibrados.
+- [x] Cena 4: Resultado mostra intervalo, risco e trade-off.
+
+Entrega implementada:
+
+- `docs/portfolio-statistical-demo-script.md` define o roteiro gravavel da
+  trilha estatistica, com cenas, comandos, fala sugerida, numeros de apoio,
+  transicoes e checklist de ensaio.
+- `/Users/varnerdamasceno/github-varner/evidence/s5.3-statistical-demo-rehearsal-2026-10-06/summary.json`
+  registra o ensaio local com evidencia dos tres repositorios.
+- `docs/portfolio-demo-runbook.md` e
+  `docs/portfolio-recordable-demo-script.md` apontam para o roteiro
+  estatistico complementar.
 
 Criterio de aceite:
 
@@ -910,8 +921,8 @@ Criterio de aceite:
 
 Verificacao:
 
-- [ ] Ensaio local.
-- [ ] Evidencias em `evidence/`.
+- [x] Ensaio local.
+- [x] Evidencias em `evidence/`.
 
 ## Primeira Sequencia Recomendada
 
