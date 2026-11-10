@@ -4,7 +4,7 @@
 
 Motor de otimizacao operacional para comparar cenarios de distribuicao e alocacao, equilibrando custo, tempo e distancia sob restricoes configuraveis.
 
-> Status: MVP deterministico iniciado. O primeiro dominio confirmado e distribuicao de entregas, com uma heuristica de referencia implementada para comparar contra solver em uma etapa posterior.
+> Status: nucleo deterministico de entregas com duas heuristicas, enumeracao exata limitada e comparacao de estrategias implementadas. A integracao com OR-Tools permanece pendente.
 
 ## Objetivo
 
@@ -47,6 +47,9 @@ Essa direcao foi confirmada como a primeira fronteira do MVP. A modelagem inicia
 esta documentada em [docs/domain-model.md](docs/domain-model.md) e a formulacao
 matematica deterministica esta em
 [docs/mathematical-formulation.md](docs/mathematical-formulation.md).
+O documento detalha as variaveis, equacoes de rota, funcao objetivo, restricoes
+configuraveis e limites de otimalidade do adaptador atual, com um exemplo
+calculado para a heuristica e a enumeracao.
 
 ## Como Executar a Primeira Fatia
 

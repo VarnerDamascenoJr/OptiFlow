@@ -1,6 +1,5 @@
 import {
   buildUnassignedOrderDetails,
-  canServeOrderAtThisPoint,
   readScenarioConstraints
 } from "./constraints.js";
 import evaluatePlan from "./metrics.js";
@@ -96,7 +95,20 @@ function buildRouteCandidates(scenario, vehicle, deadline, constraints) {
 
 function collectRouteCandidates(state) {
   assertWithinDeadline(state.deadline);
-  state.candidates.push(buildRoute(state.scenario, state.vehicle, state.selectedOrders));
+
+  if (state.constraints.maxRouteDistance && state.totalDistance > state.vehicle.maxDistance) {
+    return;
+  }
+
+  const returnDistance = state.scenario.distanceMatrix[state.currentLocationId][state.vehicle.startLocationId];
+
+  // An invalid direct return can become valid after another stop in a nonmetric matrix.
+  if (
+    !state.constraints.maxRouteDistance ||
+    state.totalDistance + returnDistance <= state.vehicle.maxDistance
+  ) {
+    state.candidates.push(buildRoute(state.scenario, state.vehicle, state.selectedOrders));
+  }
 
   for (const order of state.remainingOrders) {
     const nextCapacity = state.usedCapacity + order.demand;
@@ -105,25 +117,13 @@ function collectRouteCandidates(state) {
       continue;
     }
 
-    if (
-      !canServeOrderAtThisPoint(
-        state.scenario,
-        state.vehicle,
-        {
-          currentLocationId: state.currentLocationId,
-          currentTime: state.currentTime,
-          totalDistance: state.totalDistance
-        },
-        order,
-        state.constraints
-      )
-    ) {
-      continue;
-    }
-
     const distance = state.scenario.distanceMatrix[state.currentLocationId][order.locationId];
     const arrivalTime = state.currentTime + distance;
     const serviceStart = Math.max(arrivalTime, order.timeWindow.startMinutes);
+
+    if (state.constraints.hardTimeWindows && serviceStart > order.timeWindow.endMinutes) {
+      continue;
+    }
 
     collectRouteCandidates({
       candidates: state.candidates,
