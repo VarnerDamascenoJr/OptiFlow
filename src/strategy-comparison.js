@@ -54,6 +54,10 @@ export function renderComparisonReport(comparisons) {
         comparison.candidate.metrics.totalLateMinutes +
         ", served=" +
         comparison.candidate.metrics.servedOrders,
+      ...(comparison.candidate.solverInfo ? [
+        "  solver_status=" + comparison.candidate.solverInfo.status +
+        ", objective_bound=" + comparison.candidate.solverInfo.bestObjectiveBound
+      ] : []),
       "  outcome=" +
         comparison.outcome +
         ", cost_delta=" +
@@ -81,6 +85,7 @@ function solveForComparison(scenario, strategy, options) {
 
   return {
     strategy: strategy,
+    ...(plan.solverInfo ? { solverInfo: plan.solverInfo } : {}),
     routes: plan.routes,
     unassignedOrderIds: plan.unassignedOrderIds,
     metrics: evaluatePlan(scenario, plan)
