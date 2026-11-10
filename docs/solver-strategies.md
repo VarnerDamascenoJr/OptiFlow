@@ -56,7 +56,8 @@ npm run benchmark:compare:cost-aware
 
 E o primeiro adaptador de solver. Ele enumera planos viaveis para cenarios
 pequenos, mede cada plano com a mesma funcao de custo do motor e seleciona o
-menor custo encontrado.
+menor custo encontrado entre os candidatos gerados. A formulacao e as
+garantias estao em [mathematical-formulation.md](mathematical-formulation.md).
 
 Uso:
 
@@ -76,10 +77,24 @@ npm run scenario:small
 Caracteristicas:
 
 - Preserva o formato de saida `RoutePlan`.
-- Respeita capacidade.
+- Respeita capacidade e os filtros configurados de janela e distancia.
 - Permite demanda nao atendida quando isso reduz o custo total.
-- Retorna erro explicavel quando o cenario excede o limite configurado.
+- Usa custo arredondado a duas casas decimais; empates favorecem menos pedidos
+  nao alocados e depois menor distancia arredondada.
+- Retorna erro explicavel quando o cenario excede o limite de pedidos ou tempo;
+  timeout nao retorna um plano parcial.
 - Serve como ponte antes de integrar OR-Tools ou outro solver de producao.
+
+`requiredOrderIds` apenas identifica pedidos para diagnostico; nao obriga o
+solver a atende-los. Com `maxRouteDistance`, a enumeracao verifica a distancia
+completa antes de registrar uma rota candidata. Um prefixo cujo retorno direto
+exceda o limite ainda pode ser explorado, pois outra parada pode encurtar o
+retorno em matrizes sem desigualdade triangular. A poda por distancia usa
+apenas o percurso acumulado, que nao pode diminuir com distancias nao negativas.
+Rotas vazias tambem precisam respeitar o limite, considerando o valor da diagonal
+da matriz. As heuristicas mantem o filtro local de retorno direto a cada
+insercao. A garantia de melhor resultado da enumeracao usa os criterios
+arredondados do adaptador e exige que a busca termine dentro do prazo.
 
 ## Resultado no Cenario Pequeno
 
@@ -90,7 +105,10 @@ exata encontra custo total 744 ao atender:
 - `van-1`: `order-west`
 
 O pedido `order-south` permanece nao atendido porque a demanda total excede a
-capacidade total disponivel.
+capacidade total disponivel e esse e o plano selecionado pelo objetivo. A
+insuficiencia de capacidade exige deixar algum pedido fora; a funcao de custo
+e que determina qual. A distancia cai de 73 para 61, sem atraso, mantendo uma
+penalidade de 500 pelo pedido nao alocado: `61 * 4 + 500 = 744`.
 
 ## Proxima Evolucao
 
