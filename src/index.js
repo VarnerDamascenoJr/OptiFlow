@@ -1,5 +1,6 @@
 import createExecutionMetadata from "./execution-metadata.js";
 import createExactSolverPlan from "./exact-solver.js";
+import createOrToolsPlan from "./or-tools-solver.js";
 import createNearestNeighborPlan, { createCostAwareGreedyPlan } from "./nearest-neighbor.js";
 import evaluatePlan from "./metrics.js";
 import { createPlanForStrategy } from "./shared/plan-factory.js";
@@ -10,7 +11,7 @@ export function solveScenario(scenario, options = {}) {
 
   const metadata = createExecutionMetadata(readMetadataOptions(options));
   const strategy = readStrategy(options);
-  const solverOptions = strategy === "exact-enumeration" ? readSolverOptions(options) : undefined;
+  const solverOptions = readSolverOptions(options);
   const plan = createPlanForStrategy(scenario, strategy, solverOptions);
   const metrics = evaluatePlan(scenario, plan);
 
@@ -18,6 +19,7 @@ export function solveScenario(scenario, options = {}) {
     scenarioId: scenario.id,
     metadata: metadata,
     strategy: plan.strategy,
+    ...(plan.solverInfo ? { solverInfo: plan.solverInfo } : {}),
     routes: plan.routes,
     unassignedOrderDetails: plan.unassignedOrderDetails || [],
     unassignedOrderIds: plan.unassignedOrderIds,
@@ -52,6 +54,7 @@ function readMetadataOptions(options) {
 export {
   createExecutionMetadata,
   createExactSolverPlan,
+  createOrToolsPlan,
   createCostAwareGreedyPlan,
   createNearestNeighborPlan,
   evaluatePlan,
