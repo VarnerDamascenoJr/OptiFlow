@@ -1,6 +1,6 @@
 # Estrategias de Solucao
 
-O OptiFlow agora possui tres estrategias executaveis sobre o mesmo contrato de
+O OptiFlow agora possui quatro estrategias executaveis sobre o mesmo contrato de
 cenario.
 
 ## `nearest-neighbor-capacity`
@@ -83,7 +83,7 @@ Caracteristicas:
   nao alocados e depois menor distancia arredondada.
 - Retorna erro explicavel quando o cenario excede o limite de pedidos ou tempo;
   timeout nao retorna um plano parcial.
-- Serve como ponte antes de integrar OR-Tools ou outro solver de producao.
+- Serve como referencia exata limitada para validar o adaptador OR-Tools.
 
 `requiredOrderIds` apenas identifica pedidos para diagnostico; nao obriga o
 solver a atende-los. Com `maxRouteDistance`, a enumeracao verifica a distancia
@@ -110,8 +110,28 @@ insuficiencia de capacidade exige deixar algum pedido fora; a funcao de custo
 e que determina qual. A distancia cai de 73 para 61, sem atraso, mantendo uma
 penalidade de 500 pelo pedido nao alocado: `61 * 4 + 500 = 744`.
 
-## Proxima Evolucao
+## `or-tools`
 
-Esta estrategia ainda nao e uma substituta para um solver escalavel. Ela existe
-para provar o contrato, testar a comparacao entre estrategias e manter as falhas
-controladas antes de integrar uma biblioteca especializada.
+O adaptador OR-Tools CP-SAT resolve o modelo de entregas por circuitos e
+restricoes temporais, com limite de busca e status explicito. Preserva o
+contrato de rotas e metricas e adiciona `solverInfo` com `OPTIMAL` ou `FEASIBLE`,
+valor do objetivo e limite inferior. A preparacao exige Python e a dependencia
+de `requirements-solver.txt`, conforme [or-tools-solver.md](or-tools-solver.md).
+
+```bash
+npm run scenario:small:or-tools
+npm run benchmark:compare:or-tools
+```
+
+No cenario pequeno, o solver encontra custo 744 e comprova otimalidade. O limite
+padrao e de 50 pedidos e 1000 ms de busca. Ausencia de plano dentro do prazo
+gera erro; um plano apenas viavel e identificado como `FEASIBLE`. O CP-SAT
+minimiza o objetivo antes do arredondamento e nao adota os desempates da
+enumeracao. Seus limites de precisao e execucao estao no guia do adaptador.
+
+## Evolucao
+
+A enumeracao continua disponivel para cenarios pequenos, junto com as duas
+heuristicas. O adaptador OR-Tools permite evoluir a busca sem mudar a entrada,
+com status e limites explicitos. Instancias maiores e uso concorrente exigem
+medicao e isolamento de workers, pois o contrato atual de execucao e sincrono.

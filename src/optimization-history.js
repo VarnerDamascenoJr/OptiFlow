@@ -174,6 +174,7 @@ function persistCompletedRun(historyFile, input) {
     runId: optimizationRunId,
     scenarioId: input.scenario.id,
     strategy: input.result.strategy,
+    ...(input.result.solverInfo ? { solverInfo: clone(input.result.solverInfo) } : {}),
     routes: clone(input.result.routes),
     unassignedOrderIds: clone(input.result.unassignedOrderIds),
     unassignedOrderDetails: clone(input.result.unassignedOrderDetails || [])

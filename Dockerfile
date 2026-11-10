@@ -6,6 +6,14 @@ ENV NODE_ENV=production
 ENV OPTIFLOW_API_HOST=0.0.0.0
 ENV OPTIFLOW_API_PORT=3000
 ENV OPTIFLOW_HISTORY_FILE=/data/optimization-history.json
+ENV OPTIFLOW_PYTHON=/opt/optiflow-solver/bin/python
+
+COPY requirements-solver.txt ./
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 python3-venv \
+  && python3 -m venv /opt/optiflow-solver \
+  && /opt/optiflow-solver/bin/python -m pip install --no-cache-dir -r requirements-solver.txt \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
@@ -15,6 +23,7 @@ COPY docs ./docs
 COPY public ./public
 COPY scripts ./scripts
 COPY src ./src
+COPY solver ./solver
 
 RUN groupadd --system optiflow \
   && useradd --system --gid optiflow --home-dir /app optiflow \

@@ -5,6 +5,10 @@ coverage
 dist
 build
 node_modules
+.venv
+venv
+__pycache__
+*.pyc
 npm-debug.log
 *.log
 .DS_Store

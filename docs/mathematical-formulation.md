@@ -2,7 +2,8 @@
 
 Este documento formaliza o planejamento deterministico de entregas do OptiFlow
 e relaciona suas equacoes ao contrato JSON e ao motor implementado. A mesma
-funcao de custo permite comparar duas heuristicas com enumeracao exata limitada.
+funcao de custo permite comparar duas heuristicas, enumeracao exata limitada e
+OR-Tools CP-SAT.
 
 ## Escopo
 
@@ -11,13 +12,15 @@ matriz de distancia conhecida e janelas de atendimento suaves por padrao. Todos
 os dados do cenario sao conhecidos antes da execucao. Por configuracao, janelas
 de atendimento e distancia maxima da rota podem se tornar restricoes duras.
 
-O motor oferece `nearest-neighbor-capacity`, `cost-aware-greedy` e
-`exact-enumeration`. As heuristicas produzem linhas de base sem prova de
+O motor oferece `nearest-neighbor-capacity`, `cost-aware-greedy`,
+`exact-enumeration` e `or-tools`. As heuristicas produzem linhas de base sem prova de
 otimalidade. A enumeracao compara os planos candidatos que consegue gerar,
 respeitando limites de tamanho e tempo; suas garantias estao detalhadas abaixo.
 
-OR-Tools continua pendente. A formulacao por sequencias abaixo descreve o
-problema sem exigir uma biblioteca ou uma formulacao linear por arcos.
+A formulacao por sequencias abaixo descreve o problema independentemente da
+biblioteca. O adaptador `or-tools` implementa uma formulacao por circuitos,
+atribuicoes e precedencias temporais em CP-SAT, detalhada em
+[or-tools-solver.md](or-tools-solver.md).
 
 ## Conjuntos
 
@@ -65,9 +68,9 @@ estao explicitadas adiante.
 
 ## Decisoes Representadas no Plano Atual
 
-Estas decisoes sao representadas no `RoutePlan` gerado pelas tres estrategias.
-Elas descrevem a saida compartilhada pelas heuristicas e pelo adaptador de
-enumeracao, que deve permanecer compativel com uma futura integracao de solver.
+Estas decisoes sao representadas no `RoutePlan` gerado pelas quatro estrategias.
+Elas descrevem a saida compartilhada pelas heuristicas, pela enumeracao e pelo
+adaptador OR-Tools.
 
 | Decisao | Representacao atual | Descricao |
 | --- | --- | --- |
@@ -158,6 +161,9 @@ total, e penalidade zero pode favorecer rotas vazias na enumeracao.
 `cost-aware-greedy` estima custo incremental e impacto sobre outros pedidos.
 Nenhuma das duas minimiza globalmente `F`. `exact-enumeration` compara planos
 completos usando as metricas de `evaluatePlan`.
+`or-tools` minimiza a soma ponderada antes do arredondamento e informa
+`OPTIMAL` quando comprova otimalidade ou `FEASIBLE` quando encontra apenas um
+plano viavel no prazo, sem reproduzir os desempates da enumeracao.
 
 As metricas de custo, distancia e atraso retornadas sao arredondadas a duas
 casas decimais. Os componentes de custo sao calculados a partir dos totais
@@ -292,9 +298,11 @@ teria distancia final 11, mas a rota `depot -> a -> b -> depot` tem distancia
 explorada e pode ser selecionada. Capacidade e janelas duras continuam sendo
 verificadas em cada insercao.
 
-O adaptador nao usa OR-Tools. Uma futura integracao deve preservar o contrato,
-explicitar a precisao do objetivo e documentar seu proprio status de solucao,
-limites e garantias. Veja [solver-strategies.md](solver-strategies.md).
+A enumeracao nao usa OR-Tools. O adaptador separado `or-tools` preserva as
+equacoes e restricoes com escalas inteiras para dados com ate seis casas
+decimais, limites numericos explicitos e status de solucao. Suas garantias e
+precisao estao em [or-tools-solver.md](or-tools-solver.md); a comparacao das
+estrategias esta em [solver-strategies.md](solver-strategies.md).
 
 ## Mapeamento do JSON
 
@@ -395,8 +403,9 @@ npm run benchmark:compare
 ## Limitacoes Conhecidas
 
 - As heuristicas usam decisoes locais e nao provam otimalidade global.
-- Enumeracao cresce combinatoriamente; serve a cenarios pequenos e nao
-  substitui a integracao pendente com OR-Tools.
+- Enumeracao cresce combinatoriamente e serve a cenarios pequenos. OR-Tools
+  esta integrado, mas tambem depende de limites de tamanho e tempo; apenas
+  status `OPTIMAL` comprova otimalidade do seu modelo inteiro representado.
 - Arredondamento limita a interpretacao de otimalidade conforme descrito no
   contrato do solver. As heuristicas tambem usam o filtro local de retorno
   direto por prefixo, que pode descartar rotas em matrizes nao metricas.
@@ -421,7 +430,7 @@ configuraveis ja estao implementados. As evidencias executaveis estao em
 retorno intermediario acima do limite, distancia final, capacidade, janelas
 duras, desativacao do limite e rotas vazias com diagonal nao nula.
 
-Antes de substituir o adaptador, a integracao com OR-Tools deve demonstrar
-compatibilidade de entrada, saida, restricoes e custo nesses mesmos cenarios.
+Os testes em `test/or-tools-solver.test.js` demonstram a compatibilidade do
+adaptador OR-Tools com entrada, saida, restricoes e custo nesses mesmos cenarios.
 Mudancas como tempo de viagem separado da distancia, atendimento realmente
 obrigatorio ou varias viagens por veiculo exigem evolucao explicita do modelo.

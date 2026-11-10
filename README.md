@@ -4,7 +4,7 @@
 
 Motor de otimizacao operacional para comparar cenarios de distribuicao e alocacao, equilibrando custo, tempo e distancia sob restricoes configuraveis.
 
-> Status: nucleo deterministico de entregas com duas heuristicas, enumeracao exata limitada e comparacao de estrategias implementadas. A integracao com OR-Tools permanece pendente.
+> Status: nucleo deterministico de entregas com duas heuristicas, enumeracao exata limitada, OR-Tools CP-SAT e comparacao de estrategias implementadas.
 
 ## Objetivo
 
@@ -53,12 +53,17 @@ calculado para a heuristica e a enumeracao.
 
 ## Como Executar a Primeira Fatia
 
-O nucleo atual usa Node.js 24 LTS e nao depende de pacotes externos. Use `nvm` para ativar a versao do projeto:
+O nucleo usa Node.js 24 LTS. As heuristicas e a enumeracao nao dependem de
+pacotes externos; a estrategia OR-Tools e seus testes usam Python 3.10+ com
+a dependencia versionada em `requirements-solver.txt`:
 
 ```bash
 nvm use
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-solver.txt
 npm test
 npm run scenario:small
+npm run scenario:small:or-tools
 ```
 
 O resultado atual usa a estrategia `nearest-neighbor-capacity`: uma heuristica gulosa que escolhe o pedido viavel mais proximo para cada veiculo, respeitando capacidade e registrando atraso como metrica.
@@ -87,6 +92,11 @@ motor heuristico.
 A comparacao entre estrategias esta documentada em
 [docs/strategy-comparison.md](docs/strategy-comparison.md) e pode ser executada
 com `npm run benchmark:compare`.
+
+A integracao OR-Tools CP-SAT, sua preparacao e garantias estao documentadas em
+[docs/or-tools-solver.md](docs/or-tools-solver.md). Para comparar a heuristica
+com o solver nativo, execute `npm run benchmark:compare:or-tools`; o resultado
+inclui o status da busca e seu limite inferior do objetivo.
 
 Restricoes configuraveis por cenario estao documentadas em
 [docs/configurable-constraints.md](docs/configurable-constraints.md). Elas
@@ -157,7 +167,8 @@ npm run demo:local
 
 O workflow
 [`CI`](https://github.com/VarnerDamascenoJr/OptiFlow/actions/workflows/ci.yml)
-roda `npm test`, `npm run scenario:small`, `npm run benchmark:compare`,
+prepara Python/OR-Tools e roda `npm test`, `npm run scenario:small`,
+`npm run benchmark:compare`, `npm run benchmark:compare:or-tools`,
 `npm run scenario:small:simulate`, `npm run scenario:small:risk` e
 `git diff --check`.
 
@@ -244,7 +255,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 - [x] Modelar o problema matematicamente.
 - [x] Implementar uma solucao heuristica de referencia.
-- [ ] Integrar o solver OR-Tools.
+- [x] Integrar o solver OR-Tools.
 - [x] Implementar as restricoes configuraveis.
 - [x] Medir custo, tempo de execucao e qualidade das solucoes.
 - [x] Comparar heuristica e solucao otimizada.
@@ -282,7 +293,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 - [x] Cobrir regras de dominio e motor com testes.
 - [ ] Adicionar testes de API e fluxos principais da interface.
-- [ ] Documentar modelo, decisoes e limitacoes do solver.
+- [x] Documentar modelo, decisoes e limitacoes do solver.
 - [x] Preparar ambiente local com Docker.
 - [x] Configurar CI.
 - [x] Publicar uma demonstracao e documentar o projeto para portfolio.
