@@ -78,6 +78,23 @@ test("persists failed asynchronous optimization runs", async function testFailed
   assert.strictEqual(recoveredRun.body.metrics, null);
 });
 
+test("queues OR-Tools and persists its solution status and bound over HTTP", async function testOrToolsApi(t) {
+  const client = await startTestServer(t);
+  const queued = await client.post("/optimization-runs", {
+    metadata: { optimizationRunId: "run-api-or-tools" },
+    scenario: scenario,
+    strategy: "or-tools",
+    solver: { timeoutMs: 3000 },
+    timeoutMs: 15000
+  });
+  assert.strictEqual(queued.status, 202);
+  const recovered = await waitForRunStatus(client, "run-api-or-tools", "SUCCEEDED");
+  assert.strictEqual(recovered.body.optimizationRun.status, "SUCCEEDED");
+  assert.strictEqual(recovered.body.metrics.totalCost, 744);
+  assert.strictEqual(recovered.body.routePlan.solverInfo.status, "OPTIMAL");
+  assert.strictEqual(recovered.body.routePlan.solverInfo.bestObjectiveBound, 744);
+});
+
 test("returns standardized validation errors", async function testValidationError(t) {
   const client = await startTestServer(t);
   const invalidScenario = structuredClone(scenario);
