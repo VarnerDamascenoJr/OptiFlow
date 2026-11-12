@@ -80,6 +80,86 @@ test("OR-Tools accepts fractional demand, travel, windows and objective weights"
   assertValidPlan(scenario, result);
 });
 
+test("OR-Tools preserves a hard deadline at a large time origin with decimal travel", function testScaledDeadline() {
+  const scenario = precisionScenario();
+  scenario.constraints = { hardTimeWindows: true };
+
+  const result = solveScenario(scenario, { strategy: "or-tools", solver: solver });
+  const stop = result.routes[0].stops.find(stop => stop.orderId === "order-b");
+
+  assert.strictEqual(result.metrics.servedOrders, 2);
+  assert.strictEqual(result.solverInfo.status, "OPTIMAL");
+  assert.strictEqual(stop.arrivalTimeMinutes, scenario.orders[1].timeWindow.endMinutes);
+  assert.strictEqual(stop.lateMinutes, 0);
+  assert.strictEqual(result.solverInfo.objectiveValue, 0.3);
+  assertValidPlan(scenario, result);
+});
+
+test("OR-Tools does not charge a soft-window penalty for floating-point reconstruction error", function testScaledPenalty() {
+  const scenario = precisionScenario();
+  scenario.costs.lateMinutePenalty = 1000000;
+
+  const result = solveScenario(scenario, { strategy: "or-tools", solver: solver });
+
+  assert.strictEqual(result.metrics.totalLateMinutes, 0);
+  assert.strictEqual(result.metrics.latenessCost, 0);
+  assert.strictEqual(result.metrics.totalCost, 0.3);
+  assert.strictEqual(result.solverInfo.objectiveValue, result.solverInfo.bestObjectiveBound);
+});
+
+test("OR-Tools preserves a final-distance boundary with large and decimal segments", function testScaledDistance() {
+  const scenario = nonmetricScenario();
+  scenario.costs.distanceUnitCost = 0;
+  scenario.vehicles[0].maxDistance = 1000000000.3;
+  scenario.orders.forEach(order => { order.timeWindow.endMinutes = 10000000000; });
+  scenario.distanceMatrix = {
+    depot: { depot: 0, a: 1000000000, b: 2000000000 },
+    a: { depot: 1, a: 0, b: 0.1 },
+    b: { depot: 0.2, a: 1, b: 0 }
+  };
+
+  const result = solveScenario(scenario, { strategy: "or-tools", solver: solver });
+
+  assert.strictEqual(result.metrics.servedOrders, 2);
+  assert.strictEqual(result.routes[0].totalDistance, scenario.vehicles[0].maxDistance);
+  assertValidPlan(scenario, result);
+});
+
+test("OR-Tools preserves a capacity boundary with large and decimal demands", function testScaledCapacity() {
+  const scenario = nonmetricScenario();
+  scenario.locations = [{ id: "depot" }];
+  scenario.distanceMatrix = { depot: { depot: 0 } };
+  scenario.constraints = { hardTimeWindows: true };
+  scenario.vehicles[0].capacity = 1000000000.3;
+  scenario.orders = [1000000000, 0.1, 0.2].map((demand, i) => ({
+    id: "order-" + i,
+    locationId: "depot",
+    demand: demand,
+    serviceTimeMinutes: 1,
+    timeWindow: { startMinutes: i, endMinutes: i }
+  }));
+
+  const result = solveScenario(scenario, { strategy: "or-tools", solver: solver });
+
+  assert.strictEqual(result.metrics.servedOrders, 3);
+  assert.strictEqual(result.routes[0].usedCapacity, scenario.vehicles[0].capacity);
+  assertValidPlan(scenario, result);
+});
+
+test("OR-Tools still rejects service that misses a hard deadline by one supported decimal unit", function testRealLateness() {
+  const scenario = precisionScenario();
+  scenario.operation.startTimeMinutes = 0;
+  scenario.orders.forEach(order => { order.timeWindow.startMinutes = 0; order.timeWindow.endMinutes = 1; });
+  scenario.orders[1].timeWindow.endMinutes = 0.299999;
+  scenario.constraints = { hardTimeWindows: true };
+
+  const result = solveScenario(scenario, { strategy: "or-tools", solver: solver });
+
+  assert.strictEqual(result.metrics.servedOrders, 1);
+  assert.deepStrictEqual(result.unassignedOrderIds, ["order-b"]);
+  assertValidPlan(scenario, result);
+});
+
 test("OR-Tools handles separate orders at the same location and multiple depots", function testLocations() {
   const scenario = nonmetricScenario();
   scenario.constraints = {};
@@ -179,4 +259,22 @@ function nonmetricScenario() {
     distanceMatrix: { depot: { depot: 0, a: 1, b: 10 }, a: { depot: 10, a: 0, b: 1 }, b: { depot: 1, a: 10, b: 0 } },
     constraints: { maxRouteDistance: true }
   };
+}
+
+function precisionScenario() {
+  const scenario = nonmetricScenario();
+  const start = 1000000000;
+  scenario.operation.startTimeMinutes = start;
+  scenario.constraints = {};
+  scenario.orders.forEach(order => {
+    order.serviceTimeMinutes = 0.1;
+    order.timeWindow = { startMinutes: start, endMinutes: start + 1 };
+  });
+  scenario.orders[1].timeWindow.endMinutes = start + 0.3;
+  scenario.distanceMatrix = {
+    depot: { depot: 0, a: 0.1, b: 1 },
+    a: { depot: 1, a: 0, b: 0.1 },
+    b: { depot: 0.1, a: 1, b: 0 }
+  };
+  return scenario;
 }

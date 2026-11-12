@@ -135,6 +135,7 @@ def solve(scenario, options):
     objective_scale = time_scale * cost_scale
     return {
         "routes": routes,
+        "scales": {"time": time_scale, "quantity": quantity_scale},
         "solverInfo": {
             "engine": "or-tools-cp-sat",
             "version": ortools.__version__,

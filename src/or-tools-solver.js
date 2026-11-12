@@ -51,7 +51,10 @@ export default function createOrToolsPlan(scenario, options = {}) {
     throw new Error("or-tools returned an invalid solution");
   }
 
-  const ordersById = new Map(scenario.orders.map(order => [order.id, order]));
+  const timeScale = readScale(solution.scales?.time);
+  const quantityScale = readScale(solution.scales?.quantity);
+  const integerScenario = scaleScenario(scenario, timeScale, quantityScale);
+  const ordersById = new Map(integerScenario.orders.map(order => [order.id, order]));
   const servedIds = new Set();
   const constraints = readScenarioConstraints(scenario);
   const routes = solution.routes.map(function mapRoute(orderIds, vehicleIndex) {
@@ -65,17 +68,17 @@ export default function createOrToolsPlan(scenario, options = {}) {
       servedIds.add(id);
       return ordersById.get(id);
     });
-    const vehicle = scenario.vehicles[vehicleIndex];
-    const { orderIds: internalOrderIds, ...route } = buildRoute(scenario, vehicle, orders);
+    const vehicle = integerScenario.vehicles[vehicleIndex];
+    const { orderIds: internalOrderIds, ...route } = buildRoute(integerScenario, vehicle, orders);
 
     if (
-      route.usedCapacity > vehicle.capacity + 1e-8 ||
-      (constraints.maxRouteDistance && route.totalDistance > vehicle.maxDistance + 1e-8) ||
-      (constraints.hardTimeWindows && route.stops.some(stop => stop.lateMinutes > 1e-8))
+      route.usedCapacity > vehicle.capacity ||
+      (constraints.maxRouteDistance && route.totalDistance > vehicle.maxDistance) ||
+      (constraints.hardTimeWindows && route.stops.some(stop => stop.lateMinutes > 0))
     ) {
       throw new Error("or-tools returned a route that violates scenario constraints");
     }
-    return route;
+    return restoreRouteUnits(route, timeScale, quantityScale);
   });
   const unassignedOrderIds = scenario.orders.filter(order => !servedIds.has(order.id)).map(order => order.id);
   const totalDistance = routes.reduce((sum, route) => sum + route.totalDistance, 0);
@@ -92,6 +95,67 @@ export default function createOrToolsPlan(scenario, options = {}) {
     unassignedOrderIds: unassignedOrderIds,
     unassignedOrderDetails: buildUnassignedOrderDetails(scenario, unassignedOrderIds, constraints),
     solverInfo: { ...solution.solverInfo, objectiveValue: objectiveValue }
+  };
+}
+
+function readScale(value) {
+  if (!Number.isInteger(value) || value < 1 || value > 1000000 || !Number.isInteger(Math.log10(value))) {
+    throw new Error("or-tools returned an invalid numeric scale");
+  }
+  return value;
+}
+
+function scaleValue(value, scale) {
+  const integer = Math.round(value * scale);
+  if (!Number.isSafeInteger(integer)) {
+    throw new Error("or-tools scenario cannot be reconstructed with safe integers");
+  }
+  return integer;
+}
+
+function scaleScenario(scenario, timeScale, quantityScale) {
+  return {
+    ...scenario,
+    operation: { ...scenario.operation, startTimeMinutes: scaleValue(scenario.operation.startTimeMinutes, timeScale) },
+    vehicles: scenario.vehicles.map(vehicle => ({
+      ...vehicle,
+      capacity: scaleValue(vehicle.capacity, quantityScale),
+      ...(scenario.constraints?.maxRouteDistance ? { maxDistance: scaleValue(vehicle.maxDistance, timeScale) } : {})
+    })),
+    orders: scenario.orders.map(order => ({
+      ...order,
+      demand: scaleValue(order.demand, quantityScale),
+      serviceTimeMinutes: scaleValue(order.serviceTimeMinutes, timeScale),
+      timeWindow: {
+        ...order.timeWindow,
+        startMinutes: scaleValue(order.timeWindow.startMinutes, timeScale),
+        endMinutes: scaleValue(order.timeWindow.endMinutes, timeScale)
+      }
+    })),
+    distanceMatrix: Object.fromEntries(scenario.locations.map(from => [from.id,
+      Object.fromEntries(scenario.locations.map(to => [to.id,
+        scaleValue(scenario.distanceMatrix[from.id][to.id], timeScale)
+      ]))
+    ]))
+  };
+}
+
+function restoreRouteUnits(route, timeScale, quantityScale) {
+  return {
+    ...route,
+    capacity: route.capacity / quantityScale,
+    usedCapacity: route.usedCapacity / quantityScale,
+    totalDistance: route.totalDistance / timeScale,
+    stops: route.stops.map(stop => ({
+      ...stop,
+      arrivalTimeMinutes: stop.arrivalTimeMinutes / timeScale,
+      serviceStartMinutes: stop.serviceStartMinutes / timeScale,
+      departureTimeMinutes: stop.departureTimeMinutes / timeScale,
+      distanceFromPrevious: stop.distanceFromPrevious / timeScale,
+      lateMinutes: stop.lateMinutes / timeScale,
+      loadAfterStop: stop.loadAfterStop / quantityScale,
+      ...(stop.demand !== undefined ? { demand: stop.demand / quantityScale } : {})
+    }))
   };
 }
 
