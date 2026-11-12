@@ -52,5 +52,8 @@ jobs:
       - name: Run risk comparison
         run: npm run scenario:small:risk
 
+      - name: Run demand forecast
+        run: npm run demand:forecast
+
       - name: Check whitespace
         run: git diff --check
