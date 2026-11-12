@@ -132,6 +132,15 @@ A decisao orientada a risco com VaR/CVaR esta documentada em
 npm run scenario:small:risk
 ```
 
+A previsao de demanda por local e janela temporal compara uma baseline ingenua
+com media movel, com validacao cronologica, MAE e RMSE. O contrato, as premissas
+da fixture sintetica e os limites estao em
+[docs/demand-forecasting.md](docs/demand-forecasting.md):
+
+```bash
+npm run demand:forecast
+```
+
 A interface local para editar cenarios e comparar estrategias esta documentada
 em [docs/scenario-interface.md](docs/scenario-interface.md). Ela e servida pelo
 comando da API:
@@ -170,7 +179,7 @@ O workflow
 prepara Python/OR-Tools e roda `npm test`, `npm run scenario:small`,
 `npm run benchmark:compare`, `npm run benchmark:compare:or-tools`,
 `npm run scenario:small:simulate`, `npm run scenario:small:risk` e
-`git diff --check`.
+`npm run demand:forecast`, alem de `git diff --check`.
 
 ## Caminho de Aprendizado
 
@@ -269,7 +278,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 - [x] Exibir custo esperado, percentis e probabilidade de atraso.
 - [x] Realizar analise de sensibilidade dos parametros do modelo.
 - [x] Avaliar otimizacao orientada a risco com uma metrica como CVaR.
-- [ ] Adicionar previsao de demanda somente apos validar a base deterministica.
+- [x] Adicionar previsao de demanda somente apos validar a base deterministica.
 
 ### 3. Backend e processamento
 
@@ -314,7 +323,7 @@ Cada decisao sera fechada junto com a respectiva etapa, para manter o projeto fo
 | Operacao | distancia total, custo total, pedidos atendidos e utilizacao dos veiculos | custo esperado e distribuicao de utilizacao |
 | Nivel de servico | quantidade e tempo de atraso | probabilidade de atraso e percentis P90/P95 |
 | Qualidade da solucao | ganho sobre a heuristica e tempo de execucao do solver | ganho ajustado por risco e estabilidade entre simulacoes |
-| Predicao | nao se aplica na primeira versao | MAE, RMSE e cobertura do intervalo de previsao |
+| Predicao | MAE e RMSE por local e janela temporal | cobertura de intervalos preditivos em evolucoes futuras |
 
 ## Principio de Evolucao
 

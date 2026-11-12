@@ -91,3 +91,4 @@ export { renderGoldenDatasetReport, validateGoldenDatasets } from "./golden-data
 export { simulateFixedPlan, summarizeMonteCarloDiagnostics, summarizeSamples } from "./simulation.js";
 export { compareStrategiesWithInference, renderInferenceReport } from "./strategy-inference.js";
 export { compareStrategies, renderComparisonReport } from "./strategy-comparison.js";
+export { forecastDemand, renderDemandForecastReport } from "./demand-forecast.js";
