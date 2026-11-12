@@ -71,10 +71,14 @@ mesmo custo podem ter sequencias ou distribuicoes entre veiculos diferentes.
 ## Contrato e Garantias
 
 O Node chama `solver/ortools_solver.py` por processo, com JSON em stdin/stdout,
-sem shell. O Python devolve sequencias de IDs e informacoes da busca. O Node
-reconstroi as paradas com o mesmo calculador de rotas da enumeracao, usando os
-horarios mais cedo possiveis, verifica unicidade, capacidade, distancia e
-janelas duras, e calcula as metricas com `evaluatePlan`.
+sem shell. O Python devolve sequencias de IDs, as escalas inteiras aplicadas e
+informacoes da busca. O Node reconstroi as paradas com o mesmo calculador de
+rotas da enumeracao, usando os horarios mais cedo possiveis. Essa reconstrucao
+e a validacao de capacidade, distancia e janelas duras usam os inteiros do
+modelo; somente depois os valores sao convertidos para as unidades originais
+e as metricas sao calculadas com `evaluatePlan`. Assim, somas como
+`1000000000 + 0.1 + 0.1 + 0.1` nao criam atraso artificial nem fazem uma rota
+na fronteira de uma restricao ser rejeitada por erro de ponto flutuante.
 
 `solverInfo` inclui motor, versao, status, valor do objetivo sem arredondamento,
 limite inferior (`bestObjectiveBound`) e tempo de busca (`wallTimeMs`):
