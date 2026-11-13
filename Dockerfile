@@ -1,4 +1,14 @@
-FROM node:24.21.0-bookworm-slim
+FROM node:24.21.0-bookworm-slim AS backend-build
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY tsconfig.backend.json ./
+COPY backend ./backend
+COPY src ./src
+RUN npm run build
+
+FROM node:24.21.0-bookworm-slim AS runtime
 
 WORKDIR /app
 
@@ -24,6 +34,7 @@ COPY public ./public
 COPY scripts ./scripts
 COPY src ./src
 COPY solver ./solver
+COPY --from=backend-build /app/dist ./dist
 
 RUN groupadd --system optiflow \
   && useradd --system --gid optiflow --home-dir /app optiflow \
@@ -37,4 +48,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:3000/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
 
-CMD ["npm", "run", "api"]
+CMD ["node", "scripts/start-api.js"]
