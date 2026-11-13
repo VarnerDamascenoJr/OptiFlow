@@ -4,7 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { createOptiFlowApiServer } from "../src/api-server.js";
+import { createOptiFlowApplication } from "../src/api-server.js";
+import { createOptimizationHistoryRepository, solveScenario } from "../src/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scenarioPath = path.join(__dirname, "..", "data", "scenarios", "small-delivery.json");
@@ -195,10 +196,119 @@ test("logs optimization execution lifecycle with correlation metadata", async fu
   assert.strictEqual(typeof events[2].duration_ms, "number");
 });
 
+test("preserves health and not-found responses through NestJS routing", async function testRouting(t) {
+  const client = await startTestServer(t);
+  assert.deepStrictEqual(await client.get("/health"), {
+    status: 200,
+    body: { status: "ok", service: "optiflow-api" }
+  });
+
+  for (const [pathname, code] of [
+    ["/missing", "not_found"],
+    ["/scenarios/missing", "scenario_not_found"],
+    ["/optimization-runs/missing", "optimization_run_not_found"]
+  ]) {
+    const response = await client.get(pathname);
+    assert.strictEqual(response.status, 404);
+    assert.strictEqual(response.body.error.code, code);
+    assert.strictEqual(response.body.error.details, null);
+  }
+
+  const missingScenario = await client.post("/optimization-runs", { scenarioRecordId: "missing" });
+  assert.strictEqual(missingScenario.status, 404);
+  assert.strictEqual(missingScenario.body.error.code, "scenario_not_found");
+});
+
+test("keeps bounded JSON parsing and does not enable Express form parsing", async function testBodyLimit(t) {
+  const client = await startTestServer(t, { bodyLimitBytes: 32 });
+  const oversized = await client.post("/scenarios", { payload: "x".repeat(64) });
+  assert.strictEqual(oversized.status, 413);
+  assert.strictEqual(oversized.body.error.code, "body_too_large");
+
+  const form = await fetch(client.url("/scenarios"), {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: "id=not-json"
+  });
+  assert.strictEqual(form.status, 400);
+  assert.strictEqual((await form.json()).error.code, "invalid_json");
+});
+
+test("shares the injected repository between scenario and execution modules and retries the injected solver", async function testInjection(t) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "optiflow-injected-history-"));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const repository = createOptimizationHistoryRepository(path.join(directory, "history.json"));
+  let attempts = 0;
+  const client = await startTestServer(t, {
+    repository,
+    defaultMaxAttempts: 2,
+    solve(input, options) {
+      attempts += 1;
+      if (attempts === 1) throw new Error("transient solver failure");
+      return solveScenario(input, options);
+    }
+  });
+  const created = await client.post("/scenarios", scenario);
+  const recordId = created.body.scenarioRecordId;
+  assert.strictEqual(repository.getScenarioRecord(recordId).scenarioId, scenario.id);
+  assert.strictEqual((await client.get("/scenarios/" + recordId)).body.scenarioRecordId, recordId);
+
+  const queued = await client.post("/optimization-runs", {
+    scenarioRecordId: recordId,
+    metadata: { optimizationRunId: "run-injected" }
+  });
+  assert.strictEqual(queued.status, 202);
+  const completed = await waitForRunStatus(client, "run-injected", "SUCCEEDED");
+  assert.strictEqual(completed.body.optimizationRun.attemptCount, 2);
+  assert.strictEqual(completed.body.metrics.totalCost, 792);
+  assert.strictEqual(repository.getRun("run-injected").metrics.totalCost, 792);
+  assert.strictEqual(attempts, 2);
+});
+
+test("preserves the error envelope for unexpected dependency failures", async function testDependencyFailure(t) {
+  const client = await startTestServer(t, {
+    repository: { getScenarioRecord() { throw new Error("repository unavailable"); } }
+  });
+  const response = await client.get("/scenarios/missing");
+  assert.deepStrictEqual(response, {
+    status: 500,
+    body: { error: {
+      code: "internal_error",
+      message: "Unexpected API error",
+      details: { message: "repository unavailable" }
+    } }
+  });
+});
+
+test("awaits the injected queue before completing application shutdown", async function testShutdown() {
+  let releaseQueue;
+  let draining = false;
+  const app = await createOptiFlowApplication({
+    repository: {},
+    runQueue: {
+      onIdle() {
+        draining = true;
+        return new Promise(resolve => { releaseQueue = resolve; });
+      }
+    }
+  });
+  let closed = false;
+  const closing = app.close().then(() => { closed = true; });
+  for (let attempt = 0; attempt < 100 && !draining; attempt += 1) {
+    await new Promise(resolve => setImmediate(resolve));
+  }
+  assert.strictEqual(draining, true);
+  assert.strictEqual(closed, false);
+  releaseQueue();
+  await closing;
+  assert.strictEqual(closed, true);
+});
+
 async function startTestServer(t, options = {}) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "optiflow-api-"));
   const historyFile = path.join(directory, "history.json");
-  const server = createOptiFlowApiServer({
+  const app = await createOptiFlowApplication({
+    ...options,
     environment: "test",
     historyFile: historyFile,
     logger: options.logger || {
@@ -207,16 +317,14 @@ async function startTestServer(t, options = {}) {
     serviceName: "optiflow-api"
   });
 
-  await new Promise(function listen(resolve) {
-    server.listen(0, "127.0.0.1", resolve);
-  });
+  await app.listen(0, "127.0.0.1");
 
-  t.after(function cleanup() {
-    server.close();
+  t.after(async function cleanup() {
+    await app.close();
     fs.rmSync(directory, { recursive: true, force: true });
   });
 
-  const address = server.address();
+  const address = app.getHttpServer().address();
   const baseUrl = "http://" + address.address + ":" + address.port;
 
   return {
