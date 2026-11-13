@@ -12,6 +12,7 @@ npm run demo:local
 
 O comando executa:
 
+- build do backend NestJS, pelo hook `pretest`;
 - `npm test`;
 - `npm run scenario:small`;
 - `npm run benchmark:compare`;
@@ -23,6 +24,9 @@ O comando executa:
 ```bash
 npm run api
 ```
+
+O hook `preapi` compila o backend TypeScript automaticamente. Para compilar
+sem iniciar o servidor, execute `npm run build`.
 
 Padroes:
 
@@ -42,6 +46,8 @@ docker compose up --build
 
 A API fica disponivel em `http://127.0.0.1:3000`. O historico local fica em um
 volume Docker chamado `optiflow-history`.
+O build em estagios compila o NestJS antes de montar o runtime, que contem
+somente dependencias de producao e o solver Python.
 
 Para encerrar:
 
