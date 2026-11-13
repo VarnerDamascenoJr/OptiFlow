@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "backend",
+    "outDir": "dist",
+    "strict": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "noEmitOnError": true,
+    "types": ["node"]
+  },
+  "include": ["backend/**/*.ts"]
+}

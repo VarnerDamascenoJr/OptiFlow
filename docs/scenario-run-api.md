@@ -1,14 +1,18 @@
 # API de Cenarios e Execucoes
 
-A primeira API HTTP do OptiFlow usa apenas `node:http` para manter a fatia P3.7
-leve enquanto a arquitetura NestJS ainda nao foi introduzida. Ela expoe o fluxo
-principal de cenario e execucao sobre o historico local da P3.6.
+A API HTTP do OptiFlow usa NestJS com adaptador Express e modulos de cenarios,
+execucoes e operacao. Ela expoe o fluxo principal de cenario e execucao sobre
+o historico local. A organizacao dos modulos, injecao de dependencias, build e
+limites do runtime estao em [backend-architecture.md](backend-architecture.md).
 
 ## Executar
 
 ```bash
+npm ci
 npm run api
 ```
+
+O comando compila o backend TypeScript antes de iniciar a API.
 
 Variaveis:
 
@@ -17,7 +21,7 @@ Variaveis:
 | `OPTIFLOW_API_HOST` | `127.0.0.1` | Interface onde o servidor escuta. |
 | `OPTIFLOW_API_PORT` | `3000` | Porta HTTP. |
 | `OPTIFLOW_HISTORY_FILE` | `.optiflow/optimization-history.json` | Arquivo local de historico. |
-| `OPTIFLOW_RUN_CONCURRENCY` | `1` | Numero de execucoes processadas em paralelo. |
+| `OPTIFLOW_RUN_CONCURRENCY` | `1` | Limite de jobs locais em andamento, sem isolamento de CPU. |
 | `OPTIFLOW_RUN_MAX_ATTEMPTS` | `1` | Tentativas padrao por execucao. |
 | `OPTIFLOW_RUN_TIMEOUT_MS` | `1000` | Timeout padrao por execucao. |
 

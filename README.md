@@ -59,6 +59,7 @@ a dependencia versionada em `requirements-solver.txt`:
 
 ```bash
 nvm use
+npm ci
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-solver.txt
 npm test
@@ -111,8 +112,11 @@ persiste uma execucao e consulta o resultado recuperado com:
 npm run scenario:small:history
 ```
 
-A primeira API HTTP local para criar, validar, executar e consultar cenarios
-esta documentada em [docs/scenario-run-api.md](docs/scenario-run-api.md):
+A API NestJS para criar, validar, executar e consultar cenarios esta
+documentada em [docs/scenario-run-api.md](docs/scenario-run-api.md).
+Os modulos, providers e limites de processamento estao em
+[docs/backend-architecture.md](docs/backend-architecture.md). O comando compila
+o backend automaticamente antes de iniciar o servidor:
 
 ```bash
 npm run api
@@ -282,7 +286,7 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 ### 3. Backend e processamento
 
-- [ ] Definir a arquitetura do backend NestJS.
+- [x] Definir a arquitetura do backend NestJS.
 - [x] Modelar persistencia de cenarios, execucoes e resultados.
 - [x] Criar API para criar, validar e consultar cenarios.
 - [x] Criar fila para execucoes assincronas de otimizacao.
@@ -309,10 +313,10 @@ Em vez de otimizar somente o cenario medio, o motor considera o risco operaciona
 
 ## Decisoes em aberto
 
-- Dominio do primeiro MVP.
-- Arquitetura de repositorio e ferramentas de persistencia/fila.
-- Formato de importacao e visualizacao dos dados.
-- Criterios de comparacao entre as estrategias.
+- Banco transacional e fila duravel para uma evolucao com workers isolados e
+  recuperacao de jobs, alem do MVP local.
+- Instrumentacao adicional de traces no backend NestJS, conforme
+  [docs/technology-notes.md](docs/technology-notes.md).
 
 Cada decisao sera fechada junto com a respectiva etapa, para manter o projeto focado e evolutivo.
 
