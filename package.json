@@ -6,7 +6,10 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "build": "tsc -p tsconfig.backend.json",
+    "preapi": "npm run build",
     "api": "node scripts/start-api.js",
+    "pretest": "npm run build",
     "test": "node --test",
     "benchmark:compare": "node scripts/compare-strategies.js",
     "benchmark:compare:or-tools": "OPTIFLOW_CANDIDATE_STRATEGY=or-tools node scripts/compare-strategies.js",
@@ -35,5 +38,16 @@
   "engines": {
     "node": ">=24.20.0"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@nestjs/common": "12.5.0",
+    "@nestjs/core": "12.5.0",
+    "@nestjs/platform-express": "12.5.0",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
 }
